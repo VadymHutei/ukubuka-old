@@ -1,2 +1,1 @@
 # ukubuka
-image storage
