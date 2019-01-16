@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, url_for, abort, render_template
 import config
 from modules.main.ctrl import Main
 from modules.acp.ctrl import Acp
+from modules.test.ctrl import Test
 
 app = Flask(__name__)
 
@@ -32,8 +33,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def main():
-    main = Main()
-    return main.view
+    mod = Main()
+    return mod.view
 
 #     ######## ########  ######  ########
 #        ##    ##       ##    ##    ##
@@ -45,7 +46,8 @@ def main():
 
 @app.route('/test')
 def test():
-    return 'test'
+    mod = Test()
+    return mod.test()
 
 #        ###     ######  ########
 #       ## ##   ##    ## ##     ##
@@ -57,8 +59,8 @@ def test():
 
 @app.route('/acp', methods=['GET'])
 def acp():
-    acp = Acp()
-    return acp.dashboard()
+    mod = Acp()
+    return mod.dashboard()
 
 #
 #
