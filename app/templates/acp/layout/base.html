@@ -5,6 +5,10 @@
     <title>{% block title %}{% endblock title %}</title>
 </head>
 <body>
+    <header>
+        {% include "acp/layout/menu.html" without context %}
+    </header>
     {% block content %}{% endblock content %}
+    <footer></footer>
 </body>
 </html>

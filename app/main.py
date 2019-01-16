@@ -1,8 +1,20 @@
 from flask import Flask, request, redirect, url_for, abort, render_template
+from functools import wraps
 import config
 from modules.main.ctrl import Main
 from modules.acp.ctrl import Acp
 from modules.test.ctrl import Test
+
+def lang_redirect(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'lang' in kwargs:
+            if kwargs['lang'] == config.default_language:
+                return redirect(url_for(f.__name__))
+            if kwargs['lang'] not in config.languages:
+                return redirect(url_for(f.__name__))
+        return f(*args, **kwargs)
+    return decorated_function
 
 app = Flask(__name__)
 
@@ -49,18 +61,87 @@ def test():
     mod = Test()
     return mod.test()
 
-#        ###     ######  ########
-#       ## ##   ##    ## ##     ##
-#      ##   ##  ##       ##     ##
-#     ##     ## ##       ########
-#     ######### ##       ##
-#     ##     ## ##    ## ##
-#     ##     ##  ######  ##
+
+
+#
+#
+#            _         ____   ________
+#           dM.       6MMMMb/ `MMMMMMMb.
+#          ,MMb      8P    YM  MM    `Mb
+#          d'YM.    6M      Y  MM     MM
+#         ,P `Mb    MM         MM     MM
+#         d'  YM.   MM         MM    .M9
+#        ,P   `Mb   MM         MMMMMMM9'
+#        d'    YM.  MM         MM
+#       ,MMMMMMMMb  YM      6  MM
+#       d'      YM.  8b    d9  MM
+#     _dM_     _dMM_  YMMMM9  _MM_
+#
+#
+#
+
+#     ########     ###     ######  ##     ## ########   #######     ###    ########  ########
+#     ##     ##   ## ##   ##    ## ##     ## ##     ## ##     ##   ## ##   ##     ## ##     ##
+#     ##     ##  ##   ##  ##       ##     ## ##     ## ##     ##  ##   ##  ##     ## ##     ##
+#     ##     ## ##     ##  ######  ######### ########  ##     ## ##     ## ########  ##     ##
+#     ##     ## #########       ## ##     ## ##     ## ##     ## ######### ##   ##   ##     ##
+#     ##     ## ##     ## ##    ## ##     ## ##     ## ##     ## ##     ## ##    ##  ##     ##
+#     ########  ##     ##  ######  ##     ## ########   #######  ##     ## ##     ## ########
 
 @app.route('/acp', methods=['GET'])
 def acp():
-    mod = Acp()
+    lang = 'ukr'
+    mod = Acp(lang)
     return mod.dashboard()
+
+#     ##     ##  ######  ######## ########   ######
+#     ##     ## ##    ## ##       ##     ## ##    ##
+#     ##     ## ##       ##       ##     ## ##
+#     ##     ##  ######  ######   ########   ######
+#     ##     ##       ## ##       ##   ##         ##
+#     ##     ## ##    ## ##       ##    ##  ##    ##
+#      #######   ######  ######## ##     ##  ######
+
+@app.route('/acp/users/', methods=['GET'])
+def acp_users():
+    lang = 'ukr'
+    mod = Acp(lang)
+    return mod.users()
+
+@app.route('/acp/users/add', methods=['GET'])
+def acp_users_add():
+    lang = 'ukr'
+    mod = Acp(lang)
+    return mod.users_add()
+
+@app.route('/acp/users/add', methods=['POST'])
+def acp_users_add_post():
+    lang = 'ukr'
+    mod = Acp(lang)
+    return 'DONE!'
+
+#     ##     ## ######## ##    ## ##     ##  ######
+#     ###   ### ##       ###   ## ##     ## ##    ##
+#     #### #### ##       ####  ## ##     ## ##
+#     ## ### ## ######   ## ## ## ##     ##  ######
+#     ##     ## ##       ##  #### ##     ##       ##
+#     ##     ## ##       ##   ### ##     ## ##    ##
+#     ##     ## ######## ##    ##  #######   ######
+
+@app.route('/acp/menus/add', methods=['GET'])
+@app.route('/<lang>/acp/menus/add', methods=['GET'])
+@lang_redirect
+def acp_menus_add(lang=config.default_language):
+    mod = Acp(lang)
+    return mod.menus_add()
+
+@app.route('/acp/menus/add', methods=['POST'])
+def acp_menus_add_post():
+    lang = 'ukr'
+    mod = Acp(lang)
+    return 'DONE!'
+
+
 
 #
 #

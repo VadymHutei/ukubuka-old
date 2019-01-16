@@ -11,7 +11,9 @@ db_params = {
     'db': 'ukubuka',
     'charset': 'utf8mb4'
 }
+db_prefix = 'ku_'
 
 site_name = 'Ukubuka'
 
-languages = ('uk', 'en')
+languages = ('ukr', 'eng')
+default_language = 'ukr'

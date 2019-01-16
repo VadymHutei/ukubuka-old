@@ -1,0 +1,26 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    {{ site_name }} ACP add menu item
+{%- endblock title %}
+
+{% block content -%}
+
+<form action="/acp/menus/add" method="post" accept-charset="utf-8">
+    <input type="text" name="menu" list="menus_list" placeholder="меню" autocomplete="on" required>
+    <datalist id="menus_list">
+        {% for menu in menus_list: %}
+        <option value="{{ menu }}">{{ menu }}</option>
+        {% endfor %}
+    </datalist>
+    <input type="text" name="name_ukr" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
+    <input type="text" name="name_eng" placeholder="англійською" maxlength="64" autocomplete="off" required>
+    <input type="url" name="link" placeholder="посилання" maxlength="128" autocomplete="off">
+    <label>
+        Активний
+        <input type="checkbox" name="is_active" checked>
+    </label>
+    <input type="submit">
+</form>
+
+{%- endblock content %}
