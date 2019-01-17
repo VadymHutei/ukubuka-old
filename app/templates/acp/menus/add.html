@@ -7,17 +7,43 @@
 {% block content -%}
 
 <form action="/acp/menus/add" method="post" accept-charset="utf-8">
-    <input type="text" name="menu" list="menus_list" placeholder="меню" autocomplete="on" required>
-    <datalist id="menus_list">
-        {% for menu in menus_list: %}
-        <option value="{{ menu }}">{{ menu }}</option>
-        {% endfor %}
-    </datalist>
-    <input type="text" name="name_ukr" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
-    <input type="text" name="name_eng" placeholder="англійською" maxlength="64" autocomplete="off" required>
-    <input type="url" name="link" placeholder="посилання" maxlength="128" autocomplete="off">
     <label>
-        Активний
+        Якому меню належить пункт. Виберіть із списку або створіть новий
+        <input type="text" name="menu" list="menus_list" placeholder="меню" autocomplete="off" required>
+        <datalist id="menus_list">
+            {% for menu in menus %}
+            <option value="{{ menu }}">{{ menu }}</option>
+            {% endfor %}
+        </datalist>
+    </label>
+    <label>
+        Якщо додаєте підпункт, оберіть батьківський пункт меню
+        <select name="parent">
+            <option label="не є підпунктом" value="" selected></option>
+            {% for menu in menus: %}
+            <optgroup label="{{ menu }}">
+                {% for menu_item in menus[menu] recursive %}
+                <option label="{{ menu_item['name'] }}" value="{{ menu_item['id'] }}"></option>
+                {{ loop(menu_item['submenu']) }}
+                {% endfor %}
+            </optgroup>
+            {% endfor %}
+        </select>
+    </label>
+    <label>
+        Назва українською
+        <input type="text" name="name_ukr" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
+    </label>
+    <label>
+        Назва англійською
+        <input type="text" name="name_eng" placeholder="англійською" maxlength="64" autocomplete="off" required>
+    </label>
+    <label>
+        Посилання. Можна лишити пустим
+        <input type="text" name="link" placeholder="посилання" maxlength="128" autocomplete="off">
+    </label>
+    <label>
+        Показувати
         <input type="checkbox" name="is_active" checked>
     </label>
     <input type="submit">

@@ -137,9 +137,10 @@ def acp_menus_add(lang=config.default_language):
 
 @app.route('/acp/menus/add', methods=['POST'])
 def acp_menus_add_post():
-    lang = 'ukr'
-    mod = Acp(lang)
-    return 'DONE!'
+    mod = Acp()
+    success, message = mod.addMenuItem(request.form)
+    if success: return 'DONE!'
+    else: return message
 
 
 
