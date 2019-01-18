@@ -11,10 +11,10 @@ def getMenus(lang):
             m.`is_active`,
             m.`link`,
             t.`name`
-        FROM {table} m
-        LEFT JOIN {table}_text t
-            ON m.id = t.item_id
-        AND language = '{lang}'
+        FROM `{table}` m
+        LEFT JOIN `{table}_text` t
+            ON m.`id` = t.`item_id`
+        AND `language` = '{lang}'
     """.format(table=db.table('menus'), lang=lang)
     connection = db.getConnection()
     cursor = connection.cursor()
@@ -46,9 +46,37 @@ def getMenus(lang):
             if temp[item_id]['parent'] is not None:
                 if 'submenu' not in temp[temp[item_id]['parent']]: temp[temp[item_id]['parent']]['submenu'] = []
                 temp[temp[item_id]['parent']]['submenu'].append(temp.pop(item_id))
+            else:
+                temp[item_id]['parent'] = '-'
     for item_id in temp:
         if temp[item_id]['menu'] not in result: result[temp[item_id]['menu']] = []
         result[temp[item_id]['menu']].append(temp[item_id])
+    return result
+
+def getMenuItem(item_id):
+    db = DB()
+    query = """
+        SELECT m.*, t.`language`, t.`name`
+        FROM `{table}` m
+        INNER JOIN `{table}_text` t
+            ON m.`id` = t.`item_id`
+        WHERE m.`id` = %s
+    """.format(table=db.table('menus'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [item_id])
+    connection.close()
+    item_data = cursor.fetchall()
+    result = {}
+    for row in item_data:
+        if not result:
+            for field in row:
+                if field == 'name':
+                    result['name'] = {row['language']: row['name']}
+                else:
+                    result[field] = row[field]
+        else:
+            result['name'][row['language']] = row['name']
     return result
 
 def addMenuItem(**data):
@@ -89,3 +117,47 @@ def addMenuItem(**data):
     cursor.executemany(query, values)
     connection.commit()
     connection.close()
+    return True
+
+def editMenuItem(**data):
+    return False
+    # columns = ['menu', 'is_active']
+    # values = [data['menu'], data['is_active']]
+    # placeholders = ['%s', '%s']
+    # if 'parent' in data:
+    #     columns.append('parent')
+    #     values.append(data['parent'])
+    #     placeholders.append('%s')
+    # if 'link' in data:
+    #     columns.append('link')
+    #     values.append(data['link'])
+    #     placeholders.append('%s')
+    # db = DB()
+    # table = db.table('menus')
+    # query = """
+    #     UPDATE TABLE `{table}`
+    #     SET 
+    #     WHERE `id` = {item_id}
+    #     INSERT INTO `{table}` ({columns})
+    #     VALUES ({placeholders})
+    # """.format(
+    #     table=table,
+    #     columns=', '.join(map(lambda x: '`' + x + '`', columns)),
+    #     placeholders=', '.join(placeholders)
+    # )
+    # connection = db.getConnection()
+    # cursor = connection.cursor()
+    # cursor.execute(query, values)
+    # table = db.table('menus_text')
+    # columns = ['item_id', 'language', 'name']
+    # values = [
+    #     [cursor.lastrowid, 'ukr', data['name_ukr']],
+    #     [cursor.lastrowid, 'eng', data['name_eng']]
+    # ]
+    # query = """
+    #     INSERT INTO `{table}` (`item_id`, `language`, `name`)
+    #     VALUES (%s, %s, %s)
+    # """.format(table=table)
+    # cursor.executemany(query, values)
+    # connection.commit()
+    # connection.close()

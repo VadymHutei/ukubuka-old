@@ -128,19 +128,34 @@ def acp_users_add_post():
 #     ##     ## ##       ##   ### ##     ## ##    ##
 #     ##     ## ######## ##    ##  #######   ######
 
-@app.route('/acp/menus/add', methods=['GET'])
-@app.route('/<lang>/acp/menus/add', methods=['GET'])
+@app.route('/acp/menus/', methods=['GET'])
+@app.route('/<lang>/acp/menus/', methods=['GET'])
+@lang_redirect
+def acp_menus(lang=config.default_language):
+    mod = Acp(lang)
+    return mod.menus_page()
+
+@app.route('/acp/menus/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/menus/add', methods=['GET', 'POST'])
 @lang_redirect
 def acp_menus_add(lang=config.default_language):
     mod = Acp(lang)
-    return mod.menus_add()
+    if request.method == 'GET':
+        return mod.menus_add_page()
+    else:
+        mod.addMenuItem(request.form)
+        return redirect(url_for('acp_menus'))
 
-@app.route('/acp/menus/add', methods=['POST'])
-def acp_menus_add_post():
-    mod = Acp()
-    success, message = mod.addMenuItem(request.form)
-    if success: return 'DONE!'
-    else: return message
+@app.route('/acp/menus/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/menus/edit', methods=['GET', 'POST'])
+@lang_redirect
+def acp_menus_edit(lang=config.default_language):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.menus_edit_page(request.args['id'])
+    else:
+        mod.editMenuItem(request.form)
+        return redirect(url_for('acp_menus'))
 
 
 
@@ -162,11 +177,15 @@ def acp_menus_add_post():
 #
 @app.errorhandler(400)
 def page_not_found(error):
-    return render_template('errors/bad_request.html'), 400
+    return render_template('errors/400.html'), 400
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('errors/not_found.html'), 404
+    return render_template('errors/404.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(error):
+    return render_template('errors/500.html', error=error), 500
 
 if __name__ == "__main__":
     app.run(**config.app_config)

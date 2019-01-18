@@ -1,5 +1,21 @@
 <nav>
     <ul>
-        <li>{{ menu }}</li>
+        {% for menu_item in menus['acp_main'] %}
+        <li>
+            <a href="{{ menu_item['link'] }}">{{ menu_item['name'] }}</a>
+            {% if 'submenu' in menu_item %}
+            <ul>
+                {% for menu_item in menu_item['submenu'] recursive %}
+                <li>
+                    <a href="{{ menu_item['link'] }}">{{ menu_item['name'] }}</a>
+                    {% if 'submenu' in menu_item %}
+                    <ul>{{ loop(menu_item['submenu']) }}</ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
     </ul>
 </nav>

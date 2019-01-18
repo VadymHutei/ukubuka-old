@@ -1,15 +1,19 @@
 {% extends "acp/layout/base.html" %}
 
 {% block title -%}
-    {{ site_name }} ACP Додати пункт меню
+    {{ site_name }} ACP Редагування пункту меню
 {%- endblock title %}
 
 {% block content -%}
 
 <form action="/acp/menus/add" method="post" accept-charset="utf-8">
     <label>
+        ID
+        <input type="text" name="id" value="{{ item['id'] }}" disabled>
+    </label>
+    <label>
         Якому меню належить пункт. Виберіть із списку або створіть новий
-        <input type="text" name="menu" list="menus_list" placeholder="меню" autocomplete="off" required>
+        <input type="text" name="menu" value="{{ item['menu'] }}" list="menus_list" placeholder="меню" autocomplete="off" required>
         <datalist id="menus_list">
             {% for menu in menus %}
             <option value="{{ menu }}">{{ menu }}</option>
@@ -23,7 +27,9 @@
             {% for menu in menus %}
             <optgroup label="{{ menu }}">
                 {% for menu_item in menus[menu] recursive %}
-                <option label="{{ menu_item['name'] }}" value="{{ menu_item['id'] }}"></option>
+                {% if menu_item['id'] != item['id'] %}
+                <option label="{{ menu_item['name'] }}" value="{{ menu_item['id'] }}" {% if menu_item['id'] == item['parent'] %} selected{% endif %}></option>
+                {% endif %}
                 {{ loop(menu_item['submenu']) }}
                 {% endfor %}
             </optgroup>
@@ -32,19 +38,19 @@
     </label>
     <label>
         Назва українською
-        <input type="text" name="name_ukr" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
+        <input type="text" name="name_ukr" value="{{ item['name']['ukr'] }}" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
     </label>
     <label>
         Назва англійською
-        <input type="text" name="name_eng" placeholder="англійською" maxlength="64" autocomplete="off" required>
+        <input type="text" name="name_eng" value="{{ item['name']['eng'] }}" placeholder="англійською" maxlength="64" autocomplete="off" required>
     </label>
     <label>
         Посилання. Можна лишити пустим
-        <input type="text" name="link" placeholder="посилання" maxlength="128" autocomplete="off">
+        <input type="text" name="link" value="{{ item['link'] }}" placeholder="посилання" maxlength="128" autocomplete="off">
     </label>
     <label>
         Показувати
-        <input type="checkbox" name="is_active" checked>
+        <input type="checkbox" name="is_active" {% if item['is_active'] == 'Y' %} checked{% endif %}>
     </label>
     <input type="submit">
 </form>

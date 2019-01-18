@@ -1,0 +1,43 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    {{ site_name }} ACP Меню
+{%- endblock title %}
+
+{% block content -%}
+
+{% for menu_name in menus %}
+
+<table>
+    <caption>{{ menu_name }}</caption>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Назва</th>
+            <th>Посилання</th>
+            <th>Батьківський пункт</th>
+            <th>Активний</th>
+            <th>Дія</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for menu_item in menus[menu_name] recursive %}
+        <tr>
+            <th>{{ menu_item['id'] }}</th>
+            <th>{{ menu_item['name'] }}</th>
+            <th>{{ menu_item['link'] }}</th>
+            <th>{{ menu_item['parent'] }}</th>
+            <th><input type="checkbox" disabled{% if menu_item['is_active'] == 'Y' %} checked{% endif %}></th>
+            <th>
+                <a href="/acp/menus/edit?id={{ menu_item['id'] }}">редагувати</a>
+                <a href="/acp/menus/delete?id={{ menu_item['id'] }}">видалити</a>
+            </th>
+        </tr>
+        {{ loop(menu_item['submenu']) }}
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endfor %}
+
+{%- endblock content %}

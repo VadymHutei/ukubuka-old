@@ -6,7 +6,7 @@
 </head>
 <body>
     <header>
-        {% include "acp/layout/menu.html" without context %}
+        {% include "acp/layout/menu.html" with context %}
     </header>
     {% block content %}{% endblock content %}
     <footer></footer>
