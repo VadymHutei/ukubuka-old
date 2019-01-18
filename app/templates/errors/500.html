@@ -1,0 +1,10 @@
+{% extends "errors/layout.html" %}
+
+{% block title -%}
+    500 Internal Server Error
+{%- endblock title %}
+
+{% block content -%}
+    500 Internal Server Error<br>
+    {{ error }}
+{%- endblock content %}
