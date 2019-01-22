@@ -1,0 +1,6 @@
+// Базовые значение для header, footer и body
+$z_index_base: 0;
+$z_index_body: $z_index_base;
+$z_index_main: $z_index_body + 100;
+$z_index_footer: $z_index_main + 100;
+$z_index_header: $z_index_footer + 100;
