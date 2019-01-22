@@ -79,7 +79,7 @@ def getMenuItem(item_id):
             result['name'][row['language']] = row['name']
     return result
 
-def addMenuItem(**data):
+def addMenuItem(data):
     columns = ['menu', 'is_active']
     values = [data['menu'], data['is_active']]
     placeholders = ['%s', '%s']
@@ -117,47 +117,65 @@ def addMenuItem(**data):
     cursor.executemany(query, values)
     connection.commit()
     connection.close()
-    return True
 
-def editMenuItem(**data):
-    return False
-    # columns = ['menu', 'is_active']
-    # values = [data['menu'], data['is_active']]
-    # placeholders = ['%s', '%s']
-    # if 'parent' in data:
-    #     columns.append('parent')
-    #     values.append(data['parent'])
-    #     placeholders.append('%s')
-    # if 'link' in data:
-    #     columns.append('link')
-    #     values.append(data['link'])
-    #     placeholders.append('%s')
-    # db = DB()
-    # table = db.table('menus')
-    # query = """
-    #     UPDATE TABLE `{table}`
-    #     SET 
-    #     WHERE `id` = {item_id}
-    #     INSERT INTO `{table}` ({columns})
-    #     VALUES ({placeholders})
-    # """.format(
-    #     table=table,
-    #     columns=', '.join(map(lambda x: '`' + x + '`', columns)),
-    #     placeholders=', '.join(placeholders)
-    # )
-    # connection = db.getConnection()
-    # cursor = connection.cursor()
-    # cursor.execute(query, values)
-    # table = db.table('menus_text')
-    # columns = ['item_id', 'language', 'name']
-    # values = [
-    #     [cursor.lastrowid, 'ukr', data['name_ukr']],
-    #     [cursor.lastrowid, 'eng', data['name_eng']]
-    # ]
-    # query = """
-    #     INSERT INTO `{table}` (`item_id`, `language`, `name`)
-    #     VALUES (%s, %s, %s)
-    # """.format(table=table)
-    # cursor.executemany(query, values)
-    # connection.commit()
-    # connection.close()
+def editMenuItem(data):
+    values = [
+        data['menu'],
+        data['is_active']
+    ]
+    columns = []
+    if 'parent' in data:
+        values.append(data['parent'])
+        columns.append('parent')
+    if 'link' in data:
+        values.append(data['link'])
+        columns.append('link')
+    columns = ',' + ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
+    values.append(data['id'])
+    db = DB()
+    table = db.table('menus')
+    query = """
+        UPDATE `{table}`
+        SET
+            `menu` = %s,
+            `is_active` = %s
+            {additional_columns}
+        WHERE `id` = %s
+    """.format(
+        table=table,
+        additional_columns=columns
+    )
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, values)
+    table = db.table('menus_text')
+    columns = ['item_id', 'language', 'name']
+    values = [
+        [data['name_ukr'], data['id'], 'ukr'],
+        [data['name_eng'], data['id'], 'eng']
+    ]
+    query = """
+        UPDATE `{table}`
+        SET `name` = %s
+        WHERE `item_id` = %s
+        AND `language` = %s
+    """.format(
+        table=table,
+        additional_columns=columns
+    )
+    cursor.executemany(query, values)
+    connection.commit()
+    connection.close()
+
+def deleteMenuItem(item_id):
+    db = DB()
+    table = db.table('menus')
+    query = """
+        DELETE FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=table)
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [item_id])
+    connection.commit()
+    connection.close()

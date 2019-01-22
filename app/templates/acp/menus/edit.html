@@ -6,10 +6,10 @@
 
 {% block content -%}
 
-<form action="/acp/menus/add" method="post" accept-charset="utf-8">
+<form action="/acp/menus/edit" method="post" accept-charset="utf-8">
     <label>
         ID
-        <input type="text" name="id" value="{{ item['id'] }}" disabled>
+        <input type="text" name="id" value="{{ item['id'] }}" readonly>
     </label>
     <label>
         Якому меню належить пункт. Виберіть із списку або створіть новий
@@ -46,7 +46,7 @@
     </label>
     <label>
         Посилання. Можна лишити пустим
-        <input type="text" name="link" value="{{ item['link'] }}" placeholder="посилання" maxlength="128" autocomplete="off">
+        <input type="text" name="link" value="{% if item['link'] %}{{ item['link'] }}{% endif %}" placeholder="посилання" maxlength="128" autocomplete="off">
     </label>
     <label>
         Показувати

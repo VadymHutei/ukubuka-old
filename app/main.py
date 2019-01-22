@@ -89,10 +89,11 @@ def test():
 #     ########  ##     ##  ######  ##     ## ########   #######  ##     ## ##     ## ########
 
 @app.route('/acp', methods=['GET'])
-def acp():
-    lang = 'ukr'
+@app.route('/<lang>/acp', methods=['GET'])
+@lang_redirect
+def acp_dashboard(lang=config.default_language):
     mod = Acp(lang)
-    return mod.dashboard()
+    return mod.dashboard_page()
 
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##
@@ -156,6 +157,14 @@ def acp_menus_edit(lang=config.default_language):
     else:
         mod.editMenuItem(request.form)
         return redirect(url_for('acp_menus'))
+
+@app.route('/acp/menus/delete', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/menus/edit', methods=['GET', 'POST'])
+@lang_redirect
+def acp_menus_delete(lang=config.default_language):
+    mod = Acp(lang)
+    mod.deleteMenuItem(request.args['id'])
+    return redirect(url_for('acp_menus'))
 
 
 
