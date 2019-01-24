@@ -1,0 +1,28 @@
+@mixin backgroundImg($url, $color: $color_white) {
+    background: {
+        color: $color;
+        image: url($url);
+        size: cover;
+        repeat: no-repeat;
+    }
+}
+
+@mixin button($text_color, $bg_color) {
+    padding: 0 1em;
+    height: 2em;
+    font-size: 1em;
+    background-color: $bg_color;
+    border: none;
+    color: $text_color;
+    cursor: pointer;
+}
+
+@mixin field($border_color) {
+    padding: 0 0.5em;
+    height: 2em;
+    font-size: 1em;
+    background-color: $color_white;
+    border: 1px solid $border_color;
+    color: $color_black;
+    box-sizing: border-box;
+}

@@ -1,0 +1,30 @@
+.main_menu {
+    .menu_l1 {
+        display: flex;
+        flex-flow: row nowrap;
+        .item_l1_wrap {
+            .item_l1 {
+                padding: 1em;
+                &:hover {
+                    background-color: $color_gray_6;
+                }
+                .item_l1_title {
+                    text-transform: uppercase;
+                    color: $color_white;
+                }
+            }
+            .item_l1_link {
+                text-decoration: none;
+            }
+            .menu_l2 {
+                display: none;
+                .item_l2_wrap {
+                    .item_l1 {
+                        .item_l2_title {}
+                    }
+                    .item_l2_link {}
+                }
+            }
+        }
+    }
+}

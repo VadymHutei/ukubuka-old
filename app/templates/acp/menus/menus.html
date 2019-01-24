@@ -6,8 +6,8 @@
 
 {% block content -%}
 
+<a href="/acp/menus/add">Додати</a>
 {% for menu_name in menus %}
-
 <table>
     <caption>{{ menu_name }}</caption>
     <thead>
@@ -37,7 +37,6 @@
         {% endfor %}
     </tbody>
 </table>
-
 {% endfor %}
 
 {%- endblock content %}

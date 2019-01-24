@@ -156,7 +156,7 @@ def acp_menus_edit(lang=config.default_language):
         return mod.menus_edit_page(request.args['id'])
     else:
         mod.editMenuItem(request.form)
-        return redirect(url_for('acp_menus'))
+        return redirect(url_for('acp_menus'), 303)
 
 @app.route('/acp/menus/delete', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/menus/edit', methods=['GET', 'POST'])

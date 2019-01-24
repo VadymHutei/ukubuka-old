@@ -3,12 +3,14 @@
 <head>
     <meta charset="utf-8">
     <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/acp/css/main.css">
 </head>
 <body>
-    <header>
+    <header class="header">
         {% include "acp/layout/menu.html" with context %}
     </header>
-    {% block content %}{% endblock content %}
-    <footer></footer>
+    <main>
+        {% block content %}{% endblock content %}
+    </main>
 </body>
 </html>

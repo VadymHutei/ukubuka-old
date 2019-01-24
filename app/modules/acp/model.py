@@ -131,7 +131,7 @@ def editMenuItem(data):
         values.append(data['link'])
         columns.append('link')
     columns = ',' + ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
-    values.append(data['id'])
+    values.append(data['item_id'])
     db = DB()
     table = db.table('menus')
     query = """
@@ -151,8 +151,8 @@ def editMenuItem(data):
     table = db.table('menus_text')
     columns = ['item_id', 'language', 'name']
     values = [
-        [data['name_ukr'], data['id'], 'ukr'],
-        [data['name_eng'], data['id'], 'eng']
+        [data['name_ukr'], data['item_id'], 'ukr'],
+        [data['name_eng'], data['item_id'], 'eng']
     ]
     query = """
         UPDATE `{table}`
