@@ -1,0 +1,30 @@
+.menus {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 1em;
+    .title {
+        text-align: center;
+    }
+    .control_panel {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-end;
+        .add {
+            background-color: $color_controll_panel_add;
+            &:hover {
+                background-color: $color_controll_panel_add-hover;
+            }
+            .title {
+                font-size: 1em;
+                color: $color_black;
+            }
+        }
+        .button {
+            padding: 0.5em;
+            border-radius: 0.5em;
+        }
+        .button_link {
+            text-decoration: none;
+        }
+    }
+}

@@ -6,37 +6,46 @@
 
 {% block content -%}
 
-<a href="/acp/menus/add">Додати</a>
-{% for menu_name in menus %}
-<table>
-    <caption>{{ menu_name }}</caption>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Назва</th>
-            <th>Посилання</th>
-            <th>Батьківський пункт</th>
-            <th>Активний</th>
-            <th>Дія</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for menu_item in menus[menu_name] recursive %}
-        <tr>
-            <th>{{ menu_item['id'] }}</th>
-            <th>{{ menu_item['name'] }}</th>
-            <th>{{ menu_item['link'] }}</th>
-            <th>{{ menu_item['parent'] }}</th>
-            <th><input type="checkbox" disabled{% if menu_item['is_active'] == 'Y' %} checked{% endif %}></th>
-            <th>
-                <a href="/acp/menus/edit?id={{ menu_item['id'] }}">редагувати</a>
-                <a href="/acp/menus/delete?id={{ menu_item['id'] }}">видалити</a>
-            </th>
-        </tr>
-        {{ loop(menu_item['submenu']) }}
-        {% endfor %}
-    </tbody>
-</table>
-{% endfor %}
+<div class="menus">
+    <h1 class="title">Меню</h1>
+    <div class="control_panel">
+        <a href="/acp/menus/add" class="button_link">
+            <div class="button add">
+                <span class="title">додати</span>
+            </div>
+        </a>
+    </div>
+    {% for menu_name in menus %}
+    <table>
+        <caption>{{ menu_name }}</caption>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Посилання</th>
+                <th>Батьківський пункт</th>
+                <th>Активний</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for menu_item in menus[menu_name] recursive %}
+            <tr>
+                <th>{{ menu_item['id'] }}</th>
+                <th>{{ menu_item['name'] }}</th>
+                <th>{% if menu_item['link'] %}{{ menu_item['link'] }}{% else %}-{% endif %}</th>
+                <th>{{ menu_item['parent'] }}</th>
+                <th><input type="checkbox" disabled{% if menu_item['is_active'] == 'Y' %} checked{% endif %}></th>
+                <th>
+                    <a href="/acp/menus/edit?id={{ menu_item['id'] }}">редагувати</a>
+                    <a href="/acp/menus/delete?id={{ menu_item['id'] }}">видалити</a>
+                </th>
+            </tr>
+            {{ loop(menu_item['submenu']) }}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+</div>
 
 {%- endblock content %}

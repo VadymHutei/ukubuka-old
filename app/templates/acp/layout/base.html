@@ -7,6 +7,11 @@
 </head>
 <body>
     <header class="header">
+        <div class="title_block" title="{{ site_name }} Admin Control Panel">
+            <a href="/acp/dashboard" class="title_link">
+                <span class="title">{{ site_name }} ACP<span>
+            </a>
+        </div>
         {% include "acp/layout/menu.html" with context %}
     </header>
     <main>

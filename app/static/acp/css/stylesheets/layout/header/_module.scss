@@ -1,5 +1,20 @@
 header {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 0 1em;
     background-color: $color_black;
     color: $color_white;
+
+    .title_block {
+        padding: 0.5em;
+        .title {
+            font-size: 1.5em;
+            color: $color_white;
+        }
+        .title_link {
+            text-decoration: none;
+        }
+    }
+
     @import 'menu';
 }

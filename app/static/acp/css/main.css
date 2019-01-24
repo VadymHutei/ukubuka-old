@@ -1,12 +1,30 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto");
 html, body, header, main, footer, nav, section, aside, div, ul, ol, li, form, fieldset, figure, table, p, h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }
 
-html body { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-flow: column nowrap; flex-flow: column nowrap; }
+html body { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-flow: column nowrap; flex-flow: column nowrap; font-family: Roboto, sans-serif; }
 
-header { background-color: #111111; color: #ffffff; }
+header { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: horizontal; -webkit-box-direction: normal; -ms-flex-flow: row nowrap; flex-flow: row nowrap; padding: 0 1em; background-color: #111111; color: #ffffff; }
+header .title_block { padding: 0.5em; }
+header .title_block .title { font-size: 1.5em; color: #ffffff; }
+header .title_block .title_link { text-decoration: none; }
 header .main_menu .menu_l1 { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: horizontal; -webkit-box-direction: normal; -ms-flex-flow: row nowrap; flex-flow: row nowrap; }
+header .main_menu .menu_l1 .item_l1_wrap { position: relative; }
 header .main_menu .menu_l1 .item_l1_wrap .item_l1 { padding: 1em; }
 header .main_menu .menu_l1 .item_l1_wrap .item_l1:hover { background-color: #666666; }
 header .main_menu .menu_l1 .item_l1_wrap .item_l1 .item_l1_title { text-transform: uppercase; color: #ffffff; }
 header .main_menu .menu_l1 .item_l1_wrap .item_l1_link { text-decoration: none; }
-header .main_menu .menu_l1 .item_l1_wrap .menu_l2 { display: none; }
+header .main_menu .menu_l1 .item_l1_wrap:hover .menu_l2 { display: block; }
+header .main_menu .menu_l1 .item_l1_wrap .menu_l2 { display: none; position: absolute; top: 3em; left: 0; background-color: #eeeeee; -webkit-box-shadow: 0px 0px 8px 0px #000; box-shadow: 0px 0px 8px 0px #000; }
+header .main_menu .menu_l1 .item_l1_wrap .menu_l2 .item_l2_wrap .item_l2 { padding: 0.5em 1.5em; }
+header .main_menu .menu_l1 .item_l1_wrap .menu_l2 .item_l2_wrap .item_l2:hover { background-color: #ffffff; }
+header .main_menu .menu_l1 .item_l1_wrap .menu_l2 .item_l2_wrap .item_l2 .item_l2_title { text-transform: capitalize; color: #111111; }
+header .main_menu .menu_l1 .item_l1_wrap .menu_l2 .item_l2_wrap .item_l2_link { text-decoration: none; }
+
+.menus { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-flow: column nowrap; flex-flow: column nowrap; padding: 1em; }
+.menus .title { text-align: center; }
+.menus .control_panel { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: horizontal; -webkit-box-direction: normal; -ms-flex-flow: row wrap; flex-flow: row wrap; -webkit-box-pack: end; -ms-flex-pack: end; justify-content: flex-end; }
+.menus .control_panel .add { background-color: #aaffaa; }
+.menus .control_panel .add:hover { background-color: #20cd26; }
+.menus .control_panel .add .title { font-size: 1em; color: #111111; }
+.menus .control_panel .button { padding: 0.5em; border-radius: 0.5em; }
+.menus .control_panel .button_link { text-decoration: none; }
