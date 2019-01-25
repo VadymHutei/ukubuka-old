@@ -1,52 +1,90 @@
 {% extends "acp/layout/base.html" %}
 
 {% block title -%}
-    {{ site_name }} ACP Додати пункт меню
+    Додати пункт меню - {{ site_name }} ACP
 {%- endblock title %}
 
 {% block content -%}
 
-<form action="/acp/menus/add" method="post" accept-charset="utf-8">
-    <label>
-        Якому меню належить пункт. Виберіть із списку або створіть новий
-        <input type="text" name="menu" list="menus_list" placeholder="меню" autocomplete="off" required>
-        <datalist id="menus_list">
-            {% for menu in menus %}
-            <option value="{{ menu }}">{{ menu }}</option>
-            {% endfor %}
-        </datalist>
-    </label>
-    <label>
-        Якщо додаєте підпункт, оберіть батьківський пункт меню
-        <select name="parent">
-            <option label="не є підпунктом" value="" selected></option>
-            {% for menu in menus %}
-            <optgroup label="{{ menu }}">
-                {% for menu_item in menus[menu] recursive %}
-                <option label="{{ menu_item['name'] }}" value="{{ menu_item['id'] }}"></option>
-                {{ loop(menu_item['submenu']) }}
-                {% endfor %}
-            </optgroup>
-            {% endfor %}
-        </select>
-    </label>
-    <label>
-        Назва українською
-        <input type="text" name="name_ukr" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
-    </label>
-    <label>
-        Назва англійською
-        <input type="text" name="name_eng" placeholder="англійською" maxlength="64" autocomplete="off" required>
-    </label>
-    <label>
-        Посилання. Можна лишити пустим
-        <input type="text" name="link" placeholder="посилання" maxlength="128" autocomplete="off">
-    </label>
-    <label>
-        Показувати
-        <input type="checkbox" name="is_active" checked>
-    </label>
-    <input type="submit">
-</form>
+<section class="acp_section add_menu_item">
+    <h1 class="section_title">Додати пункт меню</h1>
+    <div class="control_panel">
+        <a href="/acp/menus/" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        <input type="submit" form="add_menu_item_form" value="додати" class="button add">
+    </div>
+    <form id="add_menu_item_form" class="acp_form" action="/acp/menus/add" method="post" accept-charset="utf-8">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">
+                        <label for="menu_field">Меню, якому меню належить пункт. Виберіть із списку або створіть нове, вказавши назву</label>
+                    </td>
+                    <td>
+                        <input id="menu_field" type="text" name="menu" list="menus_list" placeholder="меню" autocomplete="off" required>
+                        <datalist id="menus_list">
+                            {% for menu in menus %}
+                            <option value="{{ menu }}">{{ menu }}</option>
+                            {% endfor %}
+                        </datalist>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="parent_field">Якщо додаєте підпункт, оберіть батьківський пункт меню</label>
+                    </td>
+                    <td>
+                        <select id="parent_field" name="parent">
+                            <option label="не є підпунктом" value="" selected></option>
+                            {% for menu in menus %}
+                            <optgroup label="{{ menu }}">
+                                {% for menu_item in menus[menu] recursive %}
+                                <option label="{{ menu_item['name'] }}" value="{{ menu_item['id'] }}"></option>
+                                {{ loop(menu_item['submenu']) }}
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="name_ukr_field">Назва українською</label>
+                    </td>
+                    <td>
+                        <input id="name_ukr_field" type="text" name="name_ukr" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="name_eng_field">Назва англійською</label>
+                    </td>
+                    <td>
+                        <input id="name_eng_field" type="text" name="name_eng" placeholder="англійською" maxlength="64" autocomplete="off" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="link_field">Можна лишити пустим</label>
+                    </td>
+                    <td>
+                        <input id="link_field" type="text" name="link" placeholder="посилання" maxlength="128" autocomplete="off"">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="is_active_field">Показувати</label>
+                    </td>
+                    <td>
+                        <input id="is_active_field" type="checkbox" name="is_active" checked>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
 
 {%- endblock content %}
