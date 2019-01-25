@@ -4,11 +4,13 @@
     padding: 1em;
     .title {
         text-align: center;
+        margin: 0 0 1em;
     }
     .control_panel {
         display: flex;
         flex-flow: row wrap;
         justify-content: flex-end;
+        margin: 0 0 1em;
         .add {
             background-color: $color_controll_panel_add;
             &:hover {
@@ -26,5 +28,9 @@
         .button_link {
             text-decoration: none;
         }
+    }
+    .actions {
+        display: flex;
+        flex-flow: row wrap;
     }
 }

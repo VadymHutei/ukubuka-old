@@ -16,7 +16,7 @@
         </a>
     </div>
     {% for menu_name in menus %}
-    <table>
+    <table class="acp_table">
         <caption>{{ menu_name }}</caption>
         <thead>
             <tr>
@@ -31,15 +31,17 @@
         <tbody>
             {% for menu_item in menus[menu_name] recursive %}
             <tr>
-                <th>{{ menu_item['id'] }}</th>
-                <th>{{ menu_item['name'] }}</th>
-                <th>{% if menu_item['link'] %}{{ menu_item['link'] }}{% else %}-{% endif %}</th>
-                <th>{{ menu_item['parent'] }}</th>
-                <th><input type="checkbox" disabled{% if menu_item['is_active'] == 'Y' %} checked{% endif %}></th>
-                <th>
-                    <a href="/acp/menus/edit?id={{ menu_item['id'] }}">редагувати</a>
-                    <a href="/acp/menus/delete?id={{ menu_item['id'] }}">видалити</a>
-                </th>
+                <td class="center">{{ menu_item['id'] }}</td>
+                <td>{{ menu_item['name'] }}</td>
+                <td>{% if menu_item['link'] %}{{ menu_item['link'] }}{% else %}-{% endif %}</td>
+                <td class="center">{{ menu_item['parent'] }}</td>
+                <td class="center"><input type="checkbox" disabled{% if menu_item['is_active'] == 'Y' %} checked{% endif %}></td>
+                <td>
+                    <div class="actions">
+                        <a href="/acp/menus/edit?id={{ menu_item['id'] }}">редагувати</a>
+                        <a href="/acp/menus/delete?id={{ menu_item['id'] }}">видалити</a>
+                    </div>
+                </td>
             </tr>
             {{ loop(menu_item['submenu']) }}
             {% endfor %}
