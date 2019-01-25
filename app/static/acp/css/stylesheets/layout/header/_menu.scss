@@ -6,6 +6,7 @@
             position: relative;
             .item_l1 {
                 padding: 1em;
+                cursor: default;
                 &:hover {
                     background-color: $color_gray_6;
                 }

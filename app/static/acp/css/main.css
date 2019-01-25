@@ -43,7 +43,7 @@ header .title_block .title { font-size: 1.5em; color: #ffffff; }
 header .title_block .title_link { text-decoration: none; }
 header .main_menu .menu_l1 { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: horizontal; -webkit-box-direction: normal; -ms-flex-flow: row nowrap; flex-flow: row nowrap; }
 header .main_menu .menu_l1 .item_l1_wrap { position: relative; }
-header .main_menu .menu_l1 .item_l1_wrap .item_l1 { padding: 1em; }
+header .main_menu .menu_l1 .item_l1_wrap .item_l1 { padding: 1em; cursor: default; }
 header .main_menu .menu_l1 .item_l1_wrap .item_l1:hover { background-color: #666666; }
 header .main_menu .menu_l1 .item_l1_wrap .item_l1 .item_l1_title { text-transform: uppercase; color: #ffffff; }
 header .main_menu .menu_l1 .item_l1_wrap .item_l1_link { text-decoration: none; }
