@@ -5,12 +5,22 @@ def validMenuItemID(item_id):
         return bool(re.fullmatch(r'\d{1,4}', item_id))
     return False
 
+def validUsersGroupID(item_id):
+    if isinstance(item_id, str):
+        return bool(re.fullmatch(r'\d{1}', item_id))
+    return False
+
 def validMenuName(name):
     if isinstance(name, str):
         return name == '' or re.fullmatch(r'\w{1,32}', name)
     return False
 
 def validMenuItemName(name):
+    if isinstance(name, str):
+        return name == '' or re.fullmatch(r'\w{1,64}', name)
+    return False
+
+def validUsersGroupName(name):
     if isinstance(name, str):
         return name == '' or re.fullmatch(r'\w{1,64}', name)
     return False
@@ -76,4 +86,32 @@ def prepareEditMenuItemData(data):
     if 'link' in data: result['link'] = data['link']
     if 'parent' in data: result['parent'] = data['parent']
     if 'is_active' in data: result['is_active'] = data['is_active']
+    return result
+
+def prepareUsersGroupFormData(form):
+    group_id = form.get('id')
+    name = form.get('name')
+    result = {}
+    if group_id: result['group_id'] = group_id
+    if name: result['name'] = name
+    return result
+
+def validAddUsersGroupData(data):
+    if 'name' not in data or not validUsersGroupName(data['name']): return False
+    return True
+
+def prepareAddUsersGroupData(data):
+    result = {'name': data['name']}
+    return result
+
+def validEditUsersGroupData(data):
+    if 'group_id' not in data or not validUsersGroupID(data['group_id']): return False
+    if 'name' not in data or not validUsersGroupName(data['name']): return False
+    return True
+
+def prepareEditUsersGroupData(data):
+    result = {
+        'group_id': data['group_id'],
+        'name': data['name']
+    }
     return result

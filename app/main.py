@@ -121,6 +121,43 @@ def acp_users_add_post():
     mod = Acp(lang)
     return 'DONE!'
 
+@app.route('/acp/users/groups/', methods=['GET'])
+@app.route('/<lang>/acp/users/groups/', methods=['GET'])
+@lang_redirect
+def acp_users_groups(lang=config.default_language):
+    mod = Acp(lang)
+    return mod.users_groups_page()
+
+@app.route('/acp/users/groups/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/users/groups/add', methods=['GET', 'POST'])
+@lang_redirect
+def acp_users_groups_add(lang=config.default_language):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.users_groups_add_page()
+    else:
+        mod.addUsersGroup(request.form)
+        return redirect(url_for('acp_users_groups'))
+
+@app.route('/acp/users/groups/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/users/groups/edit', methods=['GET', 'POST'])
+@lang_redirect
+def acp_users_groups_edit(lang=config.default_language):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.users_groups_edit_page(request.args['id'])
+    else:
+        mod.editUsersGroup(request.form)
+        return redirect(url_for('acp_users_groups'), 303)
+
+@app.route('/acp/users/groups/delete', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/users/groups/delete', methods=['GET', 'POST'])
+@lang_redirect
+def acp_users_groups_delete(lang=config.default_language):
+    mod = Acp(lang)
+    mod.deleteMenuItem(request.args['id'])
+    return redirect(url_for('acp_users_groups'))
+
 #     ##     ## ######## ##    ## ##     ##  ######
 #     ###   ### ##       ###   ## ##     ## ##    ##
 #     #### #### ##       ####  ## ##     ## ##
@@ -159,7 +196,7 @@ def acp_menus_edit(lang=config.default_language):
         return redirect(url_for('acp_menus'), 303)
 
 @app.route('/acp/menus/delete', methods=['GET', 'POST'])
-@app.route('/<lang>/acp/menus/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/menus/delete', methods=['GET', 'POST'])
 @lang_redirect
 def acp_menus_delete(lang=config.default_language):
     mod = Acp(lang)

@@ -41,6 +41,33 @@ class Acp():
     def users_add(self):
         return render_template('acp/users/add.html', **self.data)
 
+    def users_groups_page(self):
+        groups = model.getUsersGroups()
+        # self.data['groups'] = groups
+        print(groups)
+        return render_template('acp/users/groups/groups.html', **self.data)
+
+    def users_groups_add_page(self):
+        return render_template('acp/users/groups/add.html', **self.data)
+
+    def users_groups_edit_page(self, group_id):
+        if not helper.validUsersGroupID(group_id): return 'invalid ID'
+        group = model.getUsersGroup(group_id)
+        self.data['group'] = group
+        return render_template('acp/users/groups/edit.html', **self.data)
+
+    def addUsersGroup(self, form):
+        data = helper.prepareUsersGroupFormData(form)
+        if helper.validAddUsersGroupData(data):
+            data = helper.prepareAddUsersGroupData(data)
+            model.addUsersGroup(data)
+
+    def editUsersGroup(self, form):
+        data = helper.prepareUsersGroupFormData(form)
+        if helper.validEditUsersGroupData(data):
+            data = helper.prepareEditUsersGroupData(data)
+            model.editUsersGroup(data)
+
 
 
 #     ##     ## ######## ##    ## ##     ##  ######

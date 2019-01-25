@@ -1,8 +1,15 @@
 from db import DB
 
+#     ##     ## ######## ##    ## ##     ##  ######
+#     ###   ### ##       ###   ## ##     ## ##    ##
+#     #### #### ##       ####  ## ##     ## ##
+#     ## ### ## ######   ## ## ## ##     ##  ######
+#     ##     ## ##       ##  #### ##     ##       ##
+#     ##     ## ##       ##   ### ##     ## ##    ##
+#     ##     ## ######## ##    ##  #######   ######
+
 def getMenus(lang):
     db = DB()
-    table = db.table('menus')
     query = """
         SELECT
             m.`id`,
@@ -92,19 +99,17 @@ def addMenuItem(data):
         values.append(data['link'])
         placeholders.append('%s')
     db = DB()
-    table = db.table('menus')
     query = """
         INSERT INTO `{table}` ({columns})
         VALUES ({placeholders})
     """.format(
-        table=table,
+        table=db.table('menus'),
         columns=', '.join(map(lambda x: '`' + x + '`', columns)),
         placeholders=', '.join(placeholders)
     )
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query, values)
-    table = db.table('menus_text')
     columns = ['item_id', 'language', 'name']
     values = [
         [cursor.lastrowid, 'ukr', data['name_ukr']],
@@ -113,7 +118,7 @@ def addMenuItem(data):
     query = """
         INSERT INTO `{table}` (`item_id`, `language`, `name`)
         VALUES (%s, %s, %s)
-    """.format(table=table)
+    """.format(table=db.table('menus_text'))
     cursor.executemany(query, values)
     connection.commit()
     connection.close()
@@ -134,21 +139,17 @@ def editMenuItem(data):
     columns = ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
     values.append(data['item_id'])
     db = DB()
-    table = db.table('menus')
     query = """
         UPDATE `{table}`
         SET {additional_columns}
         WHERE `id` = %s
     """.format(
-        table=table,
+        table=db.table('menus'),
         additional_columns=columns
     )
-    print(query)
-    print(values)
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query, values)
-    table = db.table('menus_text')
     columns = ['item_id', 'language', 'name']
     values = [
         [data['name_ukr'], data['item_id'], 'ukr'],
@@ -160,7 +161,7 @@ def editMenuItem(data):
         WHERE `item_id` = %s
         AND `language` = %s
     """.format(
-        table=table,
+        table=db.table('menus_text'),
         additional_columns=columns
     )
     cursor.executemany(query, values)
@@ -169,13 +170,74 @@ def editMenuItem(data):
 
 def deleteMenuItem(item_id):
     db = DB()
-    table = db.table('menus')
     query = """
         DELETE FROM `{table}`
         WHERE `id` = %s
-    """.format(table=table)
+    """.format(table=db.table('menus'))
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query, [item_id])
+    connection.commit()
+    connection.close()
+
+
+
+#      ######   ########   #######  ##     ## ########   ######
+#     ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
+#     ##        ##     ## ##     ## ##     ## ##     ## ##
+#     ##   #### ########  ##     ## ##     ## ########   ######
+#     ##    ##  ##   ##   ##     ## ##     ## ##              ##
+#     ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
+#      ######   ##     ##  #######   #######  ##         ######
+
+def getUsersGroups():
+    db = DB()
+    query = 'SELECT * FROM `{table}`'.format(table=db.table('users_groups'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query)
+    connection.close()
+    users_groups = cursor.fetchall()
+    return users_groups
+
+def getUsersGroup(group_id):
+    db = DB()
+    query = """
+        SELECT `id`, `name`
+        FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('users_groups'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [group_id])
+    connection.close()
+    group_data = cursor.fetchone()
+    print(group_data)
+    return group_data
+
+def addUsersGroup(data):
+    values = [data['name']]
+    db = DB()
+    query = """
+        INSERT INTO `{table}` (`name`)
+        VALUES (%s)
+    """.format(table=db.table('users_groups'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, values)
+    connection.commit()
+    connection.close()
+
+def editUsersGroup(data):
+    values = [data['name'], data['group_id']]
+    db = DB()
+    query = """
+        UPDATE `{table}`
+        SET `name` = %s
+        WHERE `id` = %s
+    """.format(table=db.table('users_groups'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, values)
     connection.commit()
     connection.close()
