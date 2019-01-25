@@ -119,32 +119,32 @@ def addMenuItem(data):
     connection.close()
 
 def editMenuItem(data):
+    columns = [
+        'menu',
+        'is_active',
+        'parent',
+        'link'
+    ]
     values = [
         data['menu'],
         data['is_active']
     ]
-    columns = []
-    if 'parent' in data:
-        values.append(data['parent'])
-        columns.append('parent')
-    if 'link' in data:
-        values.append(data['link'])
-        columns.append('link')
-    columns = ',' + ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
+    values.append(data['parent'] if 'parent' in data else None)
+    values.append(data['link'] if 'link' in data else None)
+    columns = ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
     values.append(data['item_id'])
     db = DB()
     table = db.table('menus')
     query = """
         UPDATE `{table}`
-        SET
-            `menu` = %s,
-            `is_active` = %s
-            {additional_columns}
+        SET {additional_columns}
         WHERE `id` = %s
     """.format(
         table=table,
         additional_columns=columns
     )
+    print(query)
+    print(values)
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query, values)
