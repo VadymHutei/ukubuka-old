@@ -11,6 +11,9 @@ html body { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-b
 .control_panel .add { background-color: #aaffaa; }
 .control_panel .add:hover { background-color: #20cd26; }
 .control_panel .add .title { font-size: 1em; color: #111111; }
+.control_panel .edit { background-color: #ffaaaa; }
+.control_panel .edit:hover { background-color: #ff9999; }
+.control_panel .edit .title { font-size: 1em; color: #111111; }
 .control_panel .back { background-color: #f6cf46; }
 .control_panel .back:hover { background-color: #f8c323; }
 .control_panel .back .title { font-size: 1em; color: #111111; }

@@ -24,6 +24,16 @@
             color: $color_black;
         }
     }
+    .edit {
+        background-color: $color_controll_panel_edit;
+        &:hover {
+            background-color: $color_controll_panel_edit-hover;
+        }
+        .title {
+            font-size: 1em;
+            color: $color_black;
+        }
+    }
     .back {
         background-color: $color_controll_panel_back;
         &:hover {
