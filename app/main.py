@@ -80,6 +80,16 @@ def test():
 #
 #
 
+
+
+@app.route('/acp', methods=['GET'])
+@app.route('/<lang>/acp', methods=['GET'])
+@lang_redirect
+def acp(lang=config.default_language):
+    return redirect(url_for('acp_dashboard', lang=lang))
+
+
+
 #     ########     ###     ######  ##     ## ########   #######     ###    ########  ########
 #     ##     ##   ## ##   ##    ## ##     ## ##     ## ##     ##   ## ##   ##     ## ##     ##
 #     ##     ##  ##   ##  ##       ##     ## ##     ## ##     ##  ##   ##  ##     ## ##     ##
@@ -88,8 +98,8 @@ def test():
 #     ##     ## ##     ## ##    ## ##     ## ##     ## ##     ## ##     ## ##    ##  ##     ##
 #     ########  ##     ##  ######  ##     ## ########   #######  ##     ## ##     ## ########
 
-@app.route('/acp', methods=['GET'])
-@app.route('/<lang>/acp', methods=['GET'])
+@app.route('/acp/dashboard', methods=['GET'])
+@app.route('/<lang>/acp/dashboard', methods=['GET'])
 @lang_redirect
 def acp_dashboard(lang=config.default_language):
     mod = Acp(lang)
