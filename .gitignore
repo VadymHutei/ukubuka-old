@@ -1,14 +1,14 @@
 # config
-/config_custom.py
+/app/config_custom.py
 
 # venv
-app/bin/
-app/include/
-app/lib/
-app/share/
-app/lib64
-app/pip-selfcheck.json
-app/pyvenv.cfg
+/app/bin/
+/app/include/
+/app/lib/
+/app/share/
+/app/lib64
+/app/pip-selfcheck.json
+/app/pyvenv.cfg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
