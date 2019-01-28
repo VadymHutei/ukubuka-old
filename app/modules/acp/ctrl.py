@@ -43,8 +43,7 @@ class Acp():
 
     def users_groups_page(self):
         groups = model.getUsersGroups()
-        # self.data['groups'] = groups
-        print(groups)
+        self.data['users_groups'] = groups
         return render_template('acp/users/groups/groups.html', **self.data)
 
     def users_groups_add_page(self):
@@ -67,6 +66,10 @@ class Acp():
         if helper.validEditUsersGroupData(data):
             data = helper.prepareEditUsersGroupData(data)
             model.editUsersGroup(data)
+
+    def deleteUsersGroup(self, users_group_id):
+        if helper.validUsersGroupID(users_group_id): return model.deleteUsersGroup(users_group_id)
+        return False
 
 
 

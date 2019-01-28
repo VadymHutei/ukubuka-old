@@ -131,6 +131,18 @@ def acp_users_add_post():
     mod = Acp(lang)
     return 'DONE!'
 
+
+
+#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
+#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
+#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
+#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
+#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
+#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
+#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
+
+
+
 @app.route('/acp/users/groups/', methods=['GET'])
 @app.route('/<lang>/acp/users/groups/', methods=['GET'])
 @lang_redirect
@@ -165,7 +177,7 @@ def acp_users_groups_edit(lang=config.default_language):
 @lang_redirect
 def acp_users_groups_delete(lang=config.default_language):
     mod = Acp(lang)
-    mod.deleteMenuItem(request.args['id'])
+    mod.deleteUsersGroup(request.args['id'])
     return redirect(url_for('acp_users_groups'))
 
 #     ##     ## ######## ##    ## ##     ##  ######

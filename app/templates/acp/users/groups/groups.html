@@ -15,13 +15,12 @@
             </div>
         </a>
     </div>
-    {% for menu_name in menus %}
     <table class="acp_table">
-        <caption>{{ menu_name }}</caption>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Назва</th>
+                <th>Дія</th>
             </tr>
         </thead>
         <tbody>
@@ -39,7 +38,6 @@
             {% endfor %}
         </tbody>
     </table>
-    {% endfor %}
 </section>
 
 {%- endblock content %}

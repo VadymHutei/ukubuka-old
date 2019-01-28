@@ -212,7 +212,6 @@ def getUsersGroup(group_id):
     cursor.execute(query, [group_id])
     connection.close()
     group_data = cursor.fetchone()
-    print(group_data)
     return group_data
 
 def addUsersGroup(data):
@@ -239,5 +238,17 @@ def editUsersGroup(data):
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query, values)
+    connection.commit()
+    connection.close()
+
+def deleteUsersGroup(users_group_id):
+    db = DB()
+    query = """
+        DELETE FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('users_groups'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [users_group_id])
     connection.commit()
     connection.close()
