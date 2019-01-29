@@ -1,1 +1,2 @@
 python3 -m venv ./ && sudo ./bin/pip install --upgrade pip && sudo ./bin/pip install -r requirements.txt
+sudo ./bin/pip freeze > requirements.txt
