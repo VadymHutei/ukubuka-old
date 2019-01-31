@@ -65,6 +65,10 @@ class Acp():
             print(data)
             model.addUser(data)
 
+    def deleteUser(self, user_id):
+        if helper.validUserID(user_id): return model.deleteUser(user_id)
+        return False
+
 
 
 #     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######

@@ -15,9 +15,14 @@ def validMenuItemID(item_id):
         return bool(re.fullmatch(r'\d{1,4}', item_id))
     return False
 
-def validUsersGroupID(item_id):
-    if isinstance(item_id, str):
-        return bool(re.fullmatch(r'\d{1}', item_id))
+def validUserID(user_id):
+    if isinstance(user_id, str):
+        return bool(re.fullmatch(r'\d{1,8}', user_id))
+    return False
+
+def validUsersGroupID(users_group_id):
+    if isinstance(users_group_id, str):
+        return bool(re.fullmatch(r'\d{1}', users_group_id))
     return False
 
 def validMenuName(name):

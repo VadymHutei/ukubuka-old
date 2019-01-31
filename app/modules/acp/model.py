@@ -302,7 +302,7 @@ def editUser(data):
     connection.commit()
     connection.close()
 
-def deleteUser(users_group_id):
+def deleteUser(user_id):
     db = DB()
     query = """
         DELETE FROM `{table}`
@@ -310,7 +310,7 @@ def deleteUser(users_group_id):
     """.format(table=db.table('users'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, [users_group_id])
+    cursor.execute(query, [user_id])
     connection.commit()
     connection.close()
 
