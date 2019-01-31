@@ -110,7 +110,6 @@ def addMenuItem(data):
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query, values)
-    columns = ['item_id', 'language', 'name']
     values = [
         [cursor.lastrowid, 'ukr', data['name_ukr']],
         [cursor.lastrowid, 'eng', data['name_eng']]
@@ -182,13 +181,148 @@ def deleteMenuItem(item_id):
 
 
 
-#      ######   ########   #######  ##     ## ########   ######
-#     ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
-#     ##        ##     ## ##     ## ##     ## ##     ## ##
-#     ##   #### ########  ##     ## ##     ## ########   ######
-#     ##    ##  ##   ##   ##     ## ##     ## ##              ##
-#     ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
-#      ######   ##     ##  #######   #######  ##         ######
+#     ##     ##  ######  ######## ########   ######
+#     ##     ## ##    ## ##       ##     ## ##    ##
+#     ##     ## ##       ##       ##     ## ##
+#     ##     ##  ######  ######   ########   ######
+#     ##     ##       ## ##       ##   ##         ##
+#     ##     ## ##    ## ##       ##    ##  ##    ##
+#      #######   ######  ######## ##     ##  ######
+
+def getUsers():
+    db = DB()
+    query = """
+        SELECT u.`id`, u.`group_id`, ug.`name` group_name, u.`is_active`
+        FROM `{table_u}` u
+        LEFT JOIN `{table_ug}` ug
+            ON ug.`id` = u.`group_id`
+    """.format(
+        table_u=db.table('users'),
+        table_ug=db.table('users_groups')
+    )
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query)
+    users = cursor.fetchall()
+    users_ids = [str(user['id']) for user in users]
+    query = """
+        SELECT `user_id`, `property`, `value`
+        FROM `{table}`
+        WHERE `user_id` IN ({users_ids})
+    """.format(
+        table=db.table('users_data'),
+        users_ids=', '.join(users_ids)
+    )
+    cursor.execute(query)
+    users_data = cursor.fetchall()
+    connection.close()
+    users = {user['id']: user for user in users}
+    multivalues = ('email', 'phone_number')
+    for row in users_data:
+        if row['user_id'] not in users: continue
+        if row['property'] in multivalues:
+            if row['property'] not in users[row['user_id']]: users[row['user_id']][row['property']] = []
+            users[row['user_id']][row['property']].append(row['value'])
+        else:
+            users[row['user_id']][row['property']] = row['value']
+    return users
+
+def getUser(user_id):
+    db = DB()
+    query = """
+        SELECT u.`id`, u.`group_id`, ug.`name` group_name, u.`is_active`
+        FROM `{table_u}` u
+        LEFT JOIN `{table_ug}` ug
+            ON ug.`id` = u.`group_id`
+        WHERE u.`id` = %s
+    """.format(
+        table_u=db.table('users'),
+        table_ug=db.table('users_groups')
+    )
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [user_id])
+    user = cursor.fetchone()
+    query = """
+        SELECT `user_id`, `property`, `value`
+        FROM `{table}`
+        WHERE `user_id` = %s
+    """.format(table=db.table('users_data'))
+    cursor.execute(query, [user_id])
+    user_data = cursor.fetchall()
+    connection.close()
+    multivalues = ('email', 'phone_number')
+    for row in user_data:
+        if row['property'] in multivalues:
+            if row['property'] not in user: user[row['property']] = []
+            user[row['property']].append(row['value'])
+        else:
+            user[row['property']] = row['value']
+    return user
+
+def addUser(data):
+    db = DB()
+    values = [
+        data['group_id'],
+        data['is_active']
+    ]
+    query = """
+        INSERT INTO `{table}` (`group_id`, `is_active`)
+        VALUES (%s, %s)
+    """.format(table=db.table('users'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, values)
+    values = []
+    for prop in data:
+        print(prop)
+        if prop not in ('first_name', 'patronymic', 'last_name', 'phone_number', 'email'): continue
+        values.append([cursor.lastrowid, prop, data[prop]])
+    print(values)
+    if values:
+        query = """
+            INSERT INTO `{table}` (`user_id`, `property`, `value`)
+            VALUES (%s, %s, %s)
+        """.format(table=db.table('users_data'))
+        cursor.executemany(query, values)
+    connection.commit()
+    connection.close()
+
+def editUser(data):
+    values = [data['name'], data['group_id']]
+    db = DB()
+    query = """
+        UPDATE `{table}`
+        SET `name` = %s
+        WHERE `id` = %s
+    """.format(table=db.table('users'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, values)
+    connection.commit()
+    connection.close()
+
+def deleteUser(users_group_id):
+    db = DB()
+    query = """
+        DELETE FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('users'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [users_group_id])
+    connection.commit()
+    connection.close()
+
+
+
+#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
+#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
+#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
+#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
+#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
+#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
+#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
 
 def getUsersGroups():
     db = DB()

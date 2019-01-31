@@ -114,22 +114,41 @@ def acp_dashboard(lang=config.default_language):
 #      #######   ######  ######## ##     ##  ######
 
 @app.route('/acp/users/', methods=['GET'])
-def acp_users():
-    lang = 'ukr'
+@app.route('/<lang>/acp/users/', methods=['GET'])
+@lang_redirect
+def acp_users(lang=config.default_language):
     mod = Acp(lang)
-    return mod.users()
+    return mod.users_page()
 
-@app.route('/acp/users/add', methods=['GET'])
-def acp_users_add():
-    lang = 'ukr'
+@app.route('/acp/users/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/users/add', methods=['GET', 'POST'])
+@lang_redirect
+def acp_users_add(lang=config.default_language):
     mod = Acp(lang)
-    return mod.users_add()
+    if request.method == 'GET':
+        return mod.user_add_page()
+    else:
+        mod.addUser(request.form)
+        return redirect(url_for('acp_users'))
 
-@app.route('/acp/users/add', methods=['POST'])
-def acp_users_add_post():
-    lang = 'ukr'
+@app.route('/acp/users/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/users/edit', methods=['GET', 'POST'])
+@lang_redirect
+def acp_users_edit(lang=config.default_language):
     mod = Acp(lang)
-    return 'DONE!'
+    if request.method == 'GET':
+        return mod.user_edit_page(request.args['id'])
+    else:
+        mod.editUser(request.form)
+        return redirect(url_for('acp_users'), 303)
+
+@app.route('/acp/users/delete', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/users/delete', methods=['GET', 'POST'])
+@lang_redirect
+def acp_users_delete(lang=config.default_language):
+    mod = Acp(lang)
+    mod.deleteUser(request.args['id'])
+    return redirect(url_for('acp_users'))
 
 
 

@@ -1,5 +1,15 @@
 import re
 
+
+
+#     ##     ##    ###    ##       #### ########     ###    ######## ####  #######  ##    ##
+#     ##     ##   ## ##   ##        ##  ##     ##   ## ##      ##     ##  ##     ## ###   ##
+#     ##     ##  ##   ##  ##        ##  ##     ##  ##   ##     ##     ##  ##     ## ####  ##
+#     ##     ## ##     ## ##        ##  ##     ## ##     ##    ##     ##  ##     ## ## ## ##
+#      ##   ##  ######### ##        ##  ##     ## #########    ##     ##  ##     ## ##  ####
+#       ## ##   ##     ## ##        ##  ##     ## ##     ##    ##     ##  ##     ## ##   ###
+#        ###    ##     ## ######## #### ########  ##     ##    ##    ####  #######  ##    ##
+
 def validMenuItemID(item_id):
     if isinstance(item_id, str):
         return bool(re.fullmatch(r'\d{1,4}', item_id))
@@ -20,6 +30,21 @@ def validMenuItemName(name):
         return name == '' or re.fullmatch(r'\w{1,64}', name)
     return False
 
+def validUserName(name):
+    if isinstance(name, str):
+        return name == '' or re.fullmatch(r'\w{1,64}', name)
+    return False
+
+def validPhoneNumber(phone_number):
+    if isinstance(phone_number, str):
+        return phone_number == '' or re.fullmatch(r'[0-9+() -]{7,64}', phone_number)
+    return False
+
+def validEmail(email):
+    if isinstance(email, str):
+        return email == '' or re.fullmatch(r'[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+', email)
+    return False
+
 def validUsersGroupName(name):
     if isinstance(name, str):
         return name == '' or re.fullmatch(r'\w{1,64}', name)
@@ -29,6 +54,16 @@ def validMenuItemLink(link):
     if isinstance(link, str):
         return bool(re.fullmatch(r'[\w:./]{1,128}', link))
     return False
+
+
+
+#     ##     ## ######## ##    ## ##     ##
+#     ###   ### ##       ###   ## ##     ##
+#     #### #### ##       ####  ## ##     ##
+#     ## ### ## ######   ## ## ## ##     ##
+#     ##     ## ##       ##  #### ##     ##
+#     ##     ## ##       ##   ### ##     ##
+#     ##     ## ######## ##    ##  #######
 
 def prepareMenuItemFormData(form):
     item_id = form.get('id')
@@ -87,6 +122,68 @@ def prepareEditMenuItemData(data):
     if 'parent' in data: result['parent'] = data['parent']
     if 'is_active' in data: result['is_active'] = data['is_active']
     return result
+
+
+
+#     ##     ##  ######  ######## ########   ######
+#     ##     ## ##    ## ##       ##     ## ##    ##
+#     ##     ## ##       ##       ##     ## ##
+#     ##     ##  ######  ######   ########   ######
+#     ##     ##       ## ##       ##   ##         ##
+#     ##     ## ##    ## ##       ##    ##  ##    ##
+#      #######   ######  ######## ##     ##  ######
+
+def prepareUserFormData(form):
+    user_id = form.get('id')
+    group_id = form.get('group_id')
+    first_name = form.get('first_name')
+    patronymic = form.get('patronymic')
+    last_name = form.get('last_name')
+    phone_number = form.get('phone_number')
+    email = form.get('email')
+    is_active = form.get('is_active')
+    result = {}
+    if user_id: result['user_id'] = user_id
+    if group_id: result['group_id'] = group_id
+    if first_name: result['first_name'] = first_name
+    if patronymic: result['patronymic'] = patronymic
+    if last_name: result['last_name'] = last_name
+    if phone_number: result['phone_number'] = phone_number
+    if email: result['email'] = email
+    result['is_active'] = 'Y' if is_active == 'on' else 'N'
+    return result
+
+def validAddUserData(data):
+    if 'group_id' not in data or not validUsersGroupID(data['group_id']): return False
+    if 'is_active' not in data or data['is_active'] not in ['Y', 'N']: return False
+    if 'first_name' in data and not validUserName(data['first_name']): return False
+    if 'patronymic' in data and not validUserName(data['patronymic']): return False
+    if 'last_name' in data and not validUserName(data['last_name']): return False
+    if 'phone_number' in data and not validPhoneNumber(data['phone_number']): return False
+    if 'email' in data and not validEmail(data['email']): return False
+    return True
+
+def prepareAddUserData(data):
+    result = {
+        'group_id': data['group_id'],
+        'is_active': data['is_active']
+    }
+    if 'first_name' in data: result['first_name'] = data['first_name']
+    if 'patronymic' in data: result['patronymic'] = data['patronymic']
+    if 'last_name' in data: result['last_name'] = data['last_name']
+    if 'phone_number' in data: result['phone_number'] = data['phone_number']
+    if 'email' in data: result['email'] = data['email']
+    return result
+
+
+
+#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
+#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
+#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
+#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
+#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
+#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
+#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
 
 def prepareUsersGroupFormData(form):
     group_id = form.get('id')

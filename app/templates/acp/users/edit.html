@@ -1,32 +1,40 @@
 {% extends "acp/layout/base.html" %}
 
 {% block title -%}
-    Додати користувача - {{ site_name }} ACP
+    Редагувати користувача - {{ site_name }} ACP
 {%- endblock title %}
 
 {% block content -%}
 
-<section class="acp_section add_user">
-    <h1 class="section_title">Додати користувача</h1>
+<section class="acp_section">
+    <h1 class="section_title">Редагувати користувача</h1>
     <div class="control_panel">
         <a href="/acp/users/" class="button_link">
             <div class="button back">
                 <span class="title">назад</span>
             </div>
         </a>
-        <input type="submit" form="add_user_form" value="додати" class="button add">
+        <input type="submit" form="edit_user_form" value="зберегти" class="button edit">
     </div>
-    <form id="add_user_form" class="acp_form" action="/acp/users/add" method="post" accept-charset="utf-8">
+    <form id="edit_user_form" class="acp_form" action="/acp/users/edit" method="post" accept-charset="utf-8">
         <table>
             <tbody>
                 <tr>
                     <td class="label">
-                        Група
+                        <label for="id_field">Ім'я</label>
+                    </td>
+                    <td>
+                        <input id="id_field" type="text" name="id" value="{{ user['id'] }}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="select_group">Група</label>
                     </td>
                     <td>
                         {% for group in groups %}
                         <div>
-                            <input id="select_group_{{ group['id'] }}" type="radio" name="group_id" value="{{ group['id'] }}">
+                            <input id="select_group_{{ group['id'] }}" type="radio" name="group_id" value="{{ group['id'] }}"{% if user['group_id'] == group['id'] %} checked{% endif %}>
                             <label for="select_group_{{ group['id'] }}">{{ group['name'] }}</label>
                         </div>
                         {% endfor %}
@@ -37,7 +45,7 @@
                         <label for="first_name_field">Ім'я</label>
                     </td>
                     <td>
-                        <input id="first_name_field" type="text" name="first_name" maxlength="64" placeholder="Ім'я" autocomplete="off">
+                        <input id="first_name_field" type="text" name="first_name" value="{{ user['first_name'] }}" maxlength="64" placeholder="Ім'я" autocomplete="off">
                     </td>
                 </tr>
                 <tr>
@@ -45,7 +53,7 @@
                         <label for="patronymic_field">По батькові</label>
                     </td>
                     <td>
-                        <input id="patronymic_field" type="text" name="patronymic" maxlength="64" placeholder="По батькові" autocomplete="off">
+                        <input id="patronymic_field" type="text" name="patronymic" value="{{ user['patronymic'] }}" maxlength="64" placeholder="По батькові" autocomplete="off">
                     </td>
                 </tr>
                 <tr>
@@ -53,7 +61,7 @@
                         <label for="last_name_field">Прізвище</label>
                     </td>
                     <td>
-                        <input id="last_name_field" type="text" name="last_name" maxlength="64" placeholder="Прізвище" autocomplete="off">
+                        <input id="last_name_field" type="text" name="last_name" value="{{ user['last_name'] }}" maxlength="64" placeholder="Прізвище" autocomplete="off">
                     </td>
                 </tr>
                 <tr>
@@ -61,7 +69,11 @@
                         <label for="phone_number_field">Номер телефону</label>
                     </td>
                     <td>
-                        <input id="phone_number_field" type="tel" name="phone_number" maxlength="64" placeholder="+380 (ХХ) ХХХ-ХХХХ" autocomplete="off">
+                        {% for phone_number in user['phone_number'] %}
+                        <div>
+                            <input id="phone_number_field" type="tel" name="phone_number[]" value="{{ phone_number }}" maxlength="64" placeholder="+380 (ХХ) ХХХ-ХХХХ" autocomplete="off">
+                        </div>
+                        {% endfor %}
                     </td>
                 </tr>
                 <tr>
@@ -69,7 +81,7 @@
                         <label for="email_field">E-Mail</label>
                     </td>
                     <td>
-                        <input id="email_field" type="email" name="email" maxlength="64" placeholder="E-Mail" autocomplete="off">
+                        <input id="email_field" type="email" name="email" value="{{ user['email'] }}" maxlength="64" placeholder="E-Mail" autocomplete="off">
                     </td>
                 </tr>
                 <tr>
@@ -77,7 +89,7 @@
                         <label for="is_active_field">Активний</label>
                     </td>
                     <td>
-                        <input id="is_active_field" type="checkbox" name="is_active" checked>
+                        <input id="is_active_field" type="checkbox" name="is_active"{% if user['is_active'] == 'Y' %} checked{% endif %}>
                     </td>
                 </tr>
             </tbody>

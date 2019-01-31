@@ -1,22 +1,67 @@
 {% extends "acp/layout/base.html" %}
 
 {% block title -%}
-    {{ site_name }} ACP users
+    Користувачі - {{ site_name }} ACP
 {%- endblock title %}
 
 {% block content -%}
 
-<a href="/acp/users/add">Додати користувача</a>
-
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Група</th>
-            <th>Активний</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<section class="acp_section users">
+    <h1 class="section_title">Користувачі</h1>
+    <div class="control_panel">
+        <a href="/acp/users/add" class="button_link">
+            <div class="button add">
+                <span class="title">додати</span>
+            </div>
+        </a>
+    </div>
+    <table class="acp_table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ім'я</th>
+                <th>По батькові</th>
+                <th>Прізвище</th>
+                <th>Номер телефону</th>
+                <th>E-Mail</th>
+                <th>Група</th>
+                <th>Активний</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_id in users %}
+            <tr>
+                <td class="center">{{ users[user_id]['id'] }}</td>
+                <td>{% if users[user_id]['first_name'] %}{{ users[user_id]['first_name'] }}{% else %}-{% endif %}</td>
+                <td>{% if users[user_id]['patronymic'] %}{{ users[user_id]['patronymic'] }}{% else %}-{% endif %}</td>
+                <td>{% if users[user_id]['last_name'] %}{{ users[user_id]['last_name'] }}{% else %}-{% endif %}</td>
+                <td>
+                    {% if users[user_id]['phone_number'] %}
+                        {{ '<br>'.join(users[user_id]['phone_number'])|safe }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if users[user_id]['email'] %}
+                        {{ '<br>'.join(users[user_id]['email'])|safe }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td class="center">{{ users[user_id]['group_name'] }}</td>
+                <td class="center"><input type="checkbox" disabled{% if users[user_id]['is_active'] == 'Y' %} checked{% endif %}></td>
+                <td>
+                    <div class="actions">
+                        <a href="/acp/users/edit?id={{ users[user_id]['id'] }}">редагувати</a>
+                        <a href="/acp/users/delete?id={{ users[user_id]['id'] }}">видалити</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
 
 {%- endblock content %}

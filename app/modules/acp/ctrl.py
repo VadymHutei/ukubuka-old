@@ -35,16 +35,45 @@ class Acp():
 #     ##     ## ##    ## ##       ##    ##  ##    ##
 #      #######   ######  ######## ##     ##  ######
 
-    def users(self):
+    def users_page(self):
+        users = model.getUsers()
+        self.data['users'] = users
         return render_template('acp/users/users.html', **self.data)
 
-    def users_add(self):
+    def user_add_page(self):
+        groups = model.getUsersGroups()
+        self.data['groups'] = groups
         return render_template('acp/users/add.html', **self.data)
+
+    def user_edit_page(self, user_id):
+        user = model.getUser(user_id)
+        groups = model.getUsersGroups()
+        self.data['user'] = user
+        self.data['groups'] = groups
+        return render_template('acp/users/edit.html', **self.data)
 
     def users_groups_page(self):
         groups = model.getUsersGroups()
         self.data['users_groups'] = groups
         return render_template('acp/users/groups/groups.html', **self.data)
+
+    def addUser(self, form):
+        data = helper.prepareUserFormData(form)
+        print(data)
+        if helper.validAddUserData(data):
+            data = helper.prepareAddUserData(data)
+            print(data)
+            model.addUser(data)
+
+
+
+#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
+#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
+#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
+#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
+#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
+#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
+#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
 
     def users_groups_add_page(self):
         return render_template('acp/users/groups/add.html', **self.data)
