@@ -86,7 +86,7 @@ def test():
 @app.route('/<lang>/acp', methods=['GET'])
 @lang_redirect
 def acp(lang=config.default_language):
-    return redirect(url_for('acp_dashboard', lang=lang))
+    return redirect(url_for('acp_dashboard', lang=lang), 302)
 
 
 
@@ -129,7 +129,7 @@ def acp_users_add(lang=config.default_language):
         return mod.user_add_page()
     else:
         mod.addUser(request.form)
-        return redirect(url_for('acp_users'))
+        return redirect(url_for('acp_users'), 303)
 
 @app.route('/acp/users/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/edit', methods=['GET', 'POST'])
@@ -148,7 +148,7 @@ def acp_users_edit(lang=config.default_language):
 def acp_users_delete(lang=config.default_language):
     mod = Acp(lang)
     mod.deleteUser(request.args['id'])
-    return redirect(url_for('acp_users'))
+    return redirect(url_for('acp_users'), 303)
 
 
 
@@ -178,7 +178,7 @@ def acp_users_groups_add(lang=config.default_language):
         return mod.users_groups_add_page()
     else:
         mod.addUsersGroup(request.form)
-        return redirect(url_for('acp_users_groups'))
+        return redirect(url_for('acp_users_groups'), 303)
 
 @app.route('/acp/users/groups/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/groups/edit', methods=['GET', 'POST'])
@@ -197,7 +197,7 @@ def acp_users_groups_edit(lang=config.default_language):
 def acp_users_groups_delete(lang=config.default_language):
     mod = Acp(lang)
     mod.deleteUsersGroup(request.args['id'])
-    return redirect(url_for('acp_users_groups'))
+    return redirect(url_for('acp_users_groups'), 303)
 
 #     ##     ## ######## ##    ## ##     ##  ######
 #     ###   ### ##       ###   ## ##     ## ##    ##
@@ -223,7 +223,7 @@ def acp_menus_add(lang=config.default_language):
         return mod.menus_add_page()
     else:
         mod.addMenuItem(request.form)
-        return redirect(url_for('acp_menus'))
+        return redirect(url_for('acp_menus'), 303)
 
 @app.route('/acp/menus/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/menus/edit', methods=['GET', 'POST'])
@@ -242,7 +242,7 @@ def acp_menus_edit(lang=config.default_language):
 def acp_menus_delete(lang=config.default_language):
     mod = Acp(lang)
     mod.deleteMenuItem(request.args['id'])
-    return redirect(url_for('acp_menus'))
+    return redirect(url_for('acp_menus'), 303)
 
 
 
