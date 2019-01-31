@@ -189,6 +189,9 @@ def deleteMenuItem(item_id):
 #     ##     ## ##    ## ##       ##    ##  ##    ##
 #      #######   ######  ######## ##     ##  ######
 
+user_properties = ('first_name', 'patronymic', 'last_name', 'phone_number', 'email')
+user_multiproperties = {'phone_numbers': 'phone_number', 'emails': 'email'}
+
 def getUsers():
     db = DB()
     query = """
@@ -275,10 +278,8 @@ def addUser(data):
     cursor.execute(query, values)
     values = []
     for prop in data:
-        print(prop)
-        if prop not in ('first_name', 'patronymic', 'last_name', 'phone_number', 'email'): continue
+        if prop not in user_properties: continue
         values.append([cursor.lastrowid, prop, data[prop]])
-    print(values)
     if values:
         query = """
             INSERT INTO `{table}` (`user_id`, `property`, `value`)
@@ -289,17 +290,50 @@ def addUser(data):
     connection.close()
 
 def editUser(data):
-    values = [data['name'], data['group_id']]
     db = DB()
-    query = """
-        UPDATE `{table}`
-        SET `name` = %s
-        WHERE `id` = %s
-    """.format(table=db.table('users'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, values)
-    connection.commit()
+    if 'group_id' in data or 'is_active' in data:
+        columns = []
+        values = []
+        if 'group_id' in data:
+            columns.append('group_id')
+            values.append(data['group_id'])
+        if 'is_active' in data:
+            columns.append('is_active')
+            values.append(data['is_active'])
+        values.append(data['user_id'])
+        query = """
+            UPDATE `{table}`
+            SET {values}
+            WHERE `id` = %s
+        """.format(
+            table=db.table('users'),
+            values=', '.join('`{column}` = %s'.format(column=column) for column in columns)
+        )
+        cursor.execute(query, values)
+        connection.commit()
+    query = """
+        DELETE FROM `{table}`
+        WHERE `user_id` = %s
+    """.format(table=db.table('users_data'))
+    cursor.execute(query, [data['user_id']])
+    values = []
+    for prop in data:
+        if prop in user_properties:
+            values.append([data['user_id'], prop, data[prop]])
+        if prop in user_multiproperties:
+            for value in data[prop]:
+                values.append([data['user_id'], user_multiproperties[prop], value])
+    if values:
+        query = """
+            INSERT INTO `{table}` (`user_id`, `property`, `value`)
+            VALUES (%s, %s, %s)
+        """.format(table=db.table('users_data'))
+        print(query)
+        print(values)
+        cursor.executemany(query, values)
+        connection.commit()
     connection.close()
 
 def deleteUser(user_id):

@@ -69,11 +69,16 @@
                         <label for="phone_number_field">Номер телефону</label>
                     </td>
                     <td>
+                        {% if user['phone_number'] %}
                         {% for phone_number in user['phone_number'] %}
                         <div>
-                            <input id="phone_number_field" type="tel" name="phone_number[]" value="{{ phone_number }}" maxlength="64" placeholder="+380 (ХХ) ХХХ-ХХХХ" autocomplete="off">
+                            <input id="phone_number_field" type="tel" name="phone_numbers[]" value="{{ phone_number }}" minlength="9" maxlength="64" placeholder="+380 (ХХ) ХХХ-ХХХХ" autocomplete="off">
                         </div>
                         {% endfor %}
+                        <a href="/acp/users/add_phone_number?id={{ user['id'] }}">додати номер телефону</a>
+                        {% else %}
+                        <input id="phone_number_field" type="tel" name="phone_numbers[]" maxlength="64" placeholder="+380 (ХХ) ХХХ-ХХХХ" autocomplete="off">
+                        {% endif %}
                     </td>
                 </tr>
                 <tr>
@@ -81,7 +86,16 @@
                         <label for="email_field">E-Mail</label>
                     </td>
                     <td>
-                        <input id="email_field" type="email" name="email" value="{{ user['email'] }}" maxlength="64" placeholder="E-Mail" autocomplete="off">
+                        {% if user['email'] %}
+                        {% for email in user['email'] %}
+                        <div>
+                            <input id="email_field" type="email" name="emails[]" value="{{ email }}" maxlength="64" placeholder="E-Mail" autocomplete="off">
+                        </div>
+                        {% endfor %}
+                        <a href="/acp/users/add_email?id={{ user['id'] }}">додати E-Mail</a>
+                        {% else %}
+                        <input id="email_field" type="email" name="emails[]" maxlength="64" placeholder="E-Mail" autocomplete="off">
+                        {% endif %}
                     </td>
                 </tr>
                 <tr>

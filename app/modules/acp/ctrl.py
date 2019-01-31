@@ -59,11 +59,15 @@ class Acp():
 
     def addUser(self, form):
         data = helper.prepareUserFormData(form)
-        print(data)
         if helper.validAddUserData(data):
             data = helper.prepareAddUserData(data)
-            print(data)
             model.addUser(data)
+
+    def editUser(self, form):
+        data = helper.prepareUserFormData(form)
+        if helper.validEditUserData(data):
+            data = helper.prepareEditUserData(data)
+            model.editUser(data)
 
     def deleteUser(self, user_id):
         if helper.validUserID(user_id): return model.deleteUser(user_id)
