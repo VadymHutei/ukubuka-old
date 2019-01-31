@@ -42,7 +42,7 @@ def validUserName(name):
 
 def validPhoneNumber(phone_number):
     if isinstance(phone_number, str):
-        return phone_number == '' or re.fullmatch(r'[0-9+() -]{7,64}', phone_number)
+        return phone_number == '' or re.fullmatch(r'[0-9+() -]{9,64}', phone_number)
     return False
 
 def validEmail(email):
