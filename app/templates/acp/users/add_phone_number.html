@@ -1,0 +1,36 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Додати номер телефону користувача - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Додати номер телефону користувача</h1>
+    <div class="control_panel">
+        <a href="/acp/users/edit?id={{ user_id }}" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        <input type="submit" form="add_user_phone_number_form" value="додати" class="button add">
+    </div>
+    <form id="add_user_phone_number_form" class="acp_form" action="/acp/users/add_phone_number" method="post" accept-charset="utf-8">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">
+                        <label for="phone_number_field">Номер телефону</label>
+                    </td>
+                    <td>
+                        <input id="id_field" type="hidden" name="id" value="{{ user_id }}">
+                        <input id="phone_number_field" type="tel" name="phone_number" maxlength="64" placeholder="+380 (ХХ) ХХХ-ХХХХ" autocomplete="off">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</section>
+
+{%- endblock content %}

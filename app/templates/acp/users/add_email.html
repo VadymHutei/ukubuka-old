@@ -1,0 +1,36 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Додати E-Mail користувача - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Додати E-Mail користувача</h1>
+    <div class="control_panel">
+        <a href="/acp/users/edit?id={{ user_id }}" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        <input type="submit" form="add_user_email_form" value="додати" class="button add">
+    </div>
+    <form id="add_user_email_form" class="acp_form" action="/acp/users/add_email" method="post" accept-charset="utf-8">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">
+                        <label for="email_field">E-Mail</label>
+                    </td>
+                    <td>
+                        <input id="id_field" type="hidden" name="id" value="{{ user_id }}">
+                        <input id="email_field" type="email" name="email" maxlength="64" placeholder="E-Mail" autocomplete="off">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</section>
+
+{%- endblock content %}

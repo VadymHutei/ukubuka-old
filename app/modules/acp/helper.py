@@ -222,6 +222,28 @@ def prepareEditUserData(data):
     if 'is_active' in data: result['is_active'] = data['is_active']
     return result
 
+def validAddUserPhoneNumberData(data):
+    if 'user_id' not in data or not validUserID(data['user_id']): return False
+    if 'phone_number' not in data or not validPhoneNumber(data['phone_number']) or not data['phone_number']: return False
+    return True
+
+def prepareAddUserPhoneNumberData(data):
+    return {
+        'user_id': data['user_id'],
+        'phone_number': data['phone_number']
+    }
+
+def validAddUserEmailData(data):
+    if 'user_id' not in data or not validUserID(data['user_id']): return False
+    if 'email' not in data or not validEmail(data['email']) or not data['email']: return False
+    return True
+
+def prepareAddUserEmailData(data):
+    return {
+        'user_id': data['user_id'],
+        'email': data['email']
+    }
+
 
 
 #     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
