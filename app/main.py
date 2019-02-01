@@ -18,22 +18,7 @@ def lang_redirect(f):
 
 app = Flask(__name__)
 
-#
-#
-#     ___       ___   ____    ________   ____     _______     __________   ____
-#     `MMb     dMM'  6MMMMb   `MMMMMMMb. `MM'     `M'`MM'     `MMMMMMMMM  6MMMMb\
-#      MMM.   ,PMM  8P    Y8   MM    `Mb  MM       M  MM       MM      \ 6M'    `
-#      M`Mb   d'MM 6M      Mb  MM     MM  MM       M  MM       MM        MM
-#      M YM. ,P MM MM      MM  MM     MM  MM       M  MM       MM    ,   YM.
-#      M `Mb d' MM MM      MM  MM     MM  MM       M  MM       MMMMMMM    YMMMMb
-#      M  YM.P  MM MM      MM  MM     MM  MM       M  MM       MM    `        `Mb
-#      M  `Mb'  MM MM      MM  MM     MM  MM       M  MM       MM              MM
-#      M   YP   MM YM      M9  MM     MM  YM       M  MM       MM              MM
-#      M   `'   MM  8b    d8   MM    .M9   8b     d8  MM    /  MM      / L    ,M9
-#     _M_      _MM_  YMMMM9   _MMMMMMM9'    YMMMMM9  _MMMMMMM _MMMMMMMMM MYMMMM9
-#
-#
-#
+
 
 #     ##     ##    ###    #### ##    ##
 #     ###   ###   ## ##    ##  ###   ##
@@ -43,10 +28,14 @@ app = Flask(__name__)
 #     ##     ## ##     ##  ##  ##   ###
 #     ##     ## ##     ## #### ##    ##
 
+
+
 @app.route('/')
 def main():
     mod = Main()
     return mod.view
+
+
 
 #     ######## ########  ######  ########
 #        ##    ##       ##    ##    ##
@@ -55,6 +44,8 @@ def main():
 #        ##    ##             ##    ##
 #        ##    ##       ##    ##    ##
 #        ##    ########  ######     ##
+
+
 
 @app.route('/test')
 def test():
@@ -98,12 +89,16 @@ def acp(lang=config.default_language):
 #     ##     ## ##     ## ##    ## ##     ## ##     ## ##     ## ##     ## ##    ##  ##     ##
 #     ########  ##     ##  ######  ##     ## ########   #######  ##     ## ##     ## ########
 
+
+
 @app.route('/acp/dashboard', methods=['GET'])
 @app.route('/<lang>/acp/dashboard', methods=['GET'])
 @lang_redirect
 def acp_dashboard(lang=config.default_language):
     mod = Acp(lang)
     return mod.dashboard_page()
+
+
 
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##
@@ -112,6 +107,8 @@ def acp_dashboard(lang=config.default_language):
 #     ##     ##       ## ##       ##   ##         ##
 #     ##     ## ##    ## ##       ##    ##  ##    ##
 #      #######   ######  ######## ##     ##  ######
+
+
 
 @app.route('/acp/users/', methods=['GET'])
 @app.route('/<lang>/acp/users/', methods=['GET'])
@@ -221,6 +218,8 @@ def acp_users_groups_delete(lang=config.default_language):
     mod.deleteUsersGroup(request.args['id'])
     return redirect(url_for('acp_users_groups'), 303)
 
+
+
 #     ##     ## ######## ##    ## ##     ##  ######
 #     ###   ### ##       ###   ## ##     ## ##    ##
 #     #### #### ##       ####  ## ##     ## ##
@@ -228,6 +227,8 @@ def acp_users_groups_delete(lang=config.default_language):
 #     ##     ## ##       ##  #### ##     ##       ##
 #     ##     ## ##       ##   ### ##     ## ##    ##
 #     ##     ## ######## ##    ##  #######   ######
+
+
 
 @app.route('/acp/menus/', methods=['GET'])
 @app.route('/<lang>/acp/menus/', methods=['GET'])
@@ -284,6 +285,9 @@ def acp_menus_delete(lang=config.default_language):
 #
 #
 #
+
+
+
 @app.errorhandler(400)
 def page_not_found(error):
     return render_template('errors/400.html'), 400
