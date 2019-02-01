@@ -1,5 +1,7 @@
 from db import DB
 
+
+
 #     ##     ## ######## ##    ## ##     ##  ######
 #     ###   ### ##       ###   ## ##     ## ##    ##
 #     #### #### ##       ####  ## ##     ## ##
@@ -7,6 +9,8 @@ from db import DB
 #     ##     ## ##       ##  #### ##     ##       ##
 #     ##     ## ##       ##   ### ##     ## ##    ##
 #     ##     ## ######## ##    ##  #######   ######
+
+
 
 def getMenus(lang):
     db = DB()
@@ -189,6 +193,8 @@ def deleteMenuItem(item_id):
 #     ##     ## ##    ## ##       ##    ##  ##    ##
 #      #######   ######  ######## ##     ##  ######
 
+
+
 user_properties = ('first_name', 'patronymic', 'last_name', 'phone_number', 'email')
 user_multiproperties = {'phone_numbers': 'phone_number', 'emails': 'email'}
 
@@ -358,6 +364,8 @@ def deleteUser(user_id):
 #     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
 #     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
 #      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
+
+
 
 def getUsersGroups():
     db = DB()

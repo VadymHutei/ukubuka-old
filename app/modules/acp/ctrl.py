@@ -22,6 +22,8 @@ class Acp():
 #     ##     ## ##     ## ##    ## ##     ## ##     ## ##     ## ##     ## ##    ##  ##     ##
 #     ########  ##     ##  ######  ##     ## ########   #######  ##     ## ##     ## ########
 
+
+
     def dashboard_page(self):
         return render_template('acp/dashboard.html', **self.data)
 
@@ -34,6 +36,8 @@ class Acp():
 #     ##     ##       ## ##       ##   ##         ##
 #     ##     ## ##    ## ##       ##    ##  ##    ##
 #      #######   ######  ######## ##     ##  ######
+
+
 
     def users_page(self):
         users = model.getUsers()
@@ -101,6 +105,8 @@ class Acp():
 #     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
 #      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
 
+
+
     def users_groups_page(self):
         groups = model.getUsersGroups()
         self.data['users_groups'] = groups
@@ -140,6 +146,8 @@ class Acp():
 #     ##     ## ##       ##  #### ##     ##       ##
 #     ##     ## ##       ##   ### ##     ## ##    ##
 #     ##     ## ######## ##    ##  #######   ######
+
+
 
     def menus_page(self):
         return render_template('acp/menus/menus.html', **self.data)
