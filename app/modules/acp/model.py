@@ -337,8 +337,6 @@ def editUser(data):
             INSERT INTO `{table}` (`user_id`, `property`, `value`)
             VALUES (%s, %s, %s)
         """.format(table=db.table('users_data'))
-        print(query)
-        print(values)
         cursor.executemany(query, values)
         connection.commit()
     connection.close()
@@ -429,3 +427,40 @@ def deleteUsersGroup(users_group_id):
     cursor.execute(query, [users_group_id])
     connection.commit()
     connection.close()
+
+
+
+#      ######  ######## ######## ######## #### ##    ##  ######    ######
+#     ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
+#     ##       ##          ##       ##     ##  ####  ## ##        ##
+#      ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
+#           ## ##          ##       ##     ##  ##  #### ##    ##        ##
+#     ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
+#      ######  ########    ##       ##    #### ##    ##  ######    ######
+
+
+
+def getSettings():
+    db = DB()
+    query = 'SELECT * FROM `{table}`'.format(table=db.table('settings'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query)
+    connection.close()
+    settings_data = cursor.fetchall()
+    return {row['property']: row['value'] for row in settings_data}
+
+def saveSettings(data):
+    db = DB()
+    query = """
+        UPDATE `{table}`
+        SET `value` = %s
+        WHERE `property` = %s
+    """.format(table=db.table('settings'))
+    values = [[data[prop], prop] for prop in data]
+    if values:
+        connection = db.getConnection()
+        cursor = connection.cursor()
+        cursor.executemany(query, values)
+        connection.commit()
+        connection.close()

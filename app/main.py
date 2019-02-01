@@ -279,12 +279,16 @@ def acp_menus_delete(lang=config.default_language):
 
 
 
-@app.route('/acp/settings', methods=['GET'])
-@app.route('/<lang>/acp/settings', methods=['GET'])
+@app.route('/acp/settings', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/settings', methods=['GET', 'POST'])
 @lang_redirect
 def acp_settings(lang=config.default_language):
     mod = Acp(lang)
-    return mod.settings_page()
+    if request.method == 'GET':
+        return mod.settings_page()
+    else:
+        mod.saveSettings(request.form)
+        return redirect(url_for('acp_settings'), 303)
 
 
 

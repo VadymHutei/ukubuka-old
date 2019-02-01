@@ -10,6 +10,8 @@ import re
 #       ## ##   ##     ## ##        ##  ##     ## ##     ##    ##     ##  ##     ## ##   ###
 #        ###    ##     ## ######## #### ########  ##     ##    ##    ####  #######  ##    ##
 
+
+
 def validMenuItemID(item_id):
     if isinstance(item_id, str):
         return bool(re.fullmatch(r'\d{1,4}', item_id))
@@ -60,6 +62,11 @@ def validMenuItemLink(link):
         return bool(re.fullmatch(r'[\w:./]{1,128}', link))
     return False
 
+def validSettingsProperty(prop):
+    if isinstance(prop, str):
+        return prop == '' or re.fullmatch(r'[\w. -]{1,64}', prop)
+    return False
+
 
 
 #     ##     ## ######## ##    ## ##     ##
@@ -69,6 +76,8 @@ def validMenuItemLink(link):
 #     ##     ## ##       ##  #### ##     ##
 #     ##     ## ##       ##   ### ##     ##
 #     ##     ## ######## ##    ##  #######
+
+
 
 def prepareMenuItemFormData(form):
     item_id = form.get('id')
@@ -137,6 +146,8 @@ def prepareEditMenuItemData(data):
 #     ##     ##       ## ##       ##   ##         ##
 #     ##     ## ##    ## ##       ##    ##  ##    ##
 #      #######   ######  ######## ##     ##  ######
+
+
 
 def prepareUserFormData(form):
     user_id = form.get('id')
@@ -254,6 +265,8 @@ def prepareAddUserEmailData(data):
 #     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
 #      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
 
+
+
 def prepareUsersGroupFormData(form):
     group_id = form.get('id')
     name = form.get('name')
@@ -280,4 +293,29 @@ def prepareEditUsersGroupData(data):
         'group_id': data['group_id'],
         'name': data['name']
     }
+    return result
+
+
+
+#      ######  ######## ######## ######## #### ##    ##  ######    ######
+#     ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
+#     ##       ##          ##       ##     ##  ####  ## ##        ##
+#      ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
+#           ## ##          ##       ##     ##  ##  #### ##    ##        ##
+#     ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
+#      ######  ########    ##       ##    #### ##    ##  ######    ######
+
+
+
+def validSaveSettingsData(data):
+    for prop in data:
+        if not validSettingsProperty(data[prop]): return False
+    return True
+
+def prepareSaveSettingsData(settings, data):
+    result = {}
+    for prop in data:
+        if prop not in settings: continue
+        if data[prop] == settings[prop]: continue
+        result[prop] = data[prop]
     return result

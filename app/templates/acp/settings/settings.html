@@ -1,0 +1,32 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Налаштування сайту - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Налаштування сайту</h1>
+    <div class="control_panel">
+        <input type="submit" form="settings_form" value="зберегти" class="button edit">
+    </div>
+    <form id="settings_form" class="acp_form" action="/acp/settings" method="post" accept-charset="utf-8">
+        <table>
+            <tbody>
+                {% for property in settings %}
+                <tr>
+                    <td class="label">
+                        <label for="{{ property }}_field">{{ property }}</label>
+                    </td>
+                    <td>
+                        <input id="{{ property }}_field" type="text" name="{{ property }}" value="{{ settings[property] }}" maxlength="64" placeholder="{{ property }}" autocomplete="on">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</section>
+
+{%- endblock content %}

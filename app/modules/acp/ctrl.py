@@ -189,5 +189,15 @@ class Acp():
 
 
 
-def settings_page(self):
-    return render_template('acp/settings/settings.html', **self.data)
+    def settings_page(self):
+        settings = model.getSettings()
+        self.data['settings'] = settings
+        return render_template('acp/settings/settings.html', **self.data)
+
+    def saveSettings(self, form):
+        data = form.to_dict()
+        if helper.validSaveSettingsData(data):
+            settings = model.getSettings()
+            data = helper.prepareSaveSettingsData(settings, data)
+            if data:
+                model.saveSettings(data)
