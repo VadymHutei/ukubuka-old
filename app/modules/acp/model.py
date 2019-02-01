@@ -207,6 +207,7 @@ def getUsers():
     cursor = connection.cursor()
     cursor.execute(query)
     users = cursor.fetchall()
+    if not users: return []
     users_ids = [str(user['id']) for user in users]
     query = """
         SELECT `user_id`, `property`, `value`
