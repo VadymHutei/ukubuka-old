@@ -168,3 +168,18 @@ class Acp():
     def deleteMenuItem(self, item_id):
         if helper.validMenuItemID(item_id): return model.deleteMenuItem(item_id)
         return False
+
+
+
+#      ######  ######## ######## ######## #### ##    ##  ######    ######
+#     ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
+#     ##       ##          ##       ##     ##  ####  ## ##        ##
+#      ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
+#           ## ##          ##       ##     ##  ##  #### ##    ##        ##
+#     ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
+#      ######  ########    ##       ##    #### ##    ##  ######    ######
+
+
+
+def settings_page(self):
+    return render_template('acp/settings/settings.html', **self.data)

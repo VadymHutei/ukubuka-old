@@ -269,6 +269,25 @@ def acp_menus_delete(lang=config.default_language):
 
 
 
+#      ######  ######## ######## ######## #### ##    ##  ######    ######
+#     ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
+#     ##       ##          ##       ##     ##  ####  ## ##        ##
+#      ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
+#           ## ##          ##       ##     ##  ##  #### ##    ##        ##
+#     ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
+#      ######  ########    ##       ##    #### ##    ##  ######    ######
+
+
+
+@app.route('/acp/settings', methods=['GET'])
+@app.route('/<lang>/acp/settings', methods=['GET'])
+@lang_redirect
+def acp_settings(lang=config.default_language):
+    mod = Acp(lang)
+    return mod.settings_page()
+
+
+
 #
 #
 #     __________ ________    ________       ____    ________      ____
