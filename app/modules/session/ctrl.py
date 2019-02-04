@@ -4,8 +4,9 @@ import modules.session.helper as helper
 
 class Session():
 
-    def __init__(self, session_id):
+    def __init__(self, session_id, **kwargs):
         self.id = session_id
+        self.remote_address = kwargs.get('remote_address')
 
     def isValid(self):
         if self.id is None: return False
@@ -23,4 +24,4 @@ class Session():
         return False
 
     def increaseVisits(self):
-        model.increaseVisits(self.id)
+        model.increaseVisits(self.id, self.remote_address)

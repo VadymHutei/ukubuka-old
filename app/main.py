@@ -30,7 +30,7 @@ app = Flask(__name__)
 
 @app.before_request
 def start_session():
-    session = Session(request.cookies.get(config.session_cookie_name))
+    session = Session(request.cookies.get(config.session_cookie_name), remote_address=request.remote_addr)
     if not session.isValid():
         session_id = session.start()
         if not session_id: return
