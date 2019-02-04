@@ -1,5 +1,6 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.7
 
+ENV TZ Europe/Kiev
 ENV STATIC_URL /static
 
 COPY ./app /app
