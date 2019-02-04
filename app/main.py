@@ -37,7 +37,7 @@ def start_session():
         @after_this_request
         def set_session_cookie(response):
             expire_date = datetime.datetime.now() + datetime.timedelta(days=config.session_cookie_expires)
-            response.set_cookie(config.session_cookie_name, session_id, expires=expire_date)
+            response.set_cookie(config.session_cookie_name, session_id, expires=expire_date, path='/')
             return response
     session.increaseVisits()
 
