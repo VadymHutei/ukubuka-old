@@ -7,6 +7,7 @@ app_config = {
 site_name = 'My Site'
 
 session_cookie_name = 'sessid'
+session_cookie_expires = 90 # days
 session_id_available_characters = '0123456789abcdefghijklmnopqrstuvwxyz'
 session_id_generation_attempts = 10
 

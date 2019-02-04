@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask, request, redirect, url_for, abort, render_template, after_this_request
 from functools import wraps
 import config
@@ -35,7 +36,8 @@ def start_session():
         if not session_id: return
         @after_this_request
         def set_session_cookie(response):
-            response.set_cookie(config.session_cookie_name, session_id)
+            expire_date = datetime.datetime.now() + datetime.timedelta(days=config.session_cookie_expires)
+            response.set_cookie(config.session_cookie_name, session_id, expires=expire_date)
             return response
     session.increaseVisits()
 
