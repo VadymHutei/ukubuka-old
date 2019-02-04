@@ -53,10 +53,10 @@ def start_session():
 
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def main():
     mod = Main()
-    return mod.view
+    return mod.main_page()
 
 
 
