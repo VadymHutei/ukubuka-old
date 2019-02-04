@@ -1,7 +1,7 @@
 from datetime import datetime
 from db import DB
 
-def is_available(session_id):
+def sessionExist(session_id):
     db = DB()
     query = """
         SELECT `visits`
@@ -13,10 +13,9 @@ def is_available(session_id):
     cursor.execute(query, [session_id])
     connection.close()
     data = cursor.fetchone()
-    if data: return 'visits' not in data
-    return True
+    return data and 'visits' in data
 
-def create_session(session_id):
+def createSession(session_id):
     db = DB()
     query = """
         INSERT INTO `{table}` (`id`, `start`)
@@ -26,5 +25,18 @@ def create_session(session_id):
     cursor = connection.cursor()
     start = datetime.now()
     cursor.execute(query, [session_id, start])
+    connection.commit()
+    connection.close()
+
+def increaseVisits(session_id):
+    db = DB()
+    query = """
+        UPDATE `{table}`
+        SET `visits` = `visits` + 1
+        WHERE `id` = %s
+    """.format(table=db.table('sessions'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [session_id])
     connection.commit()
     connection.close()

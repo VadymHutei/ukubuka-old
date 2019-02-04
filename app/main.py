@@ -29,15 +29,15 @@ app = Flask(__name__)
 
 @app.before_request
 def start_session():
-    session_id = request.cookies.get(config.session_cookie_name)
-    if session_id is not None: return
-    session = Session()
-    session_id = session.start()
-    if not session_id: return
-    @after_this_request
-    def set_session_cookie(response):
-        response.set_cookie(config.session_cookie_name, session_id)
-        return response
+    session = Session(request.cookies.get(config.session_cookie_name))
+    if not session.isValid():
+        session_id = session.start()
+        if not session_id: return
+        @after_this_request
+        def set_session_cookie(response):
+            response.set_cookie(config.session_cookie_name, session_id)
+            return response
+    session.increaseVisits()
 
 
 

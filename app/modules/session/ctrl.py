@@ -4,13 +4,23 @@ import modules.session.helper as helper
 
 class Session():
 
-    def __init__(self):
-        pass
+    def __init__(self, session_id):
+        self.id = session_id
+
+    def isValid(self):
+        if self.id is None: return False
+        if helper.validSessionId(self.id):
+            return model.sessionExist(self.id)
+        return False
 
     def start(self):
         for x in range(config.session_id_generation_attempts):
             session_id = helper.create_session_id()
-            if model.is_available(session_id):
-                model.create_session(session_id)
-                return session_id
+            if not model.sessionExist(session_id):
+                self.id = session_id
+                model.createSession(self.id)
+                return self.id
         return False
+
+    def increaseVisits(self):
+        model.increaseVisits(self.id)
