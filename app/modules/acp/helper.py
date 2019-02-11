@@ -1,4 +1,22 @@
 import re
+import random
+import hashlib
+import config
+
+
+def generateSalt(length=16):
+    return ''.join([random.choice('1234567890abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(length)])
+
+def hashPassword(password, salt):
+    m = hashlib.sha256(bytes(password, 'utf-8'))
+    iteration1 = m.hexdigest()
+    m = hashlib.sha256(bytes(iteration1 + config.GLOBAL_SALT, 'utf-8'))
+    iteration2 = m.hexdigest()
+    m = hashlib.sha256(bytes(iteration2 + salt, 'utf-8'))
+    iteration3 = m.hexdigest()
+    m = hashlib.sha256(bytes(iteration3 + password, 'utf-8'))
+    iteration4 = m.hexdigest()
+    return iteration4
 
 
 
@@ -65,6 +83,11 @@ def validMenuItemLink(link):
 def validSettingsProperty(prop):
     if isinstance(prop, str):
         return prop == '' or re.fullmatch(r'[\w. -]{1,64}', prop)
+    return False
+
+def validPassword(prop):
+    if isinstance(prop, str):
+        return prop == '' or re.fullmatch(r'[\w\W]{3,64}', prop)
     return False
 
 
@@ -160,6 +183,7 @@ def prepareUserFormData(form):
     email = form.get('email')
     emails = form.getlist('emails[]')
     is_active = form.get('is_active')
+    password = form.get('password')
     result = {}
     if user_id: result['user_id'] = user_id
     if group_id: result['group_id'] = group_id
@@ -171,6 +195,7 @@ def prepareUserFormData(form):
     if email: result['email'] = email
     if emails: result['emails'] = emails
     result['is_active'] = 'Y' if is_active == 'on' else 'N'
+    if password: result['password'] = password
     return result
 
 def validAddUserData(data):
@@ -181,6 +206,7 @@ def validAddUserData(data):
     if 'last_name' in data and not validUserName(data['last_name']): return False
     if 'phone_number' in data and not validPhoneNumber(data['phone_number']): return False
     if 'email' in data and not validEmail(data['email']): return False
+    if 'password' in data and not validPassword(data['password']): return False
     return True
 
 def prepareAddUserData(data):
@@ -193,6 +219,10 @@ def prepareAddUserData(data):
     if 'last_name' in data and data['last_name']: result['last_name'] = data['last_name']
     if 'phone_number' in data and data['phone_number']: result['phone_number'] = data['phone_number']
     if 'email' in data and data['email']: result['email'] = data['email']
+    if 'password' in data and data['password']:
+        salt = generateSalt()
+        result['salt'] = salt
+        result['password'] = hashPassword(data['password'], salt)
     return result
 
 def validEditUserData(data):

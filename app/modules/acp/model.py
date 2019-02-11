@@ -195,7 +195,7 @@ def deleteMenuItem(item_id):
 
 
 
-user_properties = ('first_name', 'patronymic', 'last_name', 'phone_number', 'email')
+user_properties = ('first_name', 'patronymic', 'last_name', 'phone_number', 'email', 'password', 'salt')
 user_multiproperties = {'phone_numbers': 'phone_number', 'emails': 'email'}
 
 def getUsers():

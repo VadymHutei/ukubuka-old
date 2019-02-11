@@ -25,8 +25,7 @@ class Acp():
 
 
     def authorization_page(self):
-        return 'authorization_page'
-        # return render_template('acp/dashboard.html', **self.data)
+        return render_template('acp/authorization.html', **self.data)
 
 
 

@@ -1,0 +1,15 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Авторизація - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<form>
+    <input type="email" name="email" maxlength="64" required autofocus>
+    <input type="password" name="password" maxlength="64" required>
+    <input type="submit">
+</form>
+
+{%- endblock content %}

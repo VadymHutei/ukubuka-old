@@ -22,3 +22,5 @@ db_prefix = 'prfx_'
 
 languages = ('ukr', 'eng')
 default_language = 'ukr'
+
+GLOBAL_SALT = 'GLOBAL_SALT'

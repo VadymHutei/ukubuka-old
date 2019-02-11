@@ -21,8 +21,8 @@ def lang_redirect(f):
 def admin_access(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if True:
-            return redirect(url_for('acp_authorization'), 403)
+        if False:
+            return redirect(url_for('acp_authorization'), 303)
         return f(*args, **kwargs)
     return decorated_function
 
