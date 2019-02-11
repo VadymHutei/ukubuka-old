@@ -240,6 +240,7 @@ def validEditUserData(data):
     if 'emails' in data:
         for email in data['emails']:
             if not validEmail(email): return False
+    if 'password' in data and not validPassword(data['password']): return False
     return True
 
 def prepareEditUserData(data):
@@ -261,6 +262,10 @@ def prepareEditUserData(data):
             if email:
                 result['emails'].append(email)
     if 'is_active' in data: result['is_active'] = data['is_active']
+    if 'password' in data and data['password']:
+        salt = generateSalt()
+        result['salt'] = salt
+        result['password'] = hashPassword(data['password'], salt)
     return result
 
 def validAddUserPhoneNumberData(data):
