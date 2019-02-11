@@ -353,6 +353,40 @@ def deleteUser(user_id):
     connection.commit()
     connection.close()
 
+def addUserPhoneNumber(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    values = [
+        data['user_id'],
+        'phone_number',
+        data['phone_number']
+    ]
+    query = """
+        INSERT INTO `{table}` (`user_id`, `property`, `value`)
+        VALUES (%s, %s, %s)
+    """.format(table=db.table('users_data'))
+    cursor.execute(query, values)
+    connection.commit()
+    connection.close()
+
+def addUserEmail(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    values = [
+        data['user_id'],
+        'email',
+        data['email']
+    ]
+    query = """
+        INSERT INTO `{table}` (`user_id`, `property`, `value`)
+        VALUES (%s, %s, %s)
+    """.format(table=db.table('users_data'))
+    cursor.execute(query, values)
+    connection.commit()
+    connection.close()
+
 
 
 #     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
