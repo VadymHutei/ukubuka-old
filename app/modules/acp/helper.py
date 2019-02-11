@@ -1,7 +1,7 @@
-import re
 import random
 import hashlib
 import config
+import modules.lib.validation as validation
 
 
 def generateSalt(length=16):
@@ -17,78 +17,6 @@ def hashPassword(password, salt):
     m = hashlib.sha256(bytes(iteration3 + password, 'utf-8'))
     iteration4 = m.hexdigest()
     return iteration4
-
-
-
-#     ##     ##    ###    ##       #### ########     ###    ######## ####  #######  ##    ##
-#     ##     ##   ## ##   ##        ##  ##     ##   ## ##      ##     ##  ##     ## ###   ##
-#     ##     ##  ##   ##  ##        ##  ##     ##  ##   ##     ##     ##  ##     ## ####  ##
-#     ##     ## ##     ## ##        ##  ##     ## ##     ##    ##     ##  ##     ## ## ## ##
-#      ##   ##  ######### ##        ##  ##     ## #########    ##     ##  ##     ## ##  ####
-#       ## ##   ##     ## ##        ##  ##     ## ##     ##    ##     ##  ##     ## ##   ###
-#        ###    ##     ## ######## #### ########  ##     ##    ##    ####  #######  ##    ##
-
-
-
-def validMenuItemID(item_id):
-    if isinstance(item_id, str):
-        return bool(re.fullmatch(r'\d{1,4}', item_id))
-    return False
-
-def validUserID(user_id):
-    if isinstance(user_id, str):
-        return bool(re.fullmatch(r'\d{1,8}', user_id))
-    return False
-
-def validUsersGroupID(users_group_id):
-    if isinstance(users_group_id, str):
-        return bool(re.fullmatch(r'\d{1}', users_group_id))
-    return False
-
-def validMenuName(name):
-    if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,32}', name)
-    return False
-
-def validMenuItemName(name):
-    if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,64}', name)
-    return False
-
-def validUserName(name):
-    if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,64}', name)
-    return False
-
-def validPhoneNumber(phone_number):
-    if isinstance(phone_number, str):
-        return phone_number == '' or re.fullmatch(r'[0-9+() -]{9,64}', phone_number)
-    return False
-
-def validEmail(email):
-    if isinstance(email, str):
-        return email == '' or re.fullmatch(r'[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+', email)
-    return False
-
-def validUsersGroupName(name):
-    if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,64}', name)
-    return False
-
-def validMenuItemLink(link):
-    if isinstance(link, str):
-        return bool(re.fullmatch(r'[\w:./]{1,128}', link))
-    return False
-
-def validSettingsProperty(prop):
-    if isinstance(prop, str):
-        return prop == '' or re.fullmatch(r'[\w. -]{1,64}', prop)
-    return False
-
-def validPassword(prop):
-    if isinstance(prop, str):
-        return prop == '' or re.fullmatch(r'[\w\W]{3,64}', prop)
-    return False
 
 
 
@@ -121,21 +49,21 @@ def prepareMenuItemFormData(form):
     return result
 
 def validAddMenuItemData(data):
-    if 'menu' not in data or not validMenuName(data['menu']): return False
-    if 'name_ukr' not in data or not validMenuItemName(data['name_ukr']): return False
-    if 'name_eng' not in data or not validMenuItemName(data['name_eng']): return False
-    if 'link' in data and not validMenuItemLink(data['link']): return False
-    if 'parent' in data and not validMenuItemID(data['parent']): return False
+    if 'menu' not in data or not validation.menuName(data['menu']): return False
+    if 'name_ukr' not in data or not validation.menuItemName(data['name_ukr']): return False
+    if 'name_eng' not in data or not validation.menuItemName(data['name_eng']): return False
+    if 'link' in data and not validation.menuItemLink(data['link']): return False
+    if 'parent' in data and not validation.menuItemID(data['parent']): return False
     if 'is_active' in data and data['is_active'] not in ['Y', 'N']: return False
     return True
 
 def validEditMenuItemData(data):
-    if 'item_id' not in data or not validMenuItemID(data['item_id']): return False
-    if 'menu' in data and not validMenuName(data['menu']): return False
-    if 'name_ukr' in data and not validMenuItemName(data['name_ukr']): return False
-    if 'name_eng' in data and not validMenuItemName(data['name_eng']): return False
-    if 'link' in data and not validMenuItemLink(data['link']): return False
-    if 'parent' in data and not validMenuItemID(data['parent']): return False
+    if 'item_id' not in data or not validation.menuItemID(data['item_id']): return False
+    if 'menu' in data and not validation.menuName(data['menu']): return False
+    if 'name_ukr' in data and not validation.menuItemName(data['name_ukr']): return False
+    if 'name_eng' in data and not validation.menuItemName(data['name_eng']): return False
+    if 'link' in data and not validation.menuItemLink(data['link']): return False
+    if 'parent' in data and not validation.menuItemID(data['parent']): return False
     if 'is_active' in data and data['is_active'] not in ['Y', 'N']: return False
     return True
 
@@ -199,14 +127,14 @@ def prepareUserFormData(form):
     return result
 
 def validAddUserData(data):
-    if 'group_id' not in data or not validUsersGroupID(data['group_id']): return False
+    if 'group_id' not in data or not validation.usersGroupID(data['group_id']): return False
     if 'is_active' not in data or data['is_active'] not in ['Y', 'N']: return False
-    if 'first_name' in data and not validUserName(data['first_name']): return False
-    if 'patronymic' in data and not validUserName(data['patronymic']): return False
-    if 'last_name' in data and not validUserName(data['last_name']): return False
-    if 'phone_number' in data and not validPhoneNumber(data['phone_number']): return False
-    if 'email' in data and not validEmail(data['email']): return False
-    if 'password' in data and not validPassword(data['password']): return False
+    if 'first_name' in data and not validation.userName(data['first_name']): return False
+    if 'patronymic' in data and not validation.userName(data['patronymic']): return False
+    if 'last_name' in data and not validation.userName(data['last_name']): return False
+    if 'phone_number' in data and not validation.phoneNumber(data['phone_number']): return False
+    if 'email' in data and not validation.email(data['email']): return False
+    if 'password' in data and not validation.password(data['password']): return False
     return True
 
 def prepareAddUserData(data):
@@ -226,21 +154,21 @@ def prepareAddUserData(data):
     return result
 
 def validEditUserData(data):
-    if 'user_id' not in data or not validUserID(data['user_id']): return False
-    if 'group_id' in data and not validUsersGroupID(data['group_id']): return False
+    if 'user_id' not in data or not validation.userID(data['user_id']): return False
+    if 'group_id' in data and not validation.usersGroupID(data['group_id']): return False
     if 'is_active' in data and data['is_active'] not in ['Y', 'N']: return False
-    if 'first_name' in data and not validUserName(data['first_name']): return False
-    if 'patronymic' in data and not validUserName(data['patronymic']): return False
-    if 'last_name' in data and not validUserName(data['last_name']): return False
-    if 'phone_number' in data and not validPhoneNumber(data['phone_number']): return False
+    if 'first_name' in data and not validation.userName(data['first_name']): return False
+    if 'patronymic' in data and not validation.userName(data['patronymic']): return False
+    if 'last_name' in data and not validation.userName(data['last_name']): return False
+    if 'phone_number' in data and not validation.phoneNumber(data['phone_number']): return False
     if 'phone_numbers' in data:
         for phone_number in data['phone_numbers']:
-            if not validPhoneNumber(phone_number): return False
-    if 'email' in data and not validEmail(data['email']): return False
+            if not validation.phoneNumber(phone_number): return False
+    if 'email' in data and not validation.email(data['email']): return False
     if 'emails' in data:
         for email in data['emails']:
-            if not validEmail(email): return False
-    if 'password' in data and not validPassword(data['password']): return False
+            if not validation.email(email): return False
+    if 'password' in data and not validation.password(data['password']): return False
     return True
 
 def prepareEditUserData(data):
@@ -269,8 +197,8 @@ def prepareEditUserData(data):
     return result
 
 def validAddUserPhoneNumberData(data):
-    if 'user_id' not in data or not validUserID(data['user_id']): return False
-    if 'phone_number' not in data or not validPhoneNumber(data['phone_number']) or not data['phone_number']: return False
+    if 'user_id' not in data or not validation.userID(data['user_id']): return False
+    if 'phone_number' not in data or not validation.phoneNumber(data['phone_number']) or not data['phone_number']: return False
     return True
 
 def prepareAddUserPhoneNumberData(data):
@@ -280,8 +208,8 @@ def prepareAddUserPhoneNumberData(data):
     }
 
 def validAddUserEmailData(data):
-    if 'user_id' not in data or not validUserID(data['user_id']): return False
-    if 'email' not in data or not validEmail(data['email']) or not data['email']: return False
+    if 'user_id' not in data or not validation.userID(data['user_id']): return False
+    if 'email' not in data or not validation.email(data['email']) or not data['email']: return False
     return True
 
 def prepareAddUserEmailData(data):
@@ -311,7 +239,7 @@ def prepareUsersGroupFormData(form):
     return result
 
 def validAddUsersGroupData(data):
-    if 'name' not in data or not validUsersGroupName(data['name']): return False
+    if 'name' not in data or not validation.usersGroupName(data['name']): return False
     return True
 
 def prepareAddUsersGroupData(data):
@@ -319,8 +247,8 @@ def prepareAddUsersGroupData(data):
     return result
 
 def validEditUsersGroupData(data):
-    if 'group_id' not in data or not validUsersGroupID(data['group_id']): return False
-    if 'name' not in data or not validUsersGroupName(data['name']): return False
+    if 'group_id' not in data or not validation.usersGroupID(data['group_id']): return False
+    if 'name' not in data or not validation.usersGroupName(data['name']): return False
     return True
 
 def prepareEditUsersGroupData(data):
@@ -344,7 +272,7 @@ def prepareEditUsersGroupData(data):
 
 def validSaveSettingsData(data):
     for prop in data:
-        if not validSettingsProperty(data[prop]): return False
+        if not validation.settingsProperty(data[prop]): return False
     return True
 
 def prepareSaveSettingsData(settings, data):

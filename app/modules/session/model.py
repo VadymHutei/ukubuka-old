@@ -44,3 +44,32 @@ def increaseVisits(session_id, remote_address=None):
     cursor.execute(query, [remote_address, current_datetime, session_id])
     connection.commit()
     connection.close()
+
+def getUserIdByEmail(email):
+    db = DB()
+    query = """
+        SELECT `user_id`
+        FROM `{table}`
+        WHERE `property` = 'email'
+        AND `value` = %s
+    """.format(table=db.table('users_data'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [email])
+    connection.close()
+    data = cursor.fetchone()
+    return data['user_id'] if data and 'user_id' in data else False
+
+def getUserAuthenticationData(user_id):
+    db = DB()
+    query = """
+        SELECT `property`, `value`
+        FROM `{table}`
+        WHERE `user_id` = %s
+        AND `property` IN ('salt', 'password')
+    """.format(table=db.table('users_data'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [user_id])
+    connection.close()
+    return cursor.fetchall()

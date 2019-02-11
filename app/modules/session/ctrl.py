@@ -1,6 +1,7 @@
 import config
 import modules.session.model as model
 import modules.session.helper as helper
+import modules.lib.validation as validation
 
 class Session():
 
@@ -10,7 +11,7 @@ class Session():
 
     def isValid(self):
         if self.id is None: return False
-        if helper.validSessionId(self.id):
+        if validation.sessionId(self.id):
             return model.sessionExist(self.id)
         return False
 
@@ -25,3 +26,16 @@ class Session():
 
     def increaseVisits(self):
         model.increaseVisits(self.id, self.remote_address)
+
+    def authentication(self, form):
+        data = helper.prepareAuthenticationFormData(form)
+        if helper.validAuthenticationData(data):
+            user_id = model.getUserIdByEmail(data['email'])
+            print(user_id)
+            if not user_id: return False
+            user_data = model.getUserAuthenticationData(user_id)
+            print(user_data)
+            if not user_data: return False
+            return 'test2'
+            data = helper.prepareAddUserPhoneNumberData(data)
+            model.addUserPhoneNumber(data)

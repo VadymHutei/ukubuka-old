@@ -22,7 +22,7 @@ def admin_access(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if False:
-            return redirect(url_for('acp_authorization'), 303)
+            return redirect(url_for('acp_authentication'), 303)
         return f(*args, **kwargs)
     return decorated_function
 
@@ -103,12 +103,25 @@ def test():
 def acp(lang=config.default_language):
     return redirect(url_for('acp_dashboard', lang=lang), 302)
 
-@app.route('/acp/authorization', methods=['GET'])
-@app.route('/<lang>/acp/authorization', methods=['GET'])
+@app.route('/acp/authentication', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/authentication', methods=['GET', 'POST'])
 @lang_redirect
-def acp_authorization(lang=config.default_language):
-    mod = Acp(lang)
-    return mod.authorization_page()
+def acp_authentication(lang=config.default_language):
+    if request.method == 'GET':
+        mod = Acp(lang)
+        return mod.authentication_page()
+    else:
+        session = Session(request.cookies.get(config.session_cookie_name), remote_address=request.remote_addr)
+        uic = session.authentication(request.form)
+        if uic:
+            @after_this_request
+            def set_token(response):
+                expire_date = datetime.datetime.now() + datetime.timedelta(days=config.USER_IDENTIFICATION_COOKIE_EXPIRES)
+                response.set_cookie(config.USER_IDENTIFICATION_COOKIE_NAME, uic, expires=expire_date, path='/')
+                return response
+            return redirect(url_for('acp_authentication', lang=lang), 303)
+        else:
+            return redirect(url_for('acp_authentication'), 303)
 
 
 
