@@ -2,8 +2,8 @@ import datetime
 import config
 import modules.session.model as model
 import modules.session.helper as helper
-import modules.lib.validation as validation
-import modules.lib.auth as auth
+import modules.validation as validation
+import modules.auth as auth
 
 class Session():
 

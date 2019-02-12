@@ -13,7 +13,7 @@ def lang_redirect(f):
         if 'lang' in kwargs:
             if kwargs['lang'] == config.DEFAULT_LANGUAGE:
                 return redirect(url_for(f.__name__))
-            if kwargs['lang'] not in config.LANGUAGE:
+            if kwargs['lang'] not in config.LANGUAGES:
                 return redirect(url_for(f.__name__))
         return f(*args, **kwargs)
     return decorated_function

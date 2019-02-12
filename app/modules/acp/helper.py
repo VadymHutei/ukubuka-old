@@ -1,6 +1,6 @@
 import config
-import modules.lib.validation as validation
-import modules.lib.auth as auth
+import modules.validation as validation
+import modules.auth as auth
 
 
 

@@ -1,4 +1,4 @@
-import modules.lib.validation as validation
+import modules.validation as validation
 
 def prepareAuthenticationFormData(form):
     result = {}
