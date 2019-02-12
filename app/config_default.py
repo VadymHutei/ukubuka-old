@@ -1,26 +1,34 @@
-app_config = {
+APP_CONFIG = {
     'debug': True,
     'host': '0.0.0.0',
     'port': 80
 }
 
-site_name = 'My Site'
+SITE_NAME = 'My Site'
 
-db_params = {
+DB_PARAMS = {
     'host': 'localhost',
     'user': 'user_name',
     'password': 'password',
     'db': 'db_name',
     'charset': 'utf8mb4'
 }
-db_prefix = 'prfx_'
+DB_PREFIX = 'prfx_'
 
-languages = ('ukr', 'eng')
-default_language = 'ukr'
+LANGUAGES = ('ukr', 'eng')
+DEFAULT_LANGUAGE = 'ukr'
 
-session_cookie_name = 'sessid'
-session_cookie_expires = 90 # days
-session_id_available_characters = '0123456789abcdefghijklmnopqrstuvwxyz'
-session_id_generation_attempts = 10
+SESSION_COOKIE_NAME = 'sessid'
+SESSION_COOKIE_EXPIRES = 90 # days
+SESSION_ID_AVAILABLE_CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyz'
+SESSION_ID_SIZE = 64
+SESSION_ID_GENERATION_ATTEMPTS = 10
+
+# USER IDENTIFICATION COOKIE
+UIC_NAME = 'uic'
+UIC_EXPIRES = 90 # days
+UIC_AVAILABLE_CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyz'
+UID_SIZE = 64
 
 GLOBAL_SALT = 'GLOBAL_SALT'
+SALT_AVAILABLE_CHARACTERS = '1234567890abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'

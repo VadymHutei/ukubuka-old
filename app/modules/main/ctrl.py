@@ -7,7 +7,7 @@ class Main():
 
     def __init__(self):
         self.data = {
-            'site_name': config.site_name
+            'site_name': config.SITE_NAME
         }
 
     def main_page(self):

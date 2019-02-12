@@ -5,11 +5,11 @@ import modules.acp.helper as helper
 
 class Acp():
 
-    def __init__(self, lang=config.default_language):
-        self.lang = lang if config.languages else config.default_language
+    def __init__(self, lang=config.DEFAULT_LANGUAGE):
+        self.lang = lang if config.LANGUAGES else config.DEFAULT_LANGUAGE
         self.data = {
             'menus': model.getMenus(self.lang),
-            'site_name': config.site_name
+            'site_name': config.SITE_NAME
         }
 
 

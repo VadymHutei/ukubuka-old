@@ -1,22 +1,6 @@
-import random
-import hashlib
 import config
 import modules.lib.validation as validation
-
-
-def generateSalt(length=16):
-    return ''.join([random.choice('1234567890abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(length)])
-
-def hashPassword(password, salt):
-    m = hashlib.sha256(bytes(password, 'utf-8'))
-    iteration1 = m.hexdigest()
-    m = hashlib.sha256(bytes(iteration1 + config.GLOBAL_SALT, 'utf-8'))
-    iteration2 = m.hexdigest()
-    m = hashlib.sha256(bytes(iteration2 + salt, 'utf-8'))
-    iteration3 = m.hexdigest()
-    m = hashlib.sha256(bytes(iteration3 + password, 'utf-8'))
-    iteration4 = m.hexdigest()
-    return iteration4
+import modules.lib.auth as auth
 
 
 
@@ -191,9 +175,9 @@ def prepareEditUserData(data):
                 result['emails'].append(email)
     if 'is_active' in data: result['is_active'] = data['is_active']
     if 'password' in data and data['password']:
-        salt = generateSalt()
+        salt = auth.generateSalt()
         result['salt'] = salt
-        result['password'] = hashPassword(data['password'], salt)
+        result['password'] = auth.hashPassword(data['password'], salt)
     return result
 
 def validAddUserPhoneNumberData(data):
