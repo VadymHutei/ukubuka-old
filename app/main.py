@@ -35,7 +35,11 @@ app = Flask(__name__)
 
 @app.before_request
 def start_session():
-    session = Session(request.cookies.get(config.SESSION_COOKIE_NAME), remote_address=request.remote_addr)
+    session = Session(
+        request.cookies.get(config.SESSION_COOKIE_NAME),
+        remote_address=request.remote_addr,
+        request_url=request.path
+    )
     if not session.isValid():
         session_id = session.start()
         if not session_id: return
@@ -103,7 +107,6 @@ def test():
 
 @app.route('/acp', methods=['GET'])
 @app.route('/<lang>/acp', methods=['GET'])
-@admin_access
 @lang_redirect
 def acp(lang=config.DEFAULT_LANGUAGE):
     return redirect(url_for('acp_dashboard', lang=lang), 302)

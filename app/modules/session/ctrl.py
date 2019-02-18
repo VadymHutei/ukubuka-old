@@ -11,6 +11,7 @@ class Session():
         self.id = session_id
         self.uic = kwargs.get('uic')
         self.remote_address = kwargs.get('remote_address')
+        self.request_url = kwargs.get('request_url')
         self.user = {}
 
     def isValid(self):
@@ -44,7 +45,7 @@ class Session():
         return False
 
     def increaseVisits(self):
-        model.increaseVisits(self.id, self.remote_address)
+        model.increaseVisits(self.id, self.remote_address, self.request_url)
 
     def authentication(self, form):
         data = helper.prepareAuthenticationFormData(form)

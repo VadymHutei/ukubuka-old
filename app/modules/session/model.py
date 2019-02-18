@@ -28,20 +28,21 @@ def createSession(session_id):
     connection.commit()
     connection.close()
 
-def increaseVisits(session_id, remote_address=None):
+def increaseVisits(session_id, remote_address=None, request_url=None):
     db = DB()
     query = """
         UPDATE `{table}`
         SET
             `visits` = `visits` + 1,
             `remote_address` = %s,
+            `request_url` = %s,
             `last_visit` = %s
         WHERE `id` = %s
     """.format(table=db.table('sessions'))
     current_datetime = datetime.now()
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, [remote_address, current_datetime, session_id])
+    cursor.execute(query, [remote_address, request_url, current_datetime, session_id])
     connection.commit()
     connection.close()
 
