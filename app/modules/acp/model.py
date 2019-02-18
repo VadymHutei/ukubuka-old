@@ -184,6 +184,56 @@ def deleteMenuItem(item_id):
     connection.close()
 
 
+def getCategories(language, parent=None):
+    db = DB()
+    if parent is None:
+        query = """
+            SELECT
+                c.`id`,
+                c.`parent`, 
+                t.`name` 
+            FROM `{table}` c
+            LEFT JOIN `{table_text}` t
+                ON c.`id` = t.`category_id`
+            WHERE t.`language` = %s
+        """.format(
+            table=db.table('categories'),
+            table_text=db.table('categories_text')
+        )
+        connection = db.getConnection()
+        cursor = connection.cursor()
+        cursor.execute(query, [language])
+        categories = cursor.fetchall()
+        connection.close()
+    else:
+        categories = []
+        parents = [parent]
+        while parents:
+            parents_str = ', '.join([str(x) for x in parents])
+            query = """
+                SELECT
+                    c.`id`,
+                    c.`parent`, 
+                    t.`name` 
+                FROM `{table}` c
+                LEFT JOIN `{table_text}` t
+                    ON c.`id` = t.`category_id`
+                WHERE t.`language` = %s
+                AND c.`parent` IN (%s)
+            """.format(
+                table=db.table('categories'),
+                table_text=db.table('categories_text')
+            )
+            connection = db.getConnection()
+            cursor = connection.cursor()
+            cursor.execute(query, [language, parents_str])
+            data = cursor.fetchall()
+            if data: categories += data
+            parents = [x['id'] for x in data]
+        connection.close()
+    return categories
+
+
 
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##

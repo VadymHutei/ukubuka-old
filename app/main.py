@@ -152,6 +152,26 @@ def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
 
 
 
+#      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
+#     ##    ##   ## ##      ##    ##       ##    ##  ##     ## ##     ##  ##  ##       ##    ##
+#     ##        ##   ##     ##    ##       ##        ##     ## ##     ##  ##  ##       ##
+#     ##       ##     ##    ##    ######   ##   #### ##     ## ########   ##  ######    ######
+#     ##       #########    ##    ##       ##    ##  ##     ## ##   ##    ##  ##             ##
+#     ##    ## ##     ##    ##    ##       ##    ##  ##     ## ##    ##   ##  ##       ##    ##
+#      ######  ##     ##    ##    ########  ######    #######  ##     ## #### ########  ######
+
+
+
+@app.route('/acp/categories/', methods=['GET'])
+@app.route('/<lang>/acp/categories/', methods=['GET'])
+@admin_access
+@lang_redirect
+def acp_categories(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    return mod.categories_page()
+
+
+
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##
 #     ##     ## ##       ##       ##     ## ##
