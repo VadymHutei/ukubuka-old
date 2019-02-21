@@ -249,59 +249,6 @@ def acp_users_add_email(lang=config.DEFAULT_LANGUAGE):
 
 
 
-#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
-#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
-#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
-#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
-#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
-#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
-#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
-
-
-
-@app.route('/acp/users/groups/', methods=['GET'])
-@app.route('/<lang>/acp/users/groups/', methods=['GET'])
-@admin_access
-@lang_redirect
-def acp_users_groups(lang=config.DEFAULT_LANGUAGE):
-    mod = Acp(lang)
-    return mod.users_groups_page()
-
-@app.route('/acp/users/groups/add', methods=['GET', 'POST'])
-@app.route('/<lang>/acp/users/groups/add', methods=['GET', 'POST'])
-@admin_access
-@lang_redirect
-def acp_users_groups_add(lang=config.DEFAULT_LANGUAGE):
-    mod = Acp(lang)
-    if request.method == 'GET':
-        return mod.users_groups_add_page()
-    else:
-        mod.addUsersGroup(request.form)
-        return redirect(url_for('acp_users_groups'), 303)
-
-@app.route('/acp/users/groups/edit', methods=['GET', 'POST'])
-@app.route('/<lang>/acp/users/groups/edit', methods=['GET', 'POST'])
-@admin_access
-@lang_redirect
-def acp_users_groups_edit(lang=config.DEFAULT_LANGUAGE):
-    mod = Acp(lang)
-    if request.method == 'GET':
-        return mod.users_groups_edit_page(request.args['id'])
-    else:
-        mod.editUsersGroup(request.form)
-        return redirect(url_for('acp_users_groups'), 303)
-
-@app.route('/acp/users/groups/delete', methods=['GET'])
-@app.route('/<lang>/acp/users/groups/delete', methods=['GET'])
-@admin_access
-@lang_redirect
-def acp_users_groups_delete(lang=config.DEFAULT_LANGUAGE):
-    mod = Acp(lang)
-    mod.deleteUsersGroup(request.args['id'])
-    return redirect(url_for('acp_users_groups'), 303)
-
-
-
 #     ##     ## ######## ##    ## ##     ##  ######
 #     ###   ### ##       ###   ## ##     ## ##    ##
 #     #### #### ##       ####  ## ##     ## ##

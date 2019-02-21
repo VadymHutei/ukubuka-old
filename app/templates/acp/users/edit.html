@@ -32,10 +32,10 @@
                         <label for="select_group">Група</label>
                     </td>
                     <td>
-                        {% for group in groups %}
+                        {% for group_id in groups %}
                         <div>
-                            <input id="select_group_{{ group['id'] }}" type="radio" name="group_id" value="{{ group['id'] }}"{% if user['group_id'] == group['id'] %} checked{% endif %}>
-                            <label for="select_group_{{ group['id'] }}">{{ group['name'] }}</label>
+                            <input id="select_group_{{ group_id }}" type="radio" name="group_id" value="{{ group_id }}"{% if user['group_id'] == group_id %} checked{% endif %}>
+                            <label for="select_group_{{ group_id }}">{{ groups[group_id] }}</label>
                         </div>
                         {% endfor %}
                     </td>

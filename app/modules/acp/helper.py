@@ -204,46 +204,6 @@ def prepareAddUserEmailData(data):
 
 
 
-#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
-#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
-#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
-#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
-#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
-#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
-#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
-
-
-
-def prepareUsersGroupFormData(form):
-    group_id = form.get('id')
-    name = form.get('name')
-    result = {}
-    if group_id: result['group_id'] = group_id
-    if name: result['name'] = name
-    return result
-
-def validAddUsersGroupData(data):
-    if 'name' not in data or not validation.usersGroupName(data['name']): return False
-    return True
-
-def prepareAddUsersGroupData(data):
-    result = {'name': data['name']}
-    return result
-
-def validEditUsersGroupData(data):
-    if 'group_id' not in data or not validation.usersGroupID(data['group_id']): return False
-    if 'name' not in data or not validation.usersGroupName(data['name']): return False
-    return True
-
-def prepareEditUsersGroupData(data):
-    result = {
-        'group_id': data['group_id'],
-        'name': data['name']
-    }
-    return result
-
-
-
 #      ######  ######## ######## ######## #### ##    ##  ######    ######
 #     ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
 #     ##       ##          ##       ##     ##  ####  ## ##        ##

@@ -74,19 +74,18 @@ class Acp():
     def users_page(self):
         users = model.getUsers()
         self.data['users'] = users
+        self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/users.html', **self.data)
 
     def user_add_page(self):
-        groups = model.getUsersGroups()
-        self.data['groups'] = groups
+        self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/add.html', **self.data)
 
     def user_edit_page(self, user_id):
         if not validation.userID(user_id): return False
         user = model.getUser(user_id)
-        groups = model.getUsersGroups()
         self.data['user'] = user
-        self.data['groups'] = groups
+        self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/edit.html', **self.data)
 
     def user_add_phone_number_page(self, user_id):
@@ -126,48 +125,6 @@ class Acp():
         if validation.addUserEmailData(data):
             data = helper.prepareAddUserEmailData(data)
             model.addUserEmail(data)
-
-
-
-#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
-#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
-#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
-#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
-#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
-#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
-#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
-
-
-
-    def users_groups_page(self):
-        groups = model.getUsersGroups()
-        self.data['users_groups'] = groups
-        return render_template('acp/users/groups/groups.html', **self.data)
-
-    def users_groups_add_page(self):
-        return render_template('acp/users/groups/add.html', **self.data)
-
-    def users_groups_edit_page(self, group_id):
-        if not validation.usersGroupID(group_id): return 'invalid ID'
-        group = model.getUsersGroup(group_id)
-        self.data['group'] = group
-        return render_template('acp/users/groups/edit.html', **self.data)
-
-    def addUsersGroup(self, form):
-        data = helper.prepareUsersGroupFormData(form)
-        if validation.addUsersGroupData(data):
-            data = helper.prepareAddUsersGroupData(data)
-            model.addUsersGroup(data)
-
-    def editUsersGroup(self, form):
-        data = helper.prepareUsersGroupFormData(form)
-        if helper.validEditUsersGroupData(data):
-            data = helper.prepareEditUsersGroupData(data)
-            model.editUsersGroup(data)
-
-    def deleteUsersGroup(self, users_group_id):
-        if validation.usersGroupID(users_group_id): return model.deleteUsersGroup(users_group_id)
-        return False
 
 
 

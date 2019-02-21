@@ -251,14 +251,9 @@ user_multiproperties = {'phone_numbers': 'phone_number', 'emails': 'email'}
 def getUsers():
     db = DB()
     query = """
-        SELECT u.`id`, u.`group_id`, ug.`name` group_name, u.`is_active`
-        FROM `{table_u}` u
-        LEFT JOIN `{table_ug}` ug
-            ON ug.`id` = u.`group_id`
-    """.format(
-        table_u=db.table('users'),
-        table_ug=db.table('users_groups')
-    )
+        SELECT `id`, `group_id`, `is_active`
+        FROM `{table}`
+    """.format(table=db.table('users'))
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query)
@@ -434,81 +429,6 @@ def addUserEmail(data):
         VALUES (%s, %s, %s)
     """.format(table=db.table('users_data'))
     cursor.execute(query, values)
-    connection.commit()
-    connection.close()
-
-
-
-#     ##     ##  ######  ######## ########   ######      ######   ########   #######  ##     ## ########   ######
-#     ##     ## ##    ## ##       ##     ## ##    ##    ##    ##  ##     ## ##     ## ##     ## ##     ## ##    ##
-#     ##     ## ##       ##       ##     ## ##          ##        ##     ## ##     ## ##     ## ##     ## ##
-#     ##     ##  ######  ######   ########   ######     ##   #### ########  ##     ## ##     ## ########   ######
-#     ##     ##       ## ##       ##   ##         ##    ##    ##  ##   ##   ##     ## ##     ## ##              ##
-#     ##     ## ##    ## ##       ##    ##  ##    ##    ##    ##  ##    ##  ##     ## ##     ## ##        ##    ##
-#      #######   ######  ######## ##     ##  ######      ######   ##     ##  #######   #######  ##         ######
-
-
-
-def getUsersGroups():
-    db = DB()
-    query = 'SELECT * FROM `{table}`'.format(table=db.table('users_groups'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query)
-    connection.close()
-    users_groups = cursor.fetchall()
-    return users_groups
-
-def getUsersGroup(group_id):
-    db = DB()
-    query = """
-        SELECT `id`, `name`
-        FROM `{table}`
-        WHERE `id` = %s
-    """.format(table=db.table('users_groups'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query, [group_id])
-    connection.close()
-    group_data = cursor.fetchone()
-    return group_data
-
-def addUsersGroup(data):
-    values = [data['name']]
-    db = DB()
-    query = """
-        INSERT INTO `{table}` (`name`)
-        VALUES (%s)
-    """.format(table=db.table('users_groups'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query, values)
-    connection.commit()
-    connection.close()
-
-def editUsersGroup(data):
-    values = [data['name'], data['group_id']]
-    db = DB()
-    query = """
-        UPDATE `{table}`
-        SET `name` = %s
-        WHERE `id` = %s
-    """.format(table=db.table('users_groups'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query, values)
-    connection.commit()
-    connection.close()
-
-def deleteUsersGroup(users_group_id):
-    db = DB()
-    query = """
-        DELETE FROM `{table}`
-        WHERE `id` = %s
-    """.format(table=db.table('users_groups'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query, [users_group_id])
     connection.commit()
     connection.close()
 
