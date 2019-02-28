@@ -144,7 +144,7 @@ def acp_authentication(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/dashboard', methods=['GET'])
 @app.route('/<lang>/acp/dashboard', methods=['GET'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -164,7 +164,7 @@ def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/categories/', methods=['GET'])
 @app.route('/<lang>/acp/categories/', methods=['GET'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_categories(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -172,7 +172,7 @@ def acp_categories(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/categories/<int:parent_id>', methods=['GET'])
 @app.route('/<lang>/acp/categories/<int:parent_id>', methods=['GET'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_categories_parent(parent_id, lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -192,7 +192,7 @@ def acp_categories_parent(parent_id, lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/users/', methods=['GET'])
 @app.route('/<lang>/acp/users/', methods=['GET'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_users(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -200,7 +200,7 @@ def acp_users(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/users/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/add', methods=['GET', 'POST'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_users_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -212,7 +212,7 @@ def acp_users_add(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/users/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/edit', methods=['GET', 'POST'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_users_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -224,7 +224,7 @@ def acp_users_edit(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/users/delete', methods=['GET'])
 @app.route('/<lang>/acp/users/delete', methods=['GET'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_users_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -233,7 +233,7 @@ def acp_users_delete(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/users/add_phone_number', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/add_phone_number', methods=['GET', 'POST'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_users_add_phone_number(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -245,7 +245,7 @@ def acp_users_add_phone_number(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/users/add_email', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/add_email', methods=['GET', 'POST'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_users_add_email(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -269,7 +269,7 @@ def acp_users_add_email(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/menus/', methods=['GET'])
 @app.route('/<lang>/acp/menus/', methods=['GET'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_menus(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -277,7 +277,7 @@ def acp_menus(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/menus/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/menus/add', methods=['GET', 'POST'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_menus_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -289,7 +289,7 @@ def acp_menus_add(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/menus/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/menus/edit', methods=['GET', 'POST'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_menus_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -301,7 +301,7 @@ def acp_menus_edit(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/menus/delete', methods=['GET'])
 @app.route('/<lang>/acp/menus/delete', methods=['GET'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_menus_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
@@ -322,7 +322,7 @@ def acp_menus_delete(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/settings', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/settings', methods=['GET', 'POST'])
-@admin_access
+# @admin_access
 @lang_redirect
 def acp_settings(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
