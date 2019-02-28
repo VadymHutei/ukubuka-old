@@ -10,6 +10,11 @@ def userID(user_id):
         return bool(re.fullmatch(r'\d{1,8}', user_id))
     return False
 
+def categoryID(category_id):
+    if isinstance(category_id, str):
+        return bool(re.fullmatch(r'\d{1,8}', category_id))
+    return False
+
 def usersGroupID(users_group_id):
     if isinstance(users_group_id, str):
         return bool(re.fullmatch(r'\d{1}', users_group_id))

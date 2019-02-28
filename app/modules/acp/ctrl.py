@@ -40,9 +40,18 @@ class Acp():
 
 
 
-    def categories_page(self):
-        categories = model.getCategories(self.lang, 1)
-        # self.data['categories'] = categories
+    def categories_page(self, parent=None):
+        if parent is None:
+            categories = model.getCategories(self.lang)
+        else:
+            if validation.categoryID(parent):
+                categories = model.getSubcategories(parent, self.lang)
+                parent = model.getCategory(parent, self.lang)
+            else:
+                categories = model.getCategories(self.lang)
+                parent = None
+        self.data['categories'] = categories
+        self.data['parent'] = parent
         return render_template('acp/categories/categories.html', **self.data)
 
 

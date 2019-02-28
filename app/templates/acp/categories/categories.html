@@ -1,1 +1,60 @@
-categories
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Категорії - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Категорії</h1>
+    <div class="control_panel">
+        {% if parent is not none %}
+        <a href="/acp/categories/{% if parent['parent'] is not none %}?parent={{ parent['parent'] }}{% endif %}" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        {% endif %}
+        <a href="/acp/categories/add" class="button_link">
+            <div class="button add">
+                <span class="title">додати</span>
+            </div>
+        </a>
+    </div>
+    <table class="acp_table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Батьківська категорія</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category_id in categories %}
+            <tr>
+                <td class="center">{{ categories[category_id]['id'] }}</td>
+                <td>
+                    <a href="/acp/categories/?parent={{ categories[category_id]['id'] }}">{{ categories[category_id]['name'] }}</a>
+                </td>
+                <td>
+                    {% if categories[category_id]['parent']: %}
+                    <a href="/acp/categories/?parent={{ categories[category_id]['parent']['id'] }}">{{ categories[category_id]['parent']['name'] }}</a>
+                    {% else: %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="actions">
+                        <a href="/acp/categories/edit?id={{ categories[category_id]['id'] }}">редагувати</a>
+                        <a href="/acp/categories/delete?id={{ categories[category_id]['id'] }}">видалити</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{%- endblock content %}

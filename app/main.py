@@ -168,6 +168,14 @@ def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
 @lang_redirect
 def acp_categories(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
+    return mod.categories_page(request.args.get('parent'))
+
+@app.route('/acp/categories/<int:parent_id>', methods=['GET'])
+@app.route('/<lang>/acp/categories/<int:parent_id>', methods=['GET'])
+@admin_access
+@lang_redirect
+def acp_categories_parent(parent_id, lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
     return mod.categories_page()
 
 

@@ -184,9 +184,74 @@ def deleteMenuItem(item_id):
     connection.close()
 
 
-def getCategories(language, parent=None):
+
+#      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
+#     ##    ##   ## ##      ##    ##       ##    ##  ##     ## ##     ##  ##  ##       ##    ##
+#     ##        ##   ##     ##    ##       ##        ##     ## ##     ##  ##  ##       ##
+#     ##       ##     ##    ##    ######   ##   #### ##     ## ########   ##  ######    ######
+#     ##       #########    ##    ##       ##    ##  ##     ## ##   ##    ##  ##             ##
+#     ##    ## ##     ##    ##    ##       ##    ##  ##     ## ##    ##   ##  ##       ##    ##
+#      ######  ##     ##    ##    ########  ######    #######  ##     ## #### ########  ######
+
+
+
+def getCategory(category_id, language):
     db = DB()
-    if parent is None:
+    query = """
+        SELECT
+            c.`id`,
+            c.`parent`, 
+            t.`name` 
+        FROM `{table}` c
+        LEFT JOIN `{table_text}` t
+            ON c.`id` = t.`category_id`
+        WHERE t.`language` = %s
+        AND c.`id` = %s
+    """.format(
+        table=db.table('categories'),
+        table_text=db.table('categories_text')
+    )
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [language, category_id])
+    connection.close()
+    return cursor.fetchone()
+
+def getCategories(language):
+    db = DB()
+    query = """
+        SELECT
+            c.`id`,
+            c.`parent`, 
+            t.`name` 
+        FROM `{table}` c
+        LEFT JOIN `{table_text}` t
+            ON c.`id` = t.`category_id`
+        WHERE t.`language` = %s
+    """.format(
+        table=db.table('categories'),
+        table_text=db.table('categories_text')
+    )
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [language])
+    data = cursor.fetchall()
+    connection.close()
+    if not data: return {}
+    categories = {row['id']: row for row in data}
+    for category_id in categories:
+        if categories[category_id]['parent'] is not None:
+            if categories[category_id]['parent'] in categories:
+                categories[category_id]['parent'] = categories[categories[category_id]['parent']]
+    return categories
+
+def getSubcategories(parent, language):
+    db = DB()
+    categories_data = []
+    parents = [parent]
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    while parents:
         query = """
             SELECT
                 c.`id`,
@@ -196,41 +261,22 @@ def getCategories(language, parent=None):
             LEFT JOIN `{table_text}` t
                 ON c.`id` = t.`category_id`
             WHERE t.`language` = %s
+            AND c.`parent` IN %s
         """.format(
             table=db.table('categories'),
             table_text=db.table('categories_text')
         )
-        connection = db.getConnection()
-        cursor = connection.cursor()
-        cursor.execute(query, [language])
-        categories = cursor.fetchall()
-        connection.close()
-    else:
-        categories = []
-        parents = [parent]
-        while parents:
-            parents_str = ', '.join([str(x) for x in parents])
-            query = """
-                SELECT
-                    c.`id`,
-                    c.`parent`, 
-                    t.`name` 
-                FROM `{table}` c
-                LEFT JOIN `{table_text}` t
-                    ON c.`id` = t.`category_id`
-                WHERE t.`language` = %s
-                AND c.`parent` IN (%s)
-            """.format(
-                table=db.table('categories'),
-                table_text=db.table('categories_text')
-            )
-            connection = db.getConnection()
-            cursor = connection.cursor()
-            cursor.execute(query, [language, parents_str])
-            data = cursor.fetchall()
-            if data: categories += data
-            parents = [x['id'] for x in data]
-        connection.close()
+        cursor.execute(query, [language, parents])
+        data = cursor.fetchall()
+        if data: categories_data += data
+        parents = [x['id'] for x in data]
+    connection.close()
+    if not categories_data: return {}
+    categories = {row['id']: row for row in categories_data}
+    for category_id in categories:
+        if categories[category_id]['parent'] is not None:
+            if categories[category_id]['parent'] in categories:
+                categories[category_id]['parent'] = categories[categories[category_id]['parent']]
     return categories
 
 
