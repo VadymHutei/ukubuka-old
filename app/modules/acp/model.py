@@ -1,3 +1,4 @@
+import config
 from db import DB
 
 
@@ -291,41 +292,71 @@ def getSubcategories(parent, language):
 
 
 
-user_properties = ('first_name', 'patronymic', 'last_name', 'phone_number', 'email', 'password', 'salt')
-user_multiproperties = {'phone_numbers': 'phone_number', 'emails': 'email'}
-
 def getUsers():
     db = DB()
     query = """
-        SELECT `id`, `group_id`, `is_active`
+        SELECT
+            `id`,
+            `group_id`,
+            `first_name`,
+            `last_name`,
+            `patronymic`,
+            `added`,
+            `is_active`
         FROM `{table}`
     """.format(table=db.table('users'))
     connection = db.getConnection()
     cursor = connection.cursor()
     cursor.execute(query)
-    users = cursor.fetchall()
-    if not users: return []
-    users_ids = [str(user['id']) for user in users]
-    query = """
-        SELECT `user_id`, `property`, `value`
-        FROM `{table}`
-        WHERE `user_id` IN ({users_ids})
-    """.format(
-        table=db.table('users_data'),
-        users_ids=', '.join(users_ids)
-    )
-    cursor.execute(query)
     users_data = cursor.fetchall()
-    connection.close()
-    users = {user['id']: user for user in users}
-    multivalues = ('email', 'phone_number')
+    if not users_data:
+        connection.close()
+        return []
+    user_ids = []
+    users = {}
     for row in users_data:
-        if row['user_id'] not in users: continue
-        if row['property'] in multivalues:
-            if row['property'] not in users[row['user_id']]: users[row['user_id']][row['property']] = []
-            users[row['user_id']][row['property']].append(row['value'])
-        else:
-            users[row['user_id']][row['property']] = row['value']
+        user_ids.append(row['id'])
+        users[row['id']] = {
+            'id': row['id'],
+            'first_name': row['first_name'],
+            'last_name': row['last_name'],
+            'patronymic': row['patronymic'],
+            'group_id': row['group_id'],
+            'group': config.USERS_GROUPS.get(row['group_id'], ''),
+            'added': row['added'].strftime('%d-%m-%Y %H:%M:%S'),
+            'is_active': row['is_active'] == 'Y',
+            'emails': [],
+            'phone_numbers': []
+        }
+    query = """
+        SELECT
+            `user_id`,
+            `email`
+        FROM `{table}`
+        WHERE `user_id` IN %s
+    """.format(
+        table=db.table('users_emails')
+    )
+    cursor.execute(query, [user_ids])
+    user_emails_data = cursor.fetchall()
+    query = """
+        SELECT
+            `user_id`,
+            `phone_number`
+        FROM `{table}`
+        WHERE `user_id` IN %s
+    """.format(
+        table=db.table('users_phone_numbers')
+    )
+    cursor.execute(query, [user_ids])
+    user_phone_numbers_data = cursor.fetchall()
+    connection.close()
+    for row in user_emails_data:
+        if row['user_id'] in users:
+            users[row['user_id']]['emails'].append(row['email'])
+    for row in user_phone_numbers_data:
+        if row['user_id'] in users:
+            users[row['user_id']]['phone_numbers'].append(row['phone_number'])
     return users
 
 def getUser(user_id):

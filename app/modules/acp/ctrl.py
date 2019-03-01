@@ -81,8 +81,7 @@ class Acp():
 
 
     def users_page(self):
-        users = model.getUsers()
-        self.data['users'] = users
+        self.data['users'] = model.getUsers()
         self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/users.html', **self.data)
 
