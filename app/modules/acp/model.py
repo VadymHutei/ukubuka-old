@@ -323,10 +323,10 @@ def getUsers():
             'patronymic': row['patronymic'],
             'group_id': row['group_id'],
             'group': config.USERS_GROUPS.get(row['group_id'], ''),
-            'added': row['added'].strftime('%d-%m-%Y %H:%M:%S'),
-            'is_active': row['is_active'] == 'Y',
             'emails': [],
-            'phone_numbers': []
+            'phone_numbers': [],
+            'added': row['added'].strftime('%d-%m-%Y %H:%M:%S'),
+            'is_active': row['is_active'] == 'Y'
         }
     query = """
         SELECT
@@ -334,9 +334,7 @@ def getUsers():
             `email`
         FROM `{table}`
         WHERE `user_id` IN %s
-    """.format(
-        table=db.table('users_emails')
-    )
+    """.format(table=db.table('users_emails'))
     cursor.execute(query, [user_ids])
     user_emails_data = cursor.fetchall()
     query = """
@@ -345,9 +343,7 @@ def getUsers():
             `phone_number`
         FROM `{table}`
         WHERE `user_id` IN %s
-    """.format(
-        table=db.table('users_phone_numbers')
-    )
+    """.format(table=db.table('users_phone_numbers'))
     cursor.execute(query, [user_ids])
     user_phone_numbers_data = cursor.fetchall()
     connection.close()

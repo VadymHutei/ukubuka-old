@@ -37,21 +37,21 @@
                 <td>{% if users[user_id]['patronymic'] %}{{ users[user_id]['patronymic'] }}{% else %}-{% endif %}</td>
                 <td>{% if users[user_id]['last_name'] %}{{ users[user_id]['last_name'] }}{% else %}-{% endif %}</td>
                 <td>
-                    {% if users[user_id]['phone_number'] %}
-                        {{ '<br>'.join(users[user_id]['phone_number'])|safe }}
+                    {% if users[user_id]['phone_numbers'] %}
+                        {{ '<br>'.join(users[user_id]['phone_numbers'])|safe }}
                     {% else %}
                         -
                     {% endif %}
                 </td>
                 <td>
-                    {% if users[user_id]['email'] %}
-                        {{ '<br>'.join(users[user_id]['email'])|safe }}
+                    {% if users[user_id]['emails'] %}
+                        {{ '<br>'.join(users[user_id]['emails'])|safe }}
                     {% else %}
                         -
                     {% endif %}
                 </td>
                 <td class="center">{{ groups[users[user_id]['group_id']] }}</td>
-                <td class="center"><input type="checkbox" disabled{% if users[user_id]['is_active'] == 'Y' %} checked{% endif %}></td>
+                <td class="center"><input type="checkbox" disabled{% if users[user_id]['is_active'] %} checked{% endif %}></td>
                 <td>
                     <div class="actions">
                         <a href="/acp/users/edit?id={{ users[user_id]['id'] }}">редагувати</a>
