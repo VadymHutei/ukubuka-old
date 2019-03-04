@@ -1,3 +1,4 @@
+from datetime import datetime
 import config
 import modules.validation as validation
 import modules.auth as auth
@@ -132,9 +133,10 @@ def prepareAddUserData(data):
     if 'phone_number' in data and data['phone_number']: result['phone_number'] = data['phone_number']
     if 'email' in data and data['email']: result['email'] = data['email']
     if 'password' in data and data['password']:
-        salt = generateSalt()
+        salt = auth.generateSalt()
         result['salt'] = salt
-        result['password'] = hashPassword(data['password'], salt)
+        result['password_hash'] = auth.hashPassword(data['password'], salt)
+    result['added'] = datetime.now()
     return result
 
 def validEditUserData(data):

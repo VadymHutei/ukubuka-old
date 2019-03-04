@@ -5,7 +5,7 @@ import config
 def createSessionID():
     return ''.join([random.choice(config.SESSION_ID_AVAILABLE_CHARACTERS) for _ in range(config.SESSION_ID_SIZE)])
 
-def generateSalt(length=16):
+def generateSalt(length=64):
     return ''.join([random.choice(config.SALT_AVAILABLE_CHARACTERS) for _ in range(length)])
 
 def hashPassword(password, salt):

@@ -107,8 +107,9 @@ class Acp():
 
     def addUser(self, form):
         data = helper.prepareUserFormData(form)
-        if validation.addUserData(data):
+        if helper.validAddUserData(data):
             data = helper.prepareAddUserData(data)
+            print(data)
             model.addUser(data)
 
     def editUser(self, form):

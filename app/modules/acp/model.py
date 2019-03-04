@@ -390,27 +390,42 @@ def getUser(user_id):
 
 def addUser(data):
     db = DB()
-    values = [
-        data['group_id'],
-        data['is_active']
-    ]
+    users_fields = ('group_id', 'added', 'is_active', 'first_name', 'patronymic', 'last_name')
+    fields = []
+    values = []
+    for field in users_fields:
+        if field in data:
+            values.append(data[field])
+            fields.append('`' + field + '`')
     query = """
-        INSERT INTO `{table}` (`group_id`, `is_active`)
-        VALUES (%s, %s)
-    """.format(table=db.table('users'))
+        INSERT INTO `{table}` ({fields})
+        VALUES %s
+    """.format(
+        table=db.table('users'),
+        fields=', '.join(fields)
+    )
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, values)
-    values = []
-    for prop in data:
-        if prop not in user_properties: continue
-        values.append([cursor.lastrowid, prop, data[prop]])
-    if values:
+    cursor.execute(query, (values,))
+    user_id = cursor.lastrowid
+    if 'email' in data:
         query = """
-            INSERT INTO `{table}` (`user_id`, `property`, `value`)
+            INSERT INTO `{table}` (`user_id`, `email`)
+            VALUES (%s, %s)
+        """.format(table=db.table('users_emails'))
+        cursor.execute(query, [user_id, data['email']])
+    if 'phone_number' in data:
+        query = """
+            INSERT INTO `{table}` (`user_id`, `phone_number`)
+            VALUES (%s, %s)
+        """.format(table=db.table('users_phone_numbers'))
+        cursor.execute(query, [user_id, data['phone_number']])
+    if 'salt' in data and 'password_hash' in data:
+        query = """
+            INSERT INTO `{table}` (`user_id`, `salt`, `password_hash`)
             VALUES (%s, %s, %s)
-        """.format(table=db.table('users_data'))
-        cursor.executemany(query, values)
+        """.format(table=db.table('users_passwords'))
+        cursor.execute(query, [user_id, data['salt'], data['password_hash']])
     connection.commit()
     connection.close()
 
