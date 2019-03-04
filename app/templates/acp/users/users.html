@@ -54,8 +54,9 @@
                 <td class="center"><input type="checkbox" disabled{% if users[user_id]['is_active'] %} checked{% endif %}></td>
                 <td>
                     <div class="actions">
-                        <a href="/acp/users/edit?id={{ users[user_id]['id'] }}">редагувати</a>
-                        <a href="/acp/users/delete?id={{ users[user_id]['id'] }}">видалити</a>
+                        <a href="/acp/users/edit?id={{ users[user_id]['id'] }}">&#9998; редагувати</a>
+                        <br>
+                        <a href="/acp/users/delete?id={{ users[user_id]['id'] }}">&#10007; видалити</a>
                     </div>
                 </td>
             </tr>
