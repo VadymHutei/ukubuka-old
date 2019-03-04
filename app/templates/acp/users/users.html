@@ -50,7 +50,7 @@
                         -
                     {% endif %}
                 </td>
-                <td class="center">{{ groups[users[user_id]['group_id']] }}</td>
+                <td class="center">{{ users[user_id]['group'] }}</td>
                 <td class="center"><input type="checkbox" disabled{% if users[user_id]['is_active'] %} checked{% endif %}></td>
                 <td>
                     <div class="actions">

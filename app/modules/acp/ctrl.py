@@ -82,7 +82,6 @@ class Acp():
 
     def users_page(self):
         self.data['users'] = model.getUsers()
-        self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/users.html', **self.data)
 
     def user_add_page(self):
