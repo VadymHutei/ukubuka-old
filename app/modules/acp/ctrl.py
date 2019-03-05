@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, abort
 import config
 import modules.acp.model as model
 import modules.acp.helper as helper
@@ -89,8 +89,9 @@ class Acp():
         return render_template('acp/users/add.html', **self.data)
 
     def user_edit_page(self, user_id):
-        if not validation.userID(user_id): return False
+        if not validation.userID(user_id): return abort(404)
         user = model.getUser(user_id)
+        if not user: return abort(404)
         self.data['user'] = user
         self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/edit.html', **self.data)

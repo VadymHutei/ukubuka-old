@@ -357,35 +357,51 @@ def getUsers():
 
 def getUser(user_id):
     db = DB()
-    query = """
-        SELECT u.`id`, u.`group_id`, ug.`name` group_name, u.`is_active`
-        FROM `{table_u}` u
-        LEFT JOIN `{table_ug}` ug
-            ON ug.`id` = u.`group_id`
-        WHERE u.`id` = %s
-    """.format(
-        table_u=db.table('users'),
-        table_ug=db.table('users_groups')
-    )
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, [user_id])
-    user = cursor.fetchone()
     query = """
-        SELECT `user_id`, `property`, `value`
+        SELECT
+            `id`,
+            `group_id`,
+            `first_name`,
+            `last_name`,
+            `patronymic`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('users'))
+    cursor.execute(query, (user_id,))
+    user_data = cursor.fetchone()
+    if not user_data:
+        connection.close()
+        return False
+    query = """
+        SELECT `phone_number`
         FROM `{table}`
         WHERE `user_id` = %s
-    """.format(table=db.table('users_data'))
-    cursor.execute(query, [user_id])
-    user_data = cursor.fetchall()
+    """.format(table=db.table('users_phone_numbers'))
+    cursor.execute(query, (user_id,))
+    user_phone_numbers_data = cursor.fetchall()
+    query = """
+        SELECT `email`
+        FROM `{table}`
+        WHERE `user_id` = %s
+    """.format(table=db.table('users_emails'))
+    cursor.execute(query, (user_id,))
+    user_emails_data = cursor.fetchall()
     connection.close()
-    multivalues = ('email', 'phone_number')
-    for row in user_data:
-        if row['property'] in multivalues:
-            if row['property'] not in user: user[row['property']] = []
-            user[row['property']].append(row['value'])
-        else:
-            user[row['property']] = row['value']
+    user = {}
+    for prop in user_data:
+        user[prop] = user_data[prop] if user_data[prop] is not None else ''
+    if user_phone_numbers_data:
+        user['phone_numbers'] = []
+        for row in user_phone_numbers_data:
+            user['phone_numbers'].append(row['phone_number'])
+    if user_emails_data:
+        user['emails'] = []
+        for row in user_emails_data:
+            user['emails'].append(row['email'])
     return user
 
 def addUser(data):

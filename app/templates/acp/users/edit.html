@@ -69,8 +69,8 @@
                         <label for="phone_number_field">Номер телефону</label>
                     </td>
                     <td>
-                        {% if user['phone_number'] %}
-                        {% for phone_number in user['phone_number'] %}
+                        {% if user['phone_numbers'] %}
+                        {% for phone_number in user['phone_numbers'] %}
                         <div>
                             <input id="phone_number_field" type="tel" name="phone_numbers[]" value="{{ phone_number }}" minlength="9" maxlength="64" placeholder="+380 (ХХ) ХХХ-ХХХХ" autocomplete="off">
                         </div>
@@ -86,8 +86,8 @@
                         <label for="email_field">E-Mail</label>
                     </td>
                     <td>
-                        {% if user['email'] %}
-                        {% for email in user['email'] %}
+                        {% if user['emails'] %}
+                        {% for email in user['emails'] %}
                         <div>
                             <input id="email_field" type="email" name="emails[]" value="{{ email }}" maxlength="64" placeholder="E-Mail" autocomplete="off">
                         </div>
