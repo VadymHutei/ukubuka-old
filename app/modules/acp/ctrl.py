@@ -75,6 +75,10 @@ class Acp():
             data = helper.prepareAddCategoryData(data)
             model.addCategory(data)
 
+    def deleteCategory(self, category_id):
+        if validation.categoryID(category_id): return model.deleteCategory(category_id)
+        return False
+
 
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##

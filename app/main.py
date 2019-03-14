@@ -182,6 +182,15 @@ def acp_categories_add(lang=config.DEFAULT_LANGUAGE):
         mod.addCategory(request.form)
         return redirect(url_for('acp_categories'), 303)
 
+@app.route('/acp/categories/delete', methods=['GET'])
+@app.route('/<lang>/acp/categories/delete', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_categories_delete(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    mod.deleteCategory(request.args['id'])
+    return redirect(url_for('acp_categories'), 303)
+
 
 
 #     ##     ##  ######  ######## ########   ######

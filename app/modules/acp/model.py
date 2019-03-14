@@ -300,6 +300,18 @@ def addCategory(data):
     connection.commit()
     connection.close()
 
+def deleteCategory(category_id):
+    db = DB()
+    query = """
+        DELETE FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('categories'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [category_id])
+    connection.commit()
+    connection.close()
+
 
 
 #     ##     ##  ######  ######## ########   ######
