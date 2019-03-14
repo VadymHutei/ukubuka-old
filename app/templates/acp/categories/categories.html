@@ -32,26 +32,27 @@
             </tr>
         </thead>
         <tbody>
-            {% for category_id in categories %}
+            {% for category in categories.values() recursive %}
             <tr>
-                <td class="center">{{ categories[category_id]['id'] }}</td>
+                <td class="center">{{ category['id'] }}</td>
                 <td>
-                    <a href="/acp/categories/?parent={{ categories[category_id]['id'] }}">{{ categories[category_id]['name'] }}</a>
+                    <a href="/acp/categories/?parent={{ category['id'] }}">{{ category['name'] }}</a>
                 </td>
                 <td>
-                    {% if categories[category_id]['parent']: %}
-                    <a href="/acp/categories/?parent={{ categories[category_id]['parent']['id'] }}">{{ categories[category_id]['parent']['name'] }}</a>
+                    {% if category['parent']: %}
+                    <a href="/acp/categories/?parent={{ category['parent'] }}">{{ category['parent'] }}</a>
                     {% else: %}
                     -
                     {% endif %}
                 </td>
                 <td>
                     <div class="actions">
-                        <a href="/acp/categories/edit?id={{ categories[category_id]['id'] }}">&#9998; редагувати</a>
-                        <a href="/acp/categories/delete?id={{ categories[category_id]['id'] }}">&#10007; видалити</a>
+                        <a href="/acp/categories/edit?id={{ category['id'] }}">&#9998; редагувати</a>
+                        <a href="/acp/categories/delete?id={{ category['id'] }}">&#10007; видалити</a>
                     </div>
                 </td>
             </tr>
+            {{ loop(category['subcategories'].values()) }}
             {% endfor %}
         </tbody>
     </table>

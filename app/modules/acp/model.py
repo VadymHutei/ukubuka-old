@@ -218,13 +218,13 @@ def getCategory(category_id, language):
     connection.close()
     return cursor.fetchone()
 
-def getCategories(language):
+def getCategoriesOld(language):
     db = DB()
     query = """
         SELECT
             c.`id`,
-            c.`parent`, 
-            t.`name` 
+            c.`parent`,
+            t.`name`
         FROM `{table}` c
         LEFT JOIN `{table_text}` t
             ON c.`id` = t.`category_id`
@@ -245,6 +245,63 @@ def getCategories(language):
             if categories[category_id]['parent'] in categories:
                 categories[category_id]['parent'] = categories[categories[category_id]['parent']]
     return categories
+
+def getCategories(language, parent=None):
+    result = {}
+    db = DB()
+    query = """
+        SELECT
+            c.`id`,
+            c.`parent`,
+            c.`is_active`,
+            t.`name`
+        FROM `{table}` c
+        LEFT JOIN `{table_text}` t
+            ON c.`id` = t.`category_id`
+        WHERE t.`language` = %s
+    """.format(
+        table=db.table('categories'),
+        table_text=db.table('categories_text')
+    )
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, [language])
+    connection.close()
+    categories_data = cursor.fetchall()
+    if not categories_data: return result
+    categories = {row['id']: row for row in categories_data}
+    parents = {}
+    for category_id in categories:
+        if categories[category_id]['parent'] is None:
+            result[category_id] = categories[category_id]
+            result[category_id]['subcategories'] = {}
+        else:
+            if categories[category_id]['parent'] not in parents:
+                parents[categories[category_id]['parent']] = []
+            parents[categories[category_id]['parent']].append(category_id)
+    def setSubcategories(result):
+        for r_category_id in result:
+            if r_category_id in parents:
+                for p_category_id in parents[r_category_id]:
+                    result[r_category_id]['subcategories'][p_category_id] = categories[p_category_id]
+                    result[r_category_id]['subcategories'][p_category_id]['subcategories'] = {}
+            if result[r_category_id]['subcategories']:
+                setSubcategories(result[r_category_id]['subcategories'])
+    setSubcategories(result)
+    if parent is None:
+        return result
+    else:
+        if type(parent) is str: parent = int(parent)
+        def getSubcategories(parent, categories):
+            for category_id in categories:
+                if category_id == parent:
+                    return categories[category_id]['subcategories']
+                else:
+                    subcategories = getSubcategories(parent, categories[category_id]['subcategories'])
+                    if subcategories:
+                        return subcategories
+            return {}
+        return getSubcategories(parent, result)
 
 def getSubcategories(parent, language):
     db = DB()

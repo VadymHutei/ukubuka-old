@@ -170,13 +170,17 @@ def acp_categories(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.categories_page(request.args.get('parent'))
 
-@app.route('/acp/categories/<int:parent_id>', methods=['GET'])
-@app.route('/<lang>/acp/categories/<int:parent_id>', methods=['GET'])
+@app.route('/acp/categories/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/categories/add', methods=['GET', 'POST'])
 # @admin_access
 @lang_redirect
-def acp_categories_parent(parent_id, lang=config.DEFAULT_LANGUAGE):
+def acp_categories_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
-    return mod.categories_page()
+    if request.method == 'GET':
+        return mod.add_category_page()
+    else:
+        mod.addCategory(request.form)
+        return redirect(url_for('acp_categories'), 303)
 
 
 
