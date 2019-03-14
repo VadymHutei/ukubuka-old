@@ -30,6 +30,21 @@ class Acp():
 
 
 
+#     ########     ###     ######  ##     ## ########   #######     ###    ########  ########
+#     ##     ##   ## ##   ##    ## ##     ## ##     ## ##     ##   ## ##   ##     ## ##     ##
+#     ##     ##  ##   ##  ##       ##     ## ##     ## ##     ##  ##   ##  ##     ## ##     ##
+#     ##     ## ##     ##  ######  ######### ########  ##     ## ##     ## ########  ##     ##
+#     ##     ## #########       ## ##     ## ##     ## ##     ## ######### ##   ##   ##     ##
+#     ##     ## ##     ## ##    ## ##     ## ##     ## ##     ## ##     ## ##    ##  ##     ##
+#     ########  ##     ##  ######  ##     ## ########   #######  ##     ## ##     ## ########
+
+
+
+    def dashboard_page(self):
+        return render_template('acp/dashboard.html', **self.data)
+
+
+
 #      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
 #     ##    ##   ## ##      ##    ##       ##    ##  ##     ## ##     ##  ##  ##       ##    ##
 #     ##        ##   ##     ##    ##       ##        ##     ## ##     ##  ##  ##       ##
@@ -48,28 +63,17 @@ class Acp():
             parent = model.getCategory(parent, self.lang)
         self.data['categories'] = categories
         self.data['parent'] = parent
-        print(self.data['categories'])
-        print(self.data['parent'])
         return render_template('acp/categories/categories.html', **self.data)
 
     def add_category_page(self):
         self.data['categories'] = model.getCategories(self.lang)
         return render_template('acp/categories/add.html', **self.data)
 
-
-#     ########     ###     ######  ##     ## ########   #######     ###    ########  ########
-#     ##     ##   ## ##   ##    ## ##     ## ##     ## ##     ##   ## ##   ##     ## ##     ##
-#     ##     ##  ##   ##  ##       ##     ## ##     ## ##     ##  ##   ##  ##     ## ##     ##
-#     ##     ## ##     ##  ######  ######### ########  ##     ## ##     ## ########  ##     ##
-#     ##     ## #########       ## ##     ## ##     ## ##     ## ######### ##   ##   ##     ##
-#     ##     ## ##     ## ##    ## ##     ## ##     ## ##     ## ##     ## ##    ##  ##     ##
-#     ########  ##     ##  ######  ##     ## ########   #######  ##     ## ##     ## ########
-
-
-
-    def dashboard_page(self):
-        return render_template('acp/dashboard.html', **self.data)
-
+    def addCategory(self, form):
+        data = helper.prepareCategoryFormData(form)
+        if helper.validAddCategoryData(data):
+            data = helper.prepareAddCategoryData(data)
+            model.addCategory(data)
 
 
 #     ##     ##  ######  ######## ########   ######
@@ -112,7 +116,6 @@ class Acp():
         data = helper.prepareUserFormData(form)
         if helper.validAddUserData(data):
             data = helper.prepareAddUserData(data)
-            print(data)
             model.addUser(data)
 
     def editUser(self, form):

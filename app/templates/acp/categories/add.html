@@ -25,7 +25,7 @@
                     </td>
                     <td>
                         <select id="parent_field" name="parent">
-                            <option label="Коренева категорія" value="" selected></option>
+                            <option label="Коренева категорія" value="None" selected></option>
                             {% for category in categories.values() recursive %}
                             <option label="{{ category['name'] }}" value="{{ category['id'] }}"></option>
                             {{ loop(category['subcategories'].values()) }}

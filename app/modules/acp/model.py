@@ -218,34 +218,6 @@ def getCategory(category_id, language):
     connection.close()
     return cursor.fetchone()
 
-def getCategoriesOld(language):
-    db = DB()
-    query = """
-        SELECT
-            c.`id`,
-            c.`parent`,
-            t.`name`
-        FROM `{table}` c
-        LEFT JOIN `{table_text}` t
-            ON c.`id` = t.`category_id`
-        WHERE t.`language` = %s
-    """.format(
-        table=db.table('categories'),
-        table_text=db.table('categories_text')
-    )
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query, [language])
-    data = cursor.fetchall()
-    connection.close()
-    if not data: return {}
-    categories = {row['id']: row for row in data}
-    for category_id in categories:
-        if categories[category_id]['parent'] is not None:
-            if categories[category_id]['parent'] in categories:
-                categories[category_id]['parent'] = categories[categories[category_id]['parent']]
-    return categories
-
 def getCategories(language, parent=None):
     result = {}
     db = DB()
@@ -303,39 +275,30 @@ def getCategories(language, parent=None):
             return {}
         return getSubcategories(parent, result)
 
-def getSubcategories(parent, language):
+def addCategory(data):
     db = DB()
-    categories_data = []
-    parents = [parent]
+    query = """
+        INSERT INTO `{table}` (`parent`, `added`, `is_active`)
+        VALUES (%s, %s, %s)
+    """.format(table=db.table('categories'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    while parents:
+    cursor.execute(query, (data['parent'], data['added'], data['is_active']))
+    category_id = cursor.lastrowid
+    if 'name_ukr' in data:
         query = """
-            SELECT
-                c.`id`,
-                c.`parent`, 
-                t.`name` 
-            FROM `{table}` c
-            LEFT JOIN `{table_text}` t
-                ON c.`id` = t.`category_id`
-            WHERE t.`language` = %s
-            AND c.`parent` IN %s
-        """.format(
-            table=db.table('categories'),
-            table_text=db.table('categories_text')
-        )
-        cursor.execute(query, [language, parents])
-        data = cursor.fetchall()
-        if data: categories_data += data
-        parents = [x['id'] for x in data]
+            INSERT INTO `{table}` (`category_id`, `language`, `name`)
+            VALUES (%s, 'ukr', %s)
+        """.format(table=db.table('categories_text'))
+        cursor.execute(query, (category_id, data['name_ukr']))
+    if 'name_eng' in data:
+        query = """
+            INSERT INTO `{table}` (`category_id`, `language`, `name`)
+            VALUES (%s, 'eng', %s)
+        """.format(table=db.table('categories_text'))
+        cursor.execute(query, (category_id, data['name_eng']))
+    connection.commit()
     connection.close()
-    if not categories_data: return {}
-    categories = {row['id']: row for row in categories_data}
-    for category_id in categories:
-        if categories[category_id]['parent'] is not None:
-            if categories[category_id]['parent'] in categories:
-                categories[category_id]['parent'] = categories[categories[category_id]['parent']]
-    return categories
 
 
 

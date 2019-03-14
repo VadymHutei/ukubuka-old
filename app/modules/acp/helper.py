@@ -39,7 +39,7 @@ def validAddMenuItemData(data):
     if 'name_eng' not in data or not validation.menuItemName(data['name_eng']): return False
     if 'link' in data and not validation.menuItemLink(data['link']): return False
     if 'parent' in data and not validation.menuItemID(data['parent']): return False
-    if 'is_active' in data and data['is_active'] not in ['Y', 'N']: return False
+    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def validEditMenuItemData(data):
@@ -49,7 +49,7 @@ def validEditMenuItemData(data):
     if 'name_eng' in data and not validation.menuItemName(data['name_eng']): return False
     if 'link' in data and not validation.menuItemLink(data['link']): return False
     if 'parent' in data and not validation.menuItemID(data['parent']): return False
-    if 'is_active' in data and data['is_active'] not in ['Y', 'N']: return False
+    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareAddMenuItemData(data):
@@ -71,6 +71,48 @@ def prepareEditMenuItemData(data):
     if 'link' in data: result['link'] = data['link']
     if 'parent' in data: result['parent'] = data['parent']
     if 'is_active' in data: result['is_active'] = data['is_active']
+    return result
+
+
+
+#      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
+#     ##    ##   ## ##      ##    ##       ##    ##  ##     ## ##     ##  ##  ##       ##    ##
+#     ##        ##   ##     ##    ##       ##        ##     ## ##     ##  ##  ##       ##
+#     ##       ##     ##    ##    ######   ##   #### ##     ## ########   ##  ######    ######
+#     ##       #########    ##    ##       ##    ##  ##     ## ##   ##    ##  ##             ##
+#     ##    ## ##     ##    ##    ##       ##    ##  ##     ## ##    ##   ##  ##       ##    ##
+#      ######  ##     ##    ##    ########  ######    #######  ##     ## #### ########  ######
+
+
+
+def prepareCategoryFormData(form):
+    parent = form.get('parent')
+    name_ukr = form.get('name_ukr')
+    name_eng = form.get('name_eng')
+    is_active = form.get('is_active', 'off')
+    result = {}
+    if name_ukr: result['name_ukr'] = name_ukr
+    if name_eng: result['name_eng'] = name_eng
+    result['parent'] = None if parent == 'None' else parent
+    result['is_active'] = 'Y' if is_active == 'on' else 'N'
+    return result
+
+def validAddCategoryData(data):
+    print(data)
+    if 'parent' not in data or not (validation.categoryID(data['parent']) or data['parent'] is None): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    if 'name_ukr' in data and not validation.categoryName(data['name_ukr']): return False
+    if 'name_eng' in data and not validation.categoryName(data['name_eng']): return False
+    return True
+
+def prepareAddCategoryData(data):
+    result = {
+        'parent': data['parent'],
+        'is_active': data['is_active']
+    }
+    if 'name_ukr' in data and data['name_ukr']: result['name_ukr'] = data['name_ukr']
+    if 'name_eng' in data and data['name_eng']: result['name_eng'] = data['name_eng']
+    result['added'] = datetime.now()
     return result
 
 
@@ -113,7 +155,7 @@ def prepareUserFormData(form):
 
 def validAddUserData(data):
     if 'group_id' not in data or not validation.usersGroupID(data['group_id']): return False
-    if 'is_active' not in data or data['is_active'] not in ['Y', 'N']: return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     if 'first_name' in data and not validation.userName(data['first_name']): return False
     if 'patronymic' in data and not validation.userName(data['patronymic']): return False
     if 'last_name' in data and not validation.userName(data['last_name']): return False
@@ -142,7 +184,7 @@ def prepareAddUserData(data):
 def validEditUserData(data):
     if 'user_id' not in data or not validation.userID(data['user_id']): return False
     if 'group_id' in data and not validation.usersGroupID(data['group_id']): return False
-    if 'is_active' in data and data['is_active'] not in ['Y', 'N']: return False
+    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     if 'first_name' in data and not validation.userName(data['first_name']): return False
     if 'patronymic' in data and not validation.userName(data['patronymic']): return False
     if 'last_name' in data and not validation.userName(data['last_name']): return False
