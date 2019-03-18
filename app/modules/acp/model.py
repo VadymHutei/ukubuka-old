@@ -196,27 +196,39 @@ def deleteMenuItem(item_id):
 
 
 
-def getCategory(category_id, language):
+def getCategory(category_id):
     db = DB()
     query = """
         SELECT
-            c.`id`,
-            c.`parent`, 
-            t.`name` 
-        FROM `{table}` c
-        LEFT JOIN `{table_text}` t
-            ON c.`id` = t.`category_id`
-        WHERE t.`language` = %s
-        AND c.`id` = %s
-    """.format(
-        table=db.table('categories'),
-        table_text=db.table('categories_text')
-    )
+            `id`,
+            `parent`,
+            `is_active`
+        FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('categories'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, [language, category_id])
+    cursor.execute(query, (category_id))
+    category_data = cursor.fetchone()
+    if not category_data:
+        connection.close()
+        return {}
+    query = """
+        SELECT
+            `language`,
+            `name`
+        FROM `{table}`
+        WHERE `category_id` = %s
+    """.format(table=db.table('categories_text'))
+    cursor.execute(query, (category_id))
     connection.close()
-    return cursor.fetchone()
+    category_text_data = cursor.fetchall()
+    for row in category_text_data:
+        for prop in row:
+            if prop == 'language': continue
+            if prop not in category_data: category_data[prop] = {}
+            category_data[prop][row['language']] = row[prop]
+    return category_data
 
 def getCategories(language, parent=None):
     result = {}
@@ -225,6 +237,7 @@ def getCategories(language, parent=None):
         SELECT
             c.`id`,
             c.`parent`,
+            c.`added`,
             c.`is_active`,
             t.`name`
         FROM `{table}` c
@@ -298,6 +311,52 @@ def addCategory(data):
         """.format(table=db.table('categories_text'))
         cursor.execute(query, (category_id, data['name_eng']))
     connection.commit()
+    connection.close()
+
+def editCategory(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    categories_field = ('parent', 'is_active')
+    columns = []
+    values = []
+    commit = False
+    for prop in categories_field:
+        if prop in data:
+            columns.append(prop)
+            values.append(data[prop])
+    if columns:
+        columns = ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
+        values.append(data['id'])
+        query = """
+            UPDATE `{table}`
+            SET {additional_columns}
+            WHERE `id` = %s
+        """.format(
+            table=db.table('categories'),
+            additional_columns=columns
+        )
+        cursor.execute(query, values)
+        commit = True
+    if 'name_ukr' in data:
+        query = """
+            UPDATE `{table}`
+            SET `name` = %s
+            WHERE `category_id` = %s
+            AND `language` = 'ukr'
+        """.format(table=db.table('categories_text'))
+        cursor.execute(query, (data['name_ukr'], data['id']))
+        commit = True
+    if 'name_eng' in data:
+        query = """
+            UPDATE `{table}`
+            SET `name` = %s
+            WHERE `category_id` = %s
+            AND `language` = 'eng'
+        """.format(table=db.table('categories_text'))
+        cursor.execute(query, (data['name_eng'], data['id']))
+        commit = True
+    if commit: connection.commit()
     connection.close()
 
 def deleteCategory(category_id):

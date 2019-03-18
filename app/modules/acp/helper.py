@@ -86,11 +86,13 @@ def prepareEditMenuItemData(data):
 
 
 def prepareCategoryFormData(form):
+    category_id = form.get('id')
     parent = form.get('parent')
     name_ukr = form.get('name_ukr')
     name_eng = form.get('name_eng')
     is_active = form.get('is_active', 'off')
     result = {}
+    if category_id: result['id'] = category_id
     if name_ukr: result['name_ukr'] = name_ukr
     if name_eng: result['name_eng'] = name_eng
     result['parent'] = None if parent == 'None' else parent
@@ -98,9 +100,8 @@ def prepareCategoryFormData(form):
     return result
 
 def validAddCategoryData(data):
-    print(data)
     if 'parent' not in data or not (validation.categoryID(data['parent']) or data['parent'] is None): return False
-    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     if 'name_ukr' in data and not validation.categoryName(data['name_ukr']): return False
     if 'name_eng' in data and not validation.categoryName(data['name_eng']): return False
     return True
@@ -113,6 +114,22 @@ def prepareAddCategoryData(data):
     if 'name_ukr' in data and data['name_ukr']: result['name_ukr'] = data['name_ukr']
     if 'name_eng' in data and data['name_eng']: result['name_eng'] = data['name_eng']
     result['added'] = datetime.now()
+    return result
+
+def validEditCategoryData(data):
+    if 'id' not in data or not validation.categoryID(data['id']): return False
+    if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
+    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
+    if 'name_ukr' in data and not validation.categoryName(data['name_ukr']): return False
+    if 'name_eng' in data and not validation.categoryName(data['name_eng']): return False
+    return True
+
+def prepareEditCategoryData(data):
+    result = {'id': data['id']}
+    if 'parent' in data and data['parent']: result['parent'] = data['parent']
+    if 'name_ukr' in data and data['name_ukr']: result['name_ukr'] = data['name_ukr']
+    if 'name_eng' in data and data['name_eng']: result['name_eng'] = data['name_eng']
+    if 'is_active' in data and data['is_active']: result['is_active'] = data['is_active']
     return result
 
 

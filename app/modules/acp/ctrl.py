@@ -55,25 +55,41 @@ class Acp():
 
 
 
-    def categories_page(self, parent=None):
+    def categoriesPage(self, parent=None):
         if parent is None or not validation.categoryID(parent):
             categories = model.getCategories(self.lang)
         else:
             categories = model.getCategories(self.lang, parent)
-            parent = model.getCategory(parent, self.lang)
+            parent = model.getCategory(parent)
         self.data['categories'] = categories
         self.data['parent'] = parent
         return render_template('acp/categories/categories.html', **self.data)
 
-    def add_category_page(self):
+    def addCategoryPage(self):
         self.data['categories'] = model.getCategories(self.lang)
         return render_template('acp/categories/add.html', **self.data)
+
+    def editCategoryPage(self, category_id):
+        if not validation.categoryID(category_id): return abort(404)
+        category = model.getCategory(category_id)
+        if not category: return abort(404)
+        self.data['categories'] = model.getCategories(self.lang)
+        self.data['category'] = category
+        return render_template('acp/categories/edit.html', **self.data)
 
     def addCategory(self, form):
         data = helper.prepareCategoryFormData(form)
         if helper.validAddCategoryData(data):
             data = helper.prepareAddCategoryData(data)
             model.addCategory(data)
+
+    def editCategory(self, form):
+        data = helper.prepareCategoryFormData(form)
+        print(data)
+        if helper.validEditCategoryData(data):
+            data = helper.prepareEditCategoryData(data)
+            print(data)
+            model.editCategory(data)
 
     def deleteCategory(self, category_id):
         if validation.categoryID(category_id): return model.deleteCategory(category_id)

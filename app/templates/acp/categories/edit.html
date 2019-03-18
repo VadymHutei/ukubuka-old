@@ -1,0 +1,73 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Редагувати категорію - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Редагувати категорію</h1>
+    <div class="control_panel">
+        <a href="/acp/categories/" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        <input type="submit" form="edit_category_form" value="зберегти" class="button edit">
+    </div>
+    <form id="edit_category_form" class="acp_form" action="/acp/categories/edit" method="post" accept-charset="utf-8">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">
+                        <label for="id_field">ID</label>
+                    </td>
+                    <td>
+                        <input id="id_field" type="text" name="id" value="{{ category['id'] }}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="parent_field">Батьківська категорія</label>
+                    </td>
+                    <td>
+                        <select id="parent_field" name="parent">
+                            <option label="Коренева категорія" value="None"{% if category['parent'] is none %} selected{% endif %}></option>
+                            {% for parent in categories.values() recursive %}
+                            <option label="{{ parent['name'] }}" value="{{ parent['id'] }}"{% if category['parent'] == parent['id'] %} selected{% endif %}></option>
+                            {{ loop(parent['subcategories'].values()) }}
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="name_ukr_field">Назва українською</label>
+                    </td>
+                    <td>
+                        <input id="name_ukr_field" type="text" name="name_ukr" placeholder="українською" value="{{ category['name']['ukr'] }}" maxlength="64" autocomplete="off" required autofocus>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="name_eng_field">Назва англійською</label>
+                    </td>
+                    <td>
+                        <input id="name_eng_field" type="text" name="name_eng" placeholder="англійською" value="{{ category['name']['eng'] }}" maxlength="64" autocomplete="off" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="is_active_field">Показувати</label>
+                    </td>
+                    <td>
+                        <input id="is_active_field" type="checkbox" name="is_active"{% if category['is_active'] == 'Y' %} checked{% endif %}>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</section>
+
+{%- endblock content %}

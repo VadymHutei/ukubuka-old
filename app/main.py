@@ -168,25 +168,37 @@ def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
 @lang_redirect
 def acp_categories(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
-    return mod.categories_page(request.args.get('parent'))
+    return mod.categoriesPage(request.args.get('parent'))
 
 @app.route('/acp/categories/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/categories/add', methods=['GET', 'POST'])
 # @admin_access
 @lang_redirect
-def acp_categories_add(lang=config.DEFAULT_LANGUAGE):
+def acp_add_category(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
-        return mod.add_category_page()
+        return mod.addCategoryPage()
     else:
         mod.addCategory(request.form)
+        return redirect(url_for('acp_categories'), 303)
+
+@app.route('/acp/categories/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/categories/edit', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_edit_category(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.editCategoryPage(request.args['id'])
+    else:
+        mod.editCategory(request.form)
         return redirect(url_for('acp_categories'), 303)
 
 @app.route('/acp/categories/delete', methods=['GET'])
 @app.route('/<lang>/acp/categories/delete', methods=['GET'])
 # @admin_access
 @lang_redirect
-def acp_categories_delete(lang=config.DEFAULT_LANGUAGE):
+def acp_delete_category(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteCategory(request.args['id'])
     return redirect(url_for('acp_categories'), 303)
