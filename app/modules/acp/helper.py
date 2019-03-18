@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 import config
 import modules.validation as validation
 import modules.auth as auth
@@ -88,21 +89,23 @@ def prepareEditMenuItemData(data):
 def prepareCategoryFormData(form):
     category_id = form.get('id')
     parent = form.get('parent')
-    name_ukr = form.get('name_ukr')
-    name_eng = form.get('name_eng')
     is_active = form.get('is_active', 'off')
     result = {}
     if category_id: result['id'] = category_id
-    if name_ukr: result['name_ukr'] = name_ukr
-    if name_eng: result['name_eng'] = name_eng
     result['parent'] = None if parent == 'None' else parent
     result['is_active'] = 'Y' if is_active == 'on' else 'N'
+    for language in config.LANGUAGES:
+        field = 'name_' + language
+        name = form.get(field)
+        if name: result[field] = name
     return result
 
 def validAddCategoryData(data):
     if 'parent' not in data or not (validation.categoryID(data['parent']) or data['parent'] is None): return False
     if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
-    if 'name_ukr' in data and not validation.categoryName(data['name_ukr']): return False
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and not validation.categoryName(data[prop]): return False
     if 'name_eng' in data and not validation.categoryName(data['name_eng']): return False
     return True
 
@@ -111,8 +114,9 @@ def prepareAddCategoryData(data):
         'parent': data['parent'],
         'is_active': data['is_active']
     }
-    if 'name_ukr' in data and data['name_ukr']: result['name_ukr'] = data['name_ukr']
-    if 'name_eng' in data and data['name_eng']: result['name_eng'] = data['name_eng']
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and data[prop]: result[prop] = data[prop]
     result['added'] = datetime.now()
     return result
 
@@ -120,15 +124,17 @@ def validEditCategoryData(data):
     if 'id' not in data or not validation.categoryID(data['id']): return False
     if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
     if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
-    if 'name_ukr' in data and not validation.categoryName(data['name_ukr']): return False
-    if 'name_eng' in data and not validation.categoryName(data['name_eng']): return False
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and not validation.categoryName(data[prop]): return False
     return True
 
 def prepareEditCategoryData(data):
     result = {'id': data['id']}
-    if 'parent' in data and data['parent']: result['parent'] = data['parent']
-    if 'name_ukr' in data and data['name_ukr']: result['name_ukr'] = data['name_ukr']
-    if 'name_eng' in data and data['name_eng']: result['name_eng'] = data['name_eng']
+    if 'parent' in data and (data['parent'] or data['parent'] is None): result['parent'] = data['parent']
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and data[prop]: result[prop] = data[prop]
     if 'is_active' in data and data['is_active']: result['is_active'] = data['is_active']
     return result
 

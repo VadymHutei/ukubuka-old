@@ -41,22 +41,16 @@
                         </select>
                     </td>
                 </tr>
+                {% for language in languages %}
                 <tr>
                     <td class="label">
-                        <label for="name_ukr_field">Назва українською</label>
+                        <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
                     </td>
                     <td>
-                        <input id="name_ukr_field" type="text" name="name_ukr" placeholder="українською" value="{{ category['name']['ukr'] }}" maxlength="64" autocomplete="off" required autofocus>
+                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}"{% if language in category['name'] %} value="{{ category['name'][language] }}"{% endif %} maxlength="64" autocomplete="off" required autofocus>
                     </td>
                 </tr>
-                <tr>
-                    <td class="label">
-                        <label for="name_eng_field">Назва англійською</label>
-                    </td>
-                    <td>
-                        <input id="name_eng_field" type="text" name="name_eng" placeholder="англійською" value="{{ category['name']['eng'] }}" maxlength="64" autocomplete="off" required>
-                    </td>
-                </tr>
+                {% endfor %}
                 <tr>
                     <td class="label">
                         <label for="is_active_field">Показувати</label>

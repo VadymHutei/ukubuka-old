@@ -319,18 +319,14 @@ def addCategory(data):
     cursor = connection.cursor()
     cursor.execute(query, (data['parent'], data['added'], data['is_active']))
     category_id = cursor.lastrowid
-    if 'name_ukr' in data:
-        query = """
-            INSERT INTO `{table}` (`category_id`, `language`, `name`)
-            VALUES (%s, 'ukr', %s)
-        """.format(table=db.table('categories_text'))
-        cursor.execute(query, (category_id, data['name_ukr']))
-    if 'name_eng' in data:
-        query = """
-            INSERT INTO `{table}` (`category_id`, `language`, `name`)
-            VALUES (%s, 'eng', %s)
-        """.format(table=db.table('categories_text'))
-        cursor.execute(query, (category_id, data['name_eng']))
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data:
+            query = """
+                INSERT INTO `{table}` (`category_id`, `language`, `name`)
+                VALUES (%s, %s, %s)
+            """.format(table=db.table('categories_text'))
+            cursor.execute(query, (category_id, language, data[prop]))
     connection.commit()
     connection.close()
 

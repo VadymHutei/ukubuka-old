@@ -7,9 +7,9 @@ import modules.validation as validation
 class Acp():
 
     def __init__(self, lang=config.DEFAULT_LANGUAGE):
-        self.lang = lang if config.LANGUAGES else config.DEFAULT_LANGUAGE
+        self.current_language = lang if lang in config.LANGUAGES else config.DEFAULT_LANGUAGE
         self.data = {
-            'menus': model.getMenus(self.lang),
+            'menus': model.getMenus(self.current_language),
             'site_name': config.SITE_NAME
         }
 
@@ -57,25 +57,27 @@ class Acp():
 
     def categoriesPage(self, parent=None):
         if parent is None or not validation.categoryID(parent):
-            categories = model.getCategories(self.lang)
+            categories = model.getCategories(self.current_language)
         else:
-            categories = model.getCategories(self.lang, parent)
+            categories = model.getCategories(self.current_language, parent)
             parent = model.getCategory(parent)
         self.data['categories'] = categories
         self.data['parent'] = parent
-        self.data['categories_names'] = model.getCategoriesNames(self.lang)
+        self.data['categories_names'] = model.getCategoriesNames(self.current_language)
         return render_template('acp/categories/categories.html', **self.data)
 
     def addCategoryPage(self):
-        self.data['categories'] = model.getCategories(self.lang)
+        self.data['categories'] = model.getCategories(self.current_language)
+        self.data['languages'] = config.LANGUAGES
         return render_template('acp/categories/add.html', **self.data)
 
     def editCategoryPage(self, category_id):
         if not validation.categoryID(category_id): return abort(404)
         category = model.getCategory(category_id)
         if not category: return abort(404)
-        self.data['categories'] = model.getCategories(self.lang)
+        self.data['categories'] = model.getCategories(self.current_language)
         self.data['category'] = category
+        self.data['languages'] = config.LANGUAGES
         return render_template('acp/categories/edit.html', **self.data)
 
     def addCategory(self, form):
