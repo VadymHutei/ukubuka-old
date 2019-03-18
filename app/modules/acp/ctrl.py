@@ -63,6 +63,7 @@ class Acp():
             parent = model.getCategory(parent)
         self.data['categories'] = categories
         self.data['parent'] = parent
+        self.data['categories_names'] = model.getCategoriesNames(self.lang)
         return render_template('acp/categories/categories.html', **self.data)
 
     def addCategoryPage(self):
@@ -85,10 +86,8 @@ class Acp():
 
     def editCategory(self, form):
         data = helper.prepareCategoryFormData(form)
-        print(data)
         if helper.validEditCategoryData(data):
             data = helper.prepareEditCategoryData(data)
-            print(data)
             model.editCategory(data)
 
     def deleteCategory(self, category_id):

@@ -288,6 +288,27 @@ def getCategories(language, parent=None):
             return {}
         return getSubcategories(parent, result)
 
+def getCategoriesNames(language):
+    db = DB()
+    query = """
+        SELECT
+            c.`id`,
+            t.`name`
+        FROM `{table}` c
+        RIGHT JOIN `{table_text}` t
+            ON c.`id` = t.`category_id`
+        WHERE t.`language` = %s
+    """.format(
+        table=db.table('categories'),
+        table_text=db.table('categories_text')
+    )
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, (language,))
+    connection.close()
+    categories_names_data = cursor.fetchall()
+    return {row['id']: row['name'] for row in categories_names_data} if categories_names_data else {}
+
 def addCategory(data):
     db = DB()
     query = """

@@ -48,8 +48,8 @@
                     <a href="/acp/categories/?parent={{ category['id'] }}">{{ category['name'] }}</a>
                 </td>
                 <td>
-                    {% if category['parent']: %}
-                    <a href="/acp/categories/?parent={{ category['parent'] }}">{{ category['parent'] }}</a>
+                    {% if category['parent'] and category['parent'] in categories_names: %}
+                    <a href="/acp/categories/?parent={{ category['parent'] }}">{{ categories_names[category['parent']] }}</a>
                     {% else: %}
                     -
                     {% endif %}
