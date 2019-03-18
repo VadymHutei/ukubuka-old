@@ -97,6 +97,7 @@ class Acp():
         return False
 
 
+
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##
 #     ##     ## ##       ##       ##     ## ##
@@ -200,28 +201,3 @@ class Acp():
     def deleteMenuItem(self, item_id):
         if validation.menuItemID(item_id): return model.deleteMenuItem(item_id)
         return False
-
-
-
-#      ######  ######## ######## ######## #### ##    ##  ######    ######
-#     ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
-#     ##       ##          ##       ##     ##  ####  ## ##        ##
-#      ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
-#           ## ##          ##       ##     ##  ##  #### ##    ##        ##
-#     ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
-#      ######  ########    ##       ##    #### ##    ##  ######    ######
-
-
-
-    def settings_page(self):
-        settings = model.getSettings()
-        self.data['settings'] = settings
-        return render_template('acp/settings/settings.html', **self.data)
-
-    def saveSettings(self, form):
-        data = form.to_dict()
-        if validation.saveSettingsData(data):
-            settings = model.getSettings()
-            data = helper.prepareSaveSettingsData(settings, data)
-            if data:
-                model.saveSettings(data)

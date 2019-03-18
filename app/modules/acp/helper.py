@@ -268,28 +268,3 @@ def prepareAddUserEmailData(data):
         'user_id': data['user_id'],
         'email': data['email']
     }
-
-
-
-#      ######  ######## ######## ######## #### ##    ##  ######    ######
-#     ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
-#     ##       ##          ##       ##     ##  ####  ## ##        ##
-#      ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
-#           ## ##          ##       ##     ##  ##  #### ##    ##        ##
-#     ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
-#      ######  ########    ##       ##    #### ##    ##  ######    ######
-
-
-
-def validSaveSettingsData(data):
-    for prop in data:
-        if not validation.settingsProperty(data[prop]): return False
-    return True
-
-def prepareSaveSettingsData(settings, data):
-    result = {}
-    for prop in data:
-        if prop not in settings: continue
-        if data[prop] == settings[prop]: continue
-        result[prop] = data[prop]
-    return result
