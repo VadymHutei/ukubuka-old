@@ -10,11 +10,18 @@
     <h1 class="section_title">Категорії</h1>
     <div class="control_panel">
         {% if parent is not none %}
-        <a href="/acp/categories/{% if parent['parent'] is not none %}?parent={{ parent['parent'] }}{% endif %}" class="button_link">
+        <a href="/acp/categories/" class="button_link">
+            <div class="button back">
+                <span class="title">в корінь</span>
+            </div>
+        </a>
+        {% if parent['parent'] is not none %}
+        <a href="/acp/categories/?parent={{ parent['parent'] }}" class="button_link">
             <div class="button back">
                 <span class="title">назад</span>
             </div>
         </a>
+        {% endif %}
         {% endif %}
         <a href="/acp/categories/add" class="button_link">
             <div class="button add">
@@ -28,6 +35,7 @@
                 <th>ID</th>
                 <th>Назва</th>
                 <th>Батьківська категорія</th>
+                <th>Додано</th>
                 <th>Дія</th>
             </tr>
         </thead>
@@ -44,6 +52,9 @@
                     {% else: %}
                     -
                     {% endif %}
+                </td>
+                <td>
+                    {{ category['added'] }}
                 </td>
                 <td>
                     <div class="actions">
