@@ -15,9 +15,6 @@ DB_PARAMS = {
 }
 DB_PREFIX = 'prfx_'
 
-LANGUAGES = ('ukr', 'eng')
-DEFAULT_LANGUAGE = 'ukr'
-
 SESSION_COOKIE_NAME = 'sessid'
 SESSION_COOKIE_EXPIRES = 90 # days
 SESSION_ID_AVAILABLE_CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyz'
