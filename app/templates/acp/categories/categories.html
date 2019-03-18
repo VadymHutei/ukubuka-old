@@ -35,6 +35,7 @@
                 <th>ID</th>
                 <th>Назва</th>
                 <th>Батьківська категорія</th>
+                <th>Активний</th>
                 <th>Додано</th>
                 <th>Дія</th>
             </tr>
@@ -52,6 +53,9 @@
                     {% else: %}
                     -
                     {% endif %}
+                </td>
+                <td class="center">
+                    <input type="checkbox" disabled{% if category['is_active'] == 'Y' %} checked{% endif %}>
                 </td>
                 <td>
                     {{ category['added'] }}
