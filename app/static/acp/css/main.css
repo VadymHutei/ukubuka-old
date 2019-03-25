@@ -21,6 +21,7 @@ html body { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-b
 .control_panel .button_link { text-decoration: none; }
 
 .acp_table { border-spacing: 0px; border-collapse: collapse; border: 1px solid #999999; }
+.acp_table:not(:last-child) { margin: 0 0 2em; }
 .acp_table caption { text-align: right; background-color: #111111; color: #ffffff; padding: 0.2em 2em; font-size: 1em; }
 .acp_table thead tr { background-color: #cccccc; }
 .acp_table thead tr th { padding: 0.2em 0.5em; border-left: 1px solid #999999; border-right: 1px solid #999999; }
