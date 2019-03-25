@@ -63,7 +63,7 @@ class Acp():
             parent = model.getCategory(parent)
         self.data['categories'] = categories
         self.data['parent'] = parent
-        self.data['categories_names'] = model.getCategoriesNames(self.current_language)
+        self.data['category_names'] = model.getCategoryNames(self.current_language)
         return render_template('acp/categories/categories.html', **self.data)
 
     def addCategoryPage(self):
@@ -175,27 +175,33 @@ class Acp():
 
 
     def menus_page(self):
+        self.data['menu_item_names'] = model.getMenuItemNames(self.current_language)
         return render_template('acp/menus/menus.html', **self.data)
 
     def menus_add_page(self):
+        self.data['languages'] = config.LANGUAGES
         return render_template('acp/menus/add.html', **self.data)
 
     def menus_edit_page(self, item_id):
-        if not validation.menuItemID(item_id): return 'invalid ID'
-        menu_item_data = model.getMenuItem(item_id)
-        self.data['item'] = menu_item_data
+        if not validation.menuItemID(item_id): return abort(404)
+        item = model.getMenuItem(item_id)
+        self.data['current_item'] = item
+        self.data['languages'] = config.LANGUAGES
         return render_template('acp/menus/edit.html', **self.data)
 
     def addMenuItem(self, form):
         data = helper.prepareMenuItemFormData(form)
-        if validation.addMenuItemData(data):
+        if helper.validAddMenuItemData(data):
             data = helper.prepareAddMenuItemData(data)
             model.addMenuItem(data)
 
     def editMenuItem(self, form):
+        print(form)
         data = helper.prepareMenuItemFormData(form)
+        print(data)
         if helper.validEditMenuItemData(data):
             data = helper.prepareEditMenuItemData(data)
+            print(data)
             model.editMenuItem(data)
 
     def deleteMenuItem(self, item_id):

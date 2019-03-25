@@ -25,7 +25,7 @@
                     </td>
                     <td>
                         <select id="parent_field" name="parent">
-                            <option label="Коренева категорія" value="None" selected></option>
+                            <option label="Коренева категорія" value="" selected></option>
                             {% for category in categories.values() recursive %}
                             <option label="{{ category['name'] }}" value="{{ category['id'] }}"></option>
                             {{ loop(category['subcategories'].values()) }}
@@ -33,13 +33,14 @@
                         </select>
                     </td>
                 </tr>
+                {% set ns = namespace(autofocus=true) %}
                 {% for language in languages %}
                 <tr>
                     <td class="label">
                         <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
                     </td>
                     <td>
-                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off" required autofocus>
+                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off" required{% if ns.autofocus %} autofocus{% set ns.autofocus = false %}{% endif %}>
                     </td>
                 </tr>
                 {% endfor %}

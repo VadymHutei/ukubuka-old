@@ -17,60 +17,59 @@ import modules.auth as auth
 
 
 def prepareMenuItemFormData(form):
-    item_id = form.get('id')
-    menu = form.get('menu')
-    parent = form.get('parent')
-    name_ukr = form.get('name_ukr')
-    name_eng = form.get('name_eng')
-    link = form.get('link')
-    is_active = form.get('is_active', 'off')
     result = {}
+    item_id = form.get('id')
     if item_id: result['item_id'] = item_id
-    if menu: result['menu'] = menu
+    parent = form.get('parent')
     if parent: result['parent'] = parent
-    if name_ukr: result['name_ukr'] = name_ukr
-    if name_eng: result['name_eng'] = name_eng
+    for language in config.LANGUAGES:
+        field = 'name_' + language
+        name = form.get(field)
+        if name: result[field] = name
+    link = form.get('link')
     if link: result['link'] = link
+    is_active = form.get('is_active', 'off')
     result['is_active'] = 'Y' if is_active == 'on' else 'N'
     return result
 
 def validAddMenuItemData(data):
-    if 'menu' not in data or not validation.menuName(data['menu']): return False
-    if 'name_ukr' not in data or not validation.menuItemName(data['name_ukr']): return False
-    if 'name_eng' not in data or not validation.menuItemName(data['name_eng']): return False
+    if 'parent' in data and not (validation.menuItemID(data['parent']) or data['parent'] is None): return False
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and not validation.menuItemName(data[prop]): return False
     if 'link' in data and not validation.menuItemLink(data['link']): return False
-    if 'parent' in data and not validation.menuItemID(data['parent']): return False
     if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def validEditMenuItemData(data):
     if 'item_id' not in data or not validation.menuItemID(data['item_id']): return False
-    if 'menu' in data and not validation.menuName(data['menu']): return False
-    if 'name_ukr' in data and not validation.menuItemName(data['name_ukr']): return False
-    if 'name_eng' in data and not validation.menuItemName(data['name_eng']): return False
-    if 'link' in data and not validation.menuItemLink(data['link']): return False
     if 'parent' in data and not validation.menuItemID(data['parent']): return False
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and not validation.menuItemName(data[prop]): return False
+    if 'link' in data and not validation.menuItemLink(data['link']): return False
     if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareAddMenuItemData(data):
     result = {
-        'menu': data['menu'],
-        'name_ukr': data['name_ukr'],
-        'name_eng': data['name_eng'],
+        'added': datetime.now(),
         'is_active': data['is_active']
     }
-    if 'link' in data: result['link'] = data['link']
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and data[prop]: result[prop] = data[prop]
     if 'parent' in data: result['parent'] = data['parent']
+    if 'link' in data: result['link'] = data['link']
     return result
 
 def prepareEditMenuItemData(data):
     result = {'item_id': data['item_id']}
-    if 'menu' in data: result['menu'] = data['menu']
-    if 'name_ukr' in data: result['name_ukr'] = data['name_ukr']
-    if 'name_eng' in data: result['name_eng'] = data['name_eng']
-    if 'link' in data: result['link'] = data['link']
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and data[prop]: result[prop] = data[prop]
     if 'parent' in data: result['parent'] = data['parent']
+    if 'link' in data: result['link'] = data['link']
     if 'is_active' in data: result['is_active'] = data['is_active']
     return result
 
@@ -87,17 +86,17 @@ def prepareEditMenuItemData(data):
 
 
 def prepareCategoryFormData(form):
-    category_id = form.get('id')
-    parent = form.get('parent')
-    is_active = form.get('is_active', 'off')
     result = {}
+    category_id = form.get('id')
     if category_id: result['id'] = category_id
-    result['parent'] = None if parent == 'None' else parent
-    result['is_active'] = 'Y' if is_active == 'on' else 'N'
+    parent = form.get('parent')
+    if parent: result['id'] = parent
     for language in config.LANGUAGES:
         field = 'name_' + language
         name = form.get(field)
         if name: result[field] = name
+    is_active = form.get('is_active', 'off')
+    result['is_active'] = 'Y' if is_active == 'on' else 'N'
     return result
 
 def validAddCategoryData(data):
@@ -112,12 +111,12 @@ def validAddCategoryData(data):
 def prepareAddCategoryData(data):
     result = {
         'parent': data['parent'],
+        'added': datetime.now(),
         'is_active': data['is_active']
     }
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and data[prop]: result[prop] = data[prop]
-    result['added'] = datetime.now()
     return result
 
 def validEditCategoryData(data):
@@ -151,6 +150,7 @@ def prepareEditCategoryData(data):
 
 
 def prepareUserFormData(form):
+    result = {}
     user_id = form.get('id')
     group_id = form.get('group_id')
     first_name = form.get('first_name')
@@ -162,7 +162,6 @@ def prepareUserFormData(form):
     emails = form.getlist('emails[]')
     is_active = form.get('is_active')
     password = form.get('password')
-    result = {}
     if user_id: result['user_id'] = user_id
     if group_id: result['group_id'] = group_id
     if first_name: result['first_name'] = first_name

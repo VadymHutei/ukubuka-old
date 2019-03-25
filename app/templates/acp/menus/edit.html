@@ -24,64 +24,47 @@
                         <label for="id_field">ID</label>
                     </td>
                     <td>
-                        <input id="id_field" type="text" name="id" value="{{ item['id'] }}" readonly>
+                        <input id="id_field" type="text" name="id" value="{{ current_item['id'] }}" readonly>
                     </td>
                 </tr>
                 <tr>
                     <td class="label">
-                        <label for="menu_field">Меню, якому належить пункт. Виберіть із списку або створіть нове, вказавши назву</label>
-                    </td>
-                    <td>
-                        <input id="menu_field" type="text" name="menu" value="{{ item['menu'] }}" list="menus_list" placeholder="меню" autocomplete="off" required>
-                        <datalist id="menus_list">
-                            {% for menu in menus %}
-                            <option value="{{ menu }}">{{ menu }}</option>
-                            {% endfor %}
-                        </datalist>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="parent_field">Якщо додаєте підпункт, оберіть батьківський пункт меню</label>
+                        <label for="parent_field">Батьківський пункт меню</label>
                     </td>
                     <td>
                         <select id="parent_field" name="parent">
-                            <option label="не є підпунктом" value="" selected></option>
-                            {% for menu in menus %}
-                            <optgroup label="{{ menu }}">
-                                {% for menu_item in menus[menu] recursive %}
-                                {% if menu_item['id'] != item['id'] %}
-                                <option label="{{ menu_item['name'] }}" value="{{ menu_item['id'] }}" {% if menu_item['id'] == item['parent'] %} selected{% endif %}></option>
+                            <option label="нове меню"></option>
+                            {% for menu_id, menu in menus.items() %}
+                            <optgroup label="{{ menu['name'] }}">
+                                <option label="корінь" value="{{ menu['id'] }}"{% if current_item['parent'] == menu['id'] %} selected{% endif %}></option>
+                                {% for item_id, item in menu['items'].items() recursive %}
+                                {% if item['id'] != current_item['id'] %}
+                                <option label="{% if item['name'] %}{{ item['name'] }}{% endif %}" value="{{ item['id'] }}"{% if current_item['parent'] == item['id'] %} selected{% endif %}></option>
                                 {% endif %}
-                                {{ loop(menu_item['submenu']) }}
+                                {{ loop(item['items'].items()) }}
                                 {% endfor %}
                             </optgroup>
                             {% endfor %}
                         </select>
                     </td>
                 </tr>
+                {% set ns = namespace(autofocus=true) %}
+                {% for language in languages %}
                 <tr>
                     <td class="label">
-                        <label for="name_ukr_field">Назва українською</label>
+                        <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
                     </td>
                     <td>
-                        <input id="name_ukr_field" type="text" name="name_ukr" value="{{ item['name']['ukr'] }}" placeholder="українською" maxlength="64" autocomplete="off" required autofocus>
+                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}"{% if language in current_item['name'] %} value="{{ current_item['name'][language] }}"{% endif %} maxlength="64" autocomplete="off" required{% if ns.autofocus %} autofocus{% set ns.autofocus = false %}{% endif %}>
                     </td>
                 </tr>
+                {% endfor %}
                 <tr>
                     <td class="label">
-                        <label for="name_eng_field">Назва англійською</label>
+                        <label for="link_field">Посилання</label>
                     </td>
                     <td>
-                        <input id="name_eng_field" type="text" name="name_eng" value="{{ item['name']['eng'] }}" placeholder="англійською" maxlength="64" autocomplete="off" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="link_field">Можна лишити пустим</label>
-                    </td>
-                    <td>
-                        <input id="link_field" type="text" name="link" value="{% if item['link'] %}{{ item['link'] }}{% endif %}" placeholder="посилання" maxlength="128" autocomplete="off">
+                        <input id="link_field" type="text" name="link" value="{% if current_item['link'] %}{{ current_item['link'] }}{% endif %}" placeholder="посилання" maxlength="128" autocomplete="off">
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +72,7 @@
                         <label for="is_active_field">Показувати</label>
                     </td>
                     <td>
-                        <input id="is_active_field" type="checkbox" name="is_active" {% if item['is_active'] == 'Y' %} checked{% endif %}>
+                        <input id="is_active_field" type="checkbox" name="is_active" {% if current_item['is_active'] == 'Y' %} checked{% endif %}>
                     </td>
                 </tr>
             </tbody>

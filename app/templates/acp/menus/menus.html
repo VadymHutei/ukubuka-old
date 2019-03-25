@@ -15,35 +15,59 @@
             </div>
         </a>
     </div>
-    {% for menu_name in menus %}
+    {% for menu_id, menu in menus.items() %}
     <table class="acp_table">
-        <caption>{{ menu_name }}</caption>
+        <caption>{{ menu['name'] }}</caption>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Назва</th>
                 <th>Посилання</th>
                 <th>Батьківський пункт</th>
+                <th>Додано</th>
                 <th>Активний</th>
                 <th>Дія</th>
             </tr>
         </thead>
         <tbody>
-            {% for menu_item in menus[menu_name] recursive %}
+            {% for item_id, item in menu['items'].items() recursive %}
             <tr>
-                <td class="center">{{ menu_item['id'] }}</td>
-                <td>{{ menu_item['name'] }}</td>
-                <td>{% if menu_item['link'] %}{{ menu_item['link'] }}{% else %}-{% endif %}</td>
-                <td class="center">{{ menu_item['parent'] }}</td>
-                <td class="center"><input type="checkbox" disabled{% if menu_item['is_active'] == 'Y' %} checked{% endif %}></td>
+                <td class="center">
+                    {{ item['id'] }}
+                </td>
+                <td>
+                    {% if item['name'] %}
+                    {{ item['name'] }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item['link'] %}
+                    {{ item['link'] }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item['parent'] and item['parent'] in menu_item_names: %}
+                    {{ menu_item_names[item['parent']] }}
+                    {% else: %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                {{ item['added'] }}
+            </td>
+                <td class="center"><input type="checkbox" disabled{% if item['is_active'] == 'Y' %} checked{% endif %}></td>
                 <td>
                     <div class="actions">
-                        <a href="/acp/menus/edit?id={{ menu_item['id'] }}">&#9998; редагувати</a>
-                        <a href="/acp/menus/delete?id={{ menu_item['id'] }}">&#10007; видалити</a>
+                        <a href="/acp/menus/edit?id={{ item['id'] }}">&#9998; редагувати</a>
+                        <a href="/acp/menus/delete?id={{ item['id'] }}">&#10007; видалити</a>
                     </div>
                 </td>
             </tr>
-            {{ loop(menu_item['submenu']) }}
+            {{ loop(item['items'].items()) }}
             {% endfor %}
         </tbody>
     </table>

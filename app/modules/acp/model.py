@@ -13,174 +13,191 @@ from db import DB
 
 
 
-def getMenus(lang):
+def getMenuItem(item_id):
     db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            `id`,
+            `parent`,
+            `link`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('menus'))
+    cursor.execute(query, (item_id,))
+    item_data = cursor.fetchone()
+    if not item_data:
+        connection.close()
+        return {}
+    query = """
+        SELECT
+            `language`,
+            `name`
+        FROM `{table}`
+        WHERE `item_id` = %s
+    """.format(table=db.table('menus_text'))
+    cursor.execute(query, (item_id,))
+    connection.close()
+    item_text_data = cursor.fetchall()
+    item_data['name'] = {}
+    for row in item_text_data:
+        if 'language' not in row: continue
+        if row['language'] not in config.LANGUAGES: continue
+        if row['language'] not in item_data['name']: item_data['name'][row['language']] = row['name']
+    return item_data
+
+def getMenus(lang, parent=None):
+    result = {}
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
     query = """
         SELECT
             m.`id`,
-            m.`menu`,
             m.`parent`,
-            m.`is_active`,
             m.`link`,
+            m.`added`,
+            m.`is_active`,
             t.`name`
         FROM `{table}` m
         LEFT JOIN `{table}_text` t
             ON m.`id` = t.`item_id`
         AND `language` = '{lang}'
     """.format(table=db.table('menus'), lang=lang)
-    connection = db.getConnection()
-    cursor = connection.cursor()
     cursor.execute(query)
     connection.close()
-    menus_items = cursor.fetchall()
-    layers = []
-    layer = []
-    result = {}
-    temp = {}
-    for item in menus_items:
+    menu_items = cursor.fetchall()
+    menus = {item['id']: item for item in menu_items}
+    parents = {}
+    for item in menu_items:
         if item['parent'] is None:
-            layer.append(item['id'])
-        temp[item['id']] = item
-    layer_count = len(layer)
-    if layer_count:
-        layers.append(layer)
-        while layer_count > 0:
-            layer_count = 0
-            layer = []
-            for item in menus_items:
-                if item['parent'] in layers[-1]:
-                    layer.append(item['id'])
-            layer_count = len(layer)
-            if layer_count:
-                layers.append(layer)
-    while layers:
-        for item_id in layers.pop():
-            if temp[item_id]['parent'] is not None:
-                if 'submenu' not in temp[temp[item_id]['parent']]: temp[temp[item_id]['parent']]['submenu'] = []
-                temp[temp[item_id]['parent']]['submenu'].append(temp.pop(item_id))
-            else:
-                temp[item_id]['parent'] = '-'
-    for item_id in temp:
-        if temp[item_id]['menu'] not in result: result[temp[item_id]['menu']] = []
-        result[temp[item_id]['menu']].append(temp[item_id])
-    return result
-
-def getMenuItem(item_id):
-    db = DB()
-    query = """
-        SELECT m.*, t.`language`, t.`name`
-        FROM `{table}` m
-        INNER JOIN `{table}_text` t
-            ON m.`id` = t.`item_id`
-        WHERE m.`id` = %s
-    """.format(table=db.table('menus'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query, [item_id])
-    connection.close()
-    item_data = cursor.fetchall()
-    result = {}
-    for row in item_data:
-        if not result:
-            for field in row:
-                if field == 'name':
-                    result['name'] = {row['language']: row['name']}
-                else:
-                    result[field] = row[field]
+            result[item['id']] = item
+            result[item['id']]['items'] = {}
         else:
-            result['name'][row['language']] = row['name']
-    return result
+            if item['parent'] not in parents:
+                parents[item['parent']] = []
+            parents[item['parent']].append(item['id'])
+    def setItems(result):
+        for r_menu_id in result:
+            if r_menu_id in parents:
+                for p_menu_id in parents[r_menu_id]:
+                    result[r_menu_id]['items'][p_menu_id] = menus[p_menu_id]
+                    result[r_menu_id]['items'][p_menu_id]['items'] = {}
+            if result[r_menu_id]['items']:
+                setItems(result[r_menu_id]['items'])
+    setItems(result)
+    if parent is None:
+        return result
+    elif parent in result:
+        return result[parent]
+    else:
+        return {}
 
-def addMenuItem(data):
-    columns = ['menu', 'is_active']
-    values = [data['menu'], data['is_active']]
-    placeholders = ['%s', '%s']
-    if 'parent' in data:
-        columns.append('parent')
-        values.append(data['parent'])
-        placeholders.append('%s')
-    if 'link' in data:
-        columns.append('link')
-        values.append(data['link'])
-        placeholders.append('%s')
+def getMenuItemNames(language):
     db = DB()
     query = """
-        INSERT INTO `{table}` ({columns})
-        VALUES ({placeholders})
+        SELECT
+            m.`id`,
+            t.`name`
+        FROM `{table}` m
+        RIGHT JOIN `{table_text}` t
+            ON m.`id` = t.`item_id`
+        WHERE t.`language` = %s
     """.format(
         table=db.table('menus'),
-        columns=', '.join(map(lambda x: '`' + x + '`', columns)),
-        placeholders=', '.join(placeholders)
+        table_text=db.table('menus_text')
     )
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, values)
-    values = [
-        [cursor.lastrowid, 'ukr', data['name_ukr']],
-        [cursor.lastrowid, 'eng', data['name_eng']]
-    ]
+    cursor.execute(query, (language,))
+    connection.close()
+    menus_names_data = cursor.fetchall()
+    return {row['id']: row['name'] for row in menus_names_data} if menus_names_data else {}
+
+def addMenuItem(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
     query = """
-        INSERT INTO `{table}` (`item_id`, `language`, `name`)
-        VALUES (%s, %s, %s)
-    """.format(table=db.table('menus_text'))
-    cursor.executemany(query, values)
+        INSERT INTO `{table}` (`parent`, `link`, `added`, `is_active`)
+        VALUES (%s, %s, %s, %s)
+    """.format(table=db.table('menus'))
+    cursor.execute(query, (data.get('parent', None), data.get('link', None), data['added'], data['is_active']))
+    values = []
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data:
+            values.extend([
+                cursor.lastrowid,
+                language,
+                data[prop]
+            ])
+    if values:
+        values_placeholders = ', '.join(['(%s, %s, %s)' for _ in values])
+        query = """
+            INSERT INTO `{table}` (`item_id`, `language`, `name`)
+            VALUES {values}
+        """.format(
+            table=db.table('menus_text'),
+            values=values_placeholders
+        )
+        cursor.execute(query, values)
     connection.commit()
     connection.close()
 
 def editMenuItem(data):
-    columns = [
-        'menu',
-        'is_active',
-        'parent',
-        'link'
-    ]
-    values = [
-        data['menu'],
-        data['is_active']
-    ]
-    values.append(data['parent'] if 'parent' in data else None)
-    values.append(data['link'] if 'link' in data else None)
-    columns = ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
-    values.append(data['item_id'])
     db = DB()
-    query = """
-        UPDATE `{table}`
-        SET {additional_columns}
-        WHERE `id` = %s
-    """.format(
-        table=db.table('menus'),
-        additional_columns=columns
-    )
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, values)
-    columns = ['item_id', 'language', 'name']
-    values = [
-        [data['name_ukr'], data['item_id'], 'ukr'],
-        [data['name_eng'], data['item_id'], 'eng']
-    ]
+    columns = []
+    values = []
+    for prop in ('parent', 'link', 'is_active'):
+        if prop in data:
+            columns.append(prop)
+            values.append(data[prop])
+    if columns:
+        columns = ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
+        values.append(data['item_id'])
+        query = """
+            UPDATE `{table}`
+            SET {columns}
+            WHERE `id` = %s
+        """.format(
+            table=db.table('menus'),
+            columns=columns
+        )
+        cursor.execute(query, values)
+    values = []
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data:
+            values.append([
+                data[prop],
+                data['item_id'],
+                language
+            ])
     query = """
         UPDATE `{table}`
         SET `name` = %s
         WHERE `item_id` = %s
         AND `language` = %s
-    """.format(
-        table=db.table('menus_text'),
-        additional_columns=columns
-    )
+    """.format(table=db.table('menus_text'))
     cursor.executemany(query, values)
     connection.commit()
     connection.close()
 
 def deleteMenuItem(item_id):
     db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
     query = """
         DELETE FROM `{table}`
         WHERE `id` = %s
     """.format(table=db.table('menus'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
-    cursor.execute(query, [item_id])
+    cursor.execute(query, (item_id,))
     connection.commit()
     connection.close()
 
@@ -198,6 +215,8 @@ def deleteMenuItem(item_id):
 
 def getCategory(category_id):
     db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
     query = """
         SELECT
             `id`,
@@ -206,8 +225,6 @@ def getCategory(category_id):
         FROM `{table}`
         WHERE `id` = %s
     """.format(table=db.table('categories'))
-    connection = db.getConnection()
-    cursor = connection.cursor()
     cursor.execute(query, (category_id))
     category_data = cursor.fetchone()
     if not category_data:
@@ -233,6 +250,8 @@ def getCategory(category_id):
 def getCategories(language, parent=None):
     result = {}
     db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
     query = """
         SELECT
             c.`id`,
@@ -248,8 +267,6 @@ def getCategories(language, parent=None):
         table=db.table('categories'),
         table_text=db.table('categories_text')
     )
-    connection = db.getConnection()
-    cursor = connection.cursor()
     cursor.execute(query, [language])
     connection.close()
     categories_data = cursor.fetchall()
@@ -288,7 +305,7 @@ def getCategories(language, parent=None):
             return {}
         return getSubcategories(parent, result)
 
-def getCategoriesNames(language):
+def getCategoryNames(language):
     db = DB()
     query = """
         SELECT
@@ -306,8 +323,8 @@ def getCategoriesNames(language):
     cursor = connection.cursor()
     cursor.execute(query, (language,))
     connection.close()
-    categories_names_data = cursor.fetchall()
-    return {row['id']: row['name'] for row in categories_names_data} if categories_names_data else {}
+    category_names_data = cursor.fetchall()
+    return {row['id']: row['name'] for row in category_names_data} if category_names_data else {}
 
 def addCategory(data):
     db = DB()
