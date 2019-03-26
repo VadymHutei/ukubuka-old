@@ -174,7 +174,6 @@ def editMenuItem(data):
         )
         cursor.execute(query, values)
     values_list = []
-    delete_list = []
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data:
@@ -184,11 +183,6 @@ def editMenuItem(data):
                 data[prop],
                 data[prop]
             ))
-        else:
-            delete_list.append((
-                data['item_id'],
-                language,
-            ))
     if values:
         query = """
             INSERT INTO `{table}` (`item_id`, `language`, `name`)
@@ -197,14 +191,6 @@ def editMenuItem(data):
         """.format(table=db.table('menus_text'))
         for values in values_list:
             cursor.execute(query, values)
-    if delete_list:
-        query = """
-            UPDATE `{table}`
-            SET `name` = NULL
-            WHERE `item_id` = %s
-            AND `language` = %s
-        """.format(table=db.table('menus_text'))
-        cursor.executemany(query, delete_list)
     connection.commit()
     connection.close()
 

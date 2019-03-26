@@ -67,9 +67,9 @@ def prepareEditMenuItemData(data):
     result = {'item_id': data['item_id']}
     for language in config.LANGUAGES:
         prop = 'name_' + language
-        if prop in data and data[prop]: result[prop] = data[prop]
-    if 'parent' in data: result['parent'] = data['parent']
-    if 'link' in data: result['link'] = data['link']
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['parent'] = data['parent'] if 'parent' in data else None
+    result['link'] = data['link'] if 'link' in data else None
     if 'is_active' in data: result['is_active'] = data['is_active']
     return result
 
