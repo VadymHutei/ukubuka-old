@@ -184,8 +184,7 @@ class Acp():
 
     def menus_edit_page(self, item_id):
         if not validation.menuItemID(item_id): return abort(404)
-        item = model.getMenuItem(item_id)
-        self.data['current_item'] = item
+        self.data['current_item'] = model.getMenuItem(item_id)
         self.data['languages'] = config.LANGUAGES
         return render_template('acp/menus/edit.html', **self.data)
 
@@ -196,12 +195,9 @@ class Acp():
             model.addMenuItem(data)
 
     def editMenuItem(self, form):
-        print(form)
         data = helper.prepareMenuItemFormData(form)
-        print(data)
         if helper.validEditMenuItemData(data):
             data = helper.prepareEditMenuItemData(data)
-            print(data)
             model.editMenuItem(data)
 
     def deleteMenuItem(self, item_id):

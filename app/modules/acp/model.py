@@ -45,6 +45,7 @@ def getMenuItem(item_id):
     item_data['name'] = {}
     for row in item_text_data:
         if 'language' not in row: continue
+        if row['name'] is None: continue
         if row['language'] not in config.LANGUAGES: continue
         if row['language'] not in item_data['name']: item_data['name'][row['language']] = row['name']
     return item_data
@@ -127,6 +128,7 @@ def addMenuItem(data):
     """.format(table=db.table('menus'))
     cursor.execute(query, (data.get('parent', None), data.get('link', None), data['added'], data['is_active']))
     values = []
+    lang_count = 0
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data:
@@ -135,14 +137,15 @@ def addMenuItem(data):
                 language,
                 data[prop]
             ])
+            lang_count += 1
     if values:
-        values_placeholders = ', '.join(['(%s, %s, %s)' for _ in values])
+        values_placeholders = ', '.join(['(%s, %s, %s)' for _ in range(lang_count)])
         query = """
             INSERT INTO `{table}` (`item_id`, `language`, `name`)
-            VALUES {values}
+            VALUES {values_placeholders}
         """.format(
             table=db.table('menus_text'),
-            values=values_placeholders
+            values_placeholders=values_placeholders
         )
         cursor.execute(query, values)
     connection.commit()
@@ -170,22 +173,38 @@ def editMenuItem(data):
             columns=columns
         )
         cursor.execute(query, values)
-    values = []
+    values_list = []
+    delete_list = []
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data:
-            values.append([
-                data[prop],
+            values_list.append((
                 data['item_id'],
-                language
-            ])
-    query = """
-        UPDATE `{table}`
-        SET `name` = %s
-        WHERE `item_id` = %s
-        AND `language` = %s
-    """.format(table=db.table('menus_text'))
-    cursor.executemany(query, values)
+                language,
+                data[prop],
+                data[prop]
+            ))
+        else:
+            delete_list.append((
+                data['item_id'],
+                language,
+            ))
+    if values:
+        query = """
+            INSERT INTO `{table}` (`item_id`, `language`, `name`)
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE `name` = %s
+        """.format(table=db.table('menus_text'))
+        for values in values_list:
+            cursor.execute(query, values)
+    if delete_list:
+        query = """
+            UPDATE `{table}`
+            SET `name` = NULL
+            WHERE `item_id` = %s
+            AND `language` = %s
+        """.format(table=db.table('menus_text'))
+        cursor.executemany(query, delete_list)
     connection.commit()
     connection.close()
 
