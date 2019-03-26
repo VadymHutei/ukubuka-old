@@ -45,7 +45,7 @@ def menuName(name):
 
 def menuItemName(name):
     if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,64}', name)
+        return name == '' or re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{1,64}', name)
     return False
 
 def menuItemLink(link):
