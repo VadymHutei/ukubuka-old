@@ -326,7 +326,7 @@ def addCategory(data):
     """.format(table=db.table('categories'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, (data.get('parent', None), data['added'], data['is_active']))
+    cursor.execute(query, (data.get['parent'], data['added'], data['is_active']))
     category_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop = 'name_' + language
@@ -335,7 +335,7 @@ def addCategory(data):
                 INSERT INTO `{table}` (`category_id`, `language`, `name`)
                 VALUES (%s, %s, %s)
             """.format(table=db.table('categories_text'))
-            cursor.execute(query, (category_id, language, data[prop]))
+            cursor.execute(query, (category_id, language, data.get(prop, None)))
     connection.commit()
     connection.close()
 

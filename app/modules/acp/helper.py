@@ -100,19 +100,17 @@ def validAddCategoryData(data):
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and not validation.categoryName(data[prop]): return False
-    if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
+    if 'parent' in data and not validation.categoryID(data['parent']): return False
     if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareAddCategoryData(data):
-    result = {
-        'parent': data['parent'],
-        'added': datetime.now(),
-        'is_active': data['is_active']
-    }
+    result = {'added': datetime.now()}
+    result['parent'] = int(data['parent']) if 'parent' in data and data['parent'] else None
     for language in config.LANGUAGES:
         prop = 'name_' + language
-        if prop in data and data[prop]: result[prop] = data[prop]
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
 def validEditCategoryData(data):
