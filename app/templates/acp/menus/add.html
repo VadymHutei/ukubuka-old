@@ -19,6 +19,17 @@
     <form id="add_menu_item_form" class="acp_form" action="/acp/menus/add" method="post" accept-charset="utf-8">
         <table>
             <tbody>
+                {% set ns = namespace(autofocus=true) %}
+                {% for language in languages %}
+                <tr>
+                    <td class="label">
+                        <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
+                    </td>
+                    <td>
+                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off"{% if ns.autofocus %} autofocus{% set ns.autofocus = false %}{% endif %}>
+                    </td>
+                </tr>
+                {% endfor %}
                 <tr>
                     <td class="label">
                         <label for="parent_field">Батьківський пункт меню</label>
@@ -38,17 +49,6 @@
                         </select>
                     </td>
                 </tr>
-                {% set ns = namespace(autofocus=true) %}
-                {% for language in languages %}
-                <tr>
-                    <td class="label">
-                        <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
-                    </td>
-                    <td>
-                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off"{% if ns.autofocus %} autofocus{% set ns.autofocus = false %}{% endif %}>
-                    </td>
-                </tr>
-                {% endfor %}
                 <tr>
                     <td class="label">
                         <label for="link_field">Посилання</label>
