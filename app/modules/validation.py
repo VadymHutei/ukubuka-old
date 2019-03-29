@@ -12,7 +12,7 @@ def email(email):
 
 def settingsProperty(prop):
     if isinstance(prop, str):
-        return prop == '' or re.fullmatch(r'[\w. -]{1,64}', prop)
+        return re.fullmatch(r'[\w. -]{,64}', prop)
     return False
 
 def password(prop):
@@ -23,6 +23,11 @@ def password(prop):
 def sessionId(session_id):
     if isinstance(session_id, str):
         return bool(re.fullmatch(r'[0-9a-z]{64}', session_id))
+    return False
+
+def price(price):
+    if isinstance(price, str):
+        return re.fullmatch(r'[0-9 .,]{,16}', price)
     return False
 
 #     ##     ## ######## ##    ## ##     ##
@@ -40,12 +45,12 @@ def menuItemID(item_id):
 
 def menuName(name):
     if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,32}', name)
+        return re.fullmatch(r'\w{,32}', name)
     return False
 
 def menuItemName(name):
     if isinstance(name, str):
-        return name == '' or re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{1,64}', name)
+        return re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,64}', name)
     return False
 
 def menuItemLink(link):
@@ -73,12 +78,12 @@ def usersGroupID(users_group_id):
 
 def userName(name):
     if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,64}', name)
+        return or re.fullmatch(r'\w{,64}', name)
     return False
 
 def usersGroupName(name):
     if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,64}', name)
+        return re.fullmatch(r'\w{,64}', name)
     return False
 
 #      ######     ###    ######## ########  ######    #######  ########  ##    ##
@@ -96,5 +101,29 @@ def categoryID(category_id):
 
 def categoryName(name):
     if isinstance(name, str):
-        return name == '' or re.fullmatch(r'\w{1,64}', name)
+        return re.fullmatch(r'\w{,64}', name)
+    return False
+
+#     ########  ########   #######  ########  ##     ##  ######  ########  ######
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##          ##    ##
+#     ########  ########  ##     ## ##     ## ##     ## ##          ##     ######
+#     ##        ##   ##   ##     ## ##     ## ##     ## ##          ##          ##
+#     ##        ##    ##  ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##        ##     ##  #######  ########   #######   ######     ##     ######
+
+
+def productModel(model):
+    if isinstance(model, str):
+        return or re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,64}', model)
+    return False
+
+def productName(name):
+    if isinstance(name, str):
+        return re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,128}', name)
+    return False
+
+def productDescrioption(description):
+    if isinstance(description, str):
+        return re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,256}', description)
     return False

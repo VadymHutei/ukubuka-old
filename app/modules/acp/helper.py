@@ -1,6 +1,7 @@
 from datetime import datetime
 import re
 import config
+import common
 import modules.validation as validation
 import modules.auth as auth
 
@@ -21,15 +22,14 @@ def prepareMenuItemFormData(form):
     item_id = form.get('id')
     if item_id: result['item_id'] = item_id
     parent = form.get('parent')
-    result['parent'] = parent if parent else None
+    if parent: result['parent'] = parent
     for language in config.LANGUAGES:
         field = 'name_' + language
         name = form.get(field)
         if name: result[field] = name
     link = form.get('link')
     if link: result['link'] = link
-    is_active = form.get('is_active', 'off')
-    result['is_active'] = 'Y' if is_active == 'on' else 'N'
+    result['is_active'] = 'Y' if form.get('is_active', 'off') == 'on' else 'N'
     return result
 
 def validAddMenuItemData(data):
@@ -38,7 +38,7 @@ def validAddMenuItemData(data):
         prop = 'name_' + language
         if prop in data and not validation.menuItemName(data[prop]): return False
     if 'link' in data and not validation.menuItemLink(data['link']): return False
-    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def validEditMenuItemData(data):
@@ -48,7 +48,7 @@ def validEditMenuItemData(data):
         prop = 'name_' + language
         if prop in data and not validation.menuItemName(data[prop]): return False
     if 'link' in data and not validation.menuItemLink(data['link']): return False
-    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareAddMenuItemData(data):
@@ -89,23 +89,21 @@ def prepareCategoryFormData(form):
     result = {}
     category_id = form.get('id')
     if category_id: result['id'] = category_id
-    parent = form.get('parent')
-    result['parent'] = parent if parent else None
     for language in config.LANGUAGES:
         field = 'name_' + language
         name = form.get(field)
         if name: result[field] = name
-    is_active = form.get('is_active', 'off')
-    result['is_active'] = 'Y' if is_active == 'on' else 'N'
+    parent = form.get('parent')
+    if parent: result['parent'] = parent
+    result['is_active'] = 'Y' if form.get('is_active', 'off') == 'on' else 'N'
     return result
 
 def validAddCategoryData(data):
-    if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
-    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and not validation.categoryName(data[prop]): return False
-    if 'name_eng' in data and not validation.categoryName(data['name_eng']): return False
+    if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareAddCategoryData(data):
@@ -122,7 +120,7 @@ def prepareAddCategoryData(data):
 def validEditCategoryData(data):
     if 'id' not in data or not validation.categoryID(data['id']): return False
     if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
-    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and not validation.categoryName(data[prop]): return False
@@ -135,6 +133,64 @@ def prepareEditCategoryData(data):
         prop = 'name_' + language
         if prop in data and data[prop]: result[prop] = data[prop]
     if 'is_active' in data and data['is_active']: result['is_active'] = data['is_active']
+    return result
+
+
+
+#     ########  ########   #######  ########  ##     ##  ######  ########  ######
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##          ##    ##
+#     ########  ########  ##     ## ##     ## ##     ## ##          ##     ######
+#     ##        ##   ##   ##     ## ##     ## ##     ## ##          ##          ##
+#     ##        ##    ##  ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##        ##     ##  #######  ########   #######   ######     ##     ######
+
+
+
+def prepareProductFormData(form):
+    result = {}
+    model = form.get('model')
+    if model: result['model'] = model
+    for language in config.LANGUAGES:
+        field = 'name_' + language
+        name = form.get(field)
+        if name: result[field] = name
+    for language in config.LANGUAGES:
+        field = 'description_' + language
+        description = form.get(field)
+        if description: result[field] = description
+    category_id = form.get('category_id')
+    price = form.get('price')
+    if price: result['price'] = price
+    if category_id: result['category_id'] = category_id
+    result['is_active'] = 'Y' if form.get('is_active', 'off') == 'on' else 'N'
+    return result
+
+def validAddProductData(data):
+    if 'model' in data and not validation.productModel(data['model']): return False
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and not validation.productName(data[prop]): return False
+    for language in config.LANGUAGES:
+        prop = 'description_' + language
+        if prop in data and not validation.productName(data[prop]): return False
+    if 'category_id' in data and not (validation.categoryID(data['category_id']) or data['category_id'] is None): return False
+    if 'price' in data and not validation.price(data['price']): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    return True
+
+def prepareAddProductData(data):
+    result = {'added': datetime.now()}
+    result['category_id'] = int(data['category_id']) if 'category_id' in data and data['category_id'] else None
+    result['model'] = data['model'] if 'model' in data and data['model'] else None
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    for language in config.LANGUAGES:
+        prop = 'description_' + language
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['price'] = common.parsePrice(data['price']) if 'price' in data and data['price'] else None
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
 
@@ -206,7 +262,7 @@ def prepareAddUserData(data):
 def validEditUserData(data):
     if 'user_id' not in data or not validation.userID(data['user_id']): return False
     if 'group_id' in data and not validation.usersGroupID(data['group_id']): return False
-    if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     if 'first_name' in data and not validation.userName(data['first_name']): return False
     if 'patronymic' in data and not validation.userName(data['patronymic']): return False
     if 'last_name' in data and not validation.userName(data['last_name']): return False

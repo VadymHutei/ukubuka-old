@@ -117,6 +117,12 @@ class Acp():
         self.data['languages'] = config.LANGUAGES
         return render_template('acp/products/add.html', **self.data)
 
+    def addProduct(self, form):
+        data = helper.prepareProductFormData(form)
+        if helper.validAddProductData(data):
+            data = helper.prepareAddProductData(data)
+            model.addProduct(data)
+
 
 
 #     ##     ##  ######  ######## ########   ######

@@ -484,6 +484,28 @@ def getProducts(language):
             products[row['product_id']]['properties'][row['property']] = row['value']
     return products
 
+def addProduct(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO `{table}` (`category_id`, `model`, `price`, `added`, `is_active`)
+        VALUES (%s, %s, %s, %s, %s)
+    """.format(table=db.table('products'))
+    cursor.execute(query, (data['category_id'], data['model'], data['price'], data['added'], data['is_active']))
+    product_id = cursor.lastrowid
+    for language in config.LANGUAGES:
+        prop_name = 'name_' + language
+        prop_description = 'description_' + language
+        if prop_name in data or prop_description in data:
+            query = """
+                INSERT INTO `{table}` (`product_id`, `language`, `name`, `description`)
+                VALUES (%s, %s, %s, %s)
+            """.format(table=db.table('products_text'))
+            cursor.execute(query, (product_id, language, data.get(prop_name, None), data.get(prop_description, None)))
+    connection.commit()
+    connection.close()
+
 
 
 #     ##     ##  ######  ######## ########   ######
