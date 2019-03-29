@@ -81,12 +81,9 @@ class Acp():
         return render_template('acp/categories/edit.html', **self.data)
 
     def addCategory(self, form):
-        print(form)
         data = helper.prepareCategoryFormData(form)
-        print(data)
         if helper.validAddCategoryData(data):
             data = helper.prepareAddCategoryData(data)
-            print(data)
             model.addCategory(data)
 
     def editCategory(self, form):

@@ -90,7 +90,7 @@ def prepareCategoryFormData(form):
     category_id = form.get('id')
     if category_id: result['id'] = category_id
     parent = form.get('parent')
-    if parent: result['id'] = parent
+    result['parent'] = parent if parent else None
     for language in config.LANGUAGES:
         field = 'name_' + language
         name = form.get(field)
