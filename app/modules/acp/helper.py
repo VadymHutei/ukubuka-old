@@ -52,15 +52,13 @@ def validEditMenuItemData(data):
     return True
 
 def prepareAddMenuItemData(data):
-    result = {
-        'added': datetime.now(),
-        'is_active': data['is_active']
-    }
+    result = {'added': datetime.now()}
     for language in config.LANGUAGES:
         prop = 'name_' + language
-        if prop in data and data[prop]: result[prop] = data[prop]
-    if 'parent' in data: result['parent'] = data['parent']
-    if 'link' in data: result['link'] = data['link']
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['parent'] = data['parent'] if 'parent' in data else None
+    result['link'] = data['link'] if 'link' in data else None
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
 def prepareEditMenuItemData(data):
@@ -70,7 +68,7 @@ def prepareEditMenuItemData(data):
         result[prop] = data[prop] if prop in data and data[prop] else None
     result['parent'] = data['parent'] if 'parent' in data else None
     result['link'] = data['link'] if 'link' in data else None
-    if 'is_active' in data: result['is_active'] = data['is_active']
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
 

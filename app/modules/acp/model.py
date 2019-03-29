@@ -126,28 +126,15 @@ def addMenuItem(data):
         INSERT INTO `{table}` (`parent`, `link`, `added`, `is_active`)
         VALUES (%s, %s, %s, %s)
     """.format(table=db.table('menus'))
-    cursor.execute(query, (data.get('parent', None), data.get('link', None), data['added'], data['is_active']))
-    values = []
-    lang_count = 0
+    cursor.execute(query, (data.get['parent'], data.get['link'], data['added'], data['is_active']))
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data:
-            values.extend([
-                cursor.lastrowid,
-                language,
-                data[prop]
-            ])
-            lang_count += 1
-    if values:
-        values_placeholders = ', '.join(['(%s, %s, %s)' for _ in range(lang_count)])
-        query = """
-            INSERT INTO `{table}` (`item_id`, `language`, `name`)
-            VALUES {values_placeholders}
-        """.format(
-            table=db.table('menus_text'),
-            values_placeholders=values_placeholders
-        )
-        cursor.execute(query, values)
+            query = """
+                INSERT INTO `{table}` (`item_id`, `language`, `name`)
+                VALUES (%s, %s, %s)
+            """.format(table=db.table('menus_text'))
+            cursor.execute(query, (cursor.lastrowid, language, data.get(prop, None)))
     connection.commit()
     connection.close()
 
