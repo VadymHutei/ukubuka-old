@@ -112,6 +112,11 @@ class Acp():
         self.data['products'] = model.getProducts(self.current_language)
         return render_template('acp/products/products.html', **self.data)
 
+    def addProductPage(self):
+        self.data['categories'] = model.getCategories(self.current_language)
+        self.data['languages'] = config.LANGUAGES
+        return render_template('acp/products/add.html', **self.data)
+
 
 
 #     ##     ##  ######  ######## ########   ######
