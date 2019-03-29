@@ -81,9 +81,12 @@ class Acp():
         return render_template('acp/categories/edit.html', **self.data)
 
     def addCategory(self, form):
+        print(form)
         data = helper.prepareCategoryFormData(form)
+        print(data)
         if helper.validAddCategoryData(data):
             data = helper.prepareAddCategoryData(data)
+            print(data)
             model.addCategory(data)
 
     def editCategory(self, form):
@@ -95,6 +98,22 @@ class Acp():
     def deleteCategory(self, category_id):
         if validation.categoryID(category_id): return model.deleteCategory(category_id)
         return False
+
+
+
+#     ########  ########   #######  ########  ##     ##  ######  ########  ######
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##          ##    ##
+#     ########  ########  ##     ## ##     ## ##     ## ##          ##     ######
+#     ##        ##   ##   ##     ## ##     ## ##     ## ##          ##          ##
+#     ##        ##    ##  ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##        ##     ##  #######  ########   #######   ######     ##     ######
+
+
+
+    def productsPage(self):
+        self.data['products'] = model.getproducts()
+        return render_template('acp/products/products.html', **self.data)
 
 
 

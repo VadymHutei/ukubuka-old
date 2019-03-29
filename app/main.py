@@ -205,6 +205,59 @@ def acp_delete_category(lang=config.DEFAULT_LANGUAGE):
 
 
 
+#     ########  ########   #######  ########  ##     ##  ######  ########  ######
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##     ## ##     ## ##     ## ##     ## ##     ## ##          ##    ##
+#     ########  ########  ##     ## ##     ## ##     ## ##          ##     ######
+#     ##        ##   ##   ##     ## ##     ## ##     ## ##          ##          ##
+#     ##        ##    ##  ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
+#     ##        ##     ##  #######  ########   #######   ######     ##     ######
+
+
+
+@app.route('/acp/products/', methods=['GET'])
+@app.route('/<lang>/acp/products/', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_products(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    return mod.productsPage()
+
+@app.route('/acp/products/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/products/add', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_add_product(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.addProductPage()
+    else:
+        mod.addProduct(request.form)
+        return redirect(url_for('acp_products'), 303)
+
+@app.route('/acp/products/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/products/edit', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_edit_product(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.editProductPage(request.args['id'])
+    else:
+        mod.editProduct(request.form)
+        return redirect(url_for('acp_products'), 303)
+
+@app.route('/acp/products/delete', methods=['GET'])
+@app.route('/<lang>/acp/products/delete', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_delete_product(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    mod.deleteProduct(request.args['id'])
+    return redirect(url_for('acp_products'), 303)
+
+
+
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##
 #     ##     ## ##       ##       ##     ## ##
