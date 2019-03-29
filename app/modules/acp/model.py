@@ -422,6 +422,70 @@ def deleteCategory(category_id):
 
 
 
+def getProducts(language):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            p.`id`,
+            p.`model`,
+            p.`added`,
+            p.`is_active`,
+            pt.`name`,
+            pt.`description`,
+            ct.`name` category
+        FROM `{table}` p
+        LEFT JOIN `{table_t}` pt
+            ON p.`id` = pt.`product_id`
+        LEFT JOIN `{table_c}` c
+            ON p.`category_id` = c.`id`
+        LEFT JOIN `{table_ct}` ct
+            ON c.`id` = ct.`category_id`
+        WHERE pt.`language` = %s
+        AND ct.`language` = %s
+    """.format(
+        table=db.table('products'),
+        table_t=db.table('products_text'),
+        table_c=db.table('categories'),
+        table_ct=db.table('categories_text')
+    )
+    cursor.execute(query, (language, language))
+    products_data = cursor.fetchall()
+    if not products_data:
+        connection.close()
+        return {}
+    products = {row['id']: row for row in products_data}
+    product_ids = [row['id'] for row in products_data]
+    query = """
+        SELECT
+            pp.`product_id`,
+            pp.`value`,
+            pt.`name` property
+        FROM `{table_pp}` pp
+        LEFT JOIN `{table_p}` p
+            ON pp.`property_id` = p.`id`
+        LEFT JOIN `{table_pt}` pt
+            ON p.`id` = pt.`property_id`
+        WHERE pp.`product_id` IN %s
+        AND pp.`language` = %s
+        AND pt.`language` = %s
+    """.format(
+        table_pp=db.table('products_properties'),
+        table_p=db.table('properties'),
+        table_pt=db.table('properties_text'),
+    )
+    cursor.execute(query, (product_ids, language, language))
+    connection.close()
+    product_properties_data = cursor.fetchall()
+    for row in product_properties_data:
+        if row['product_id'] in products:
+            if 'properties' not in products[row['product_id']]: products[row['product_id']]['properties'] = {}
+            products[row['product_id']]['properties'][row['property']] = row['value']
+    return products
+
+
+
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##
 #     ##     ## ##       ##       ##     ## ##

@@ -109,7 +109,7 @@ class Acp():
 
 
     def productsPage(self):
-        self.data['products'] = model.getproducts()
+        self.data['products'] = model.getProducts(self.current_language)
         return render_template('acp/products/products.html', **self.data)
 
 
