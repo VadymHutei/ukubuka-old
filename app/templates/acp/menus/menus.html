@@ -32,33 +32,11 @@
         <tbody>
             {% for item_id, item in menu['items'].items() recursive %}
             <tr>
-                <td class="center">
-                    {{ item['id'] }}
-                </td>
-                <td>
-                    {% if item['name'] %}
-                    {{ item['name'] }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                    {% if item['link'] %}
-                    {{ item['link'] }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                    {% if item['parent'] and item['parent'] in menu_item_names: %}
-                    {{ menu_item_names[item['parent']] }}
-                    {% else: %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                {{ item['added'] }}
-            </td>
+                <td class="center">{{ item['id'] }}</td>
+                <td>{% if item['name'] %}{{ item['name'] }}{% else %}-{% endif %}</td>
+                <td>{% if item['link'] %}{{ item['link'] }}{% else %}-{% endif %}</td>
+                <td>{% if item['parent'] and item['parent'] in menu_item_names: %}{{ menu_item_names[item['parent']] }}{% else: %}-{% endif %}</td>
+                <td>{{ item['added'] }}</td>
                 <td class="center"><input type="checkbox" disabled{% if item['is_active'] == 'Y' %} checked{% endif %}></td>
                 <td>
                     <div class="actions">

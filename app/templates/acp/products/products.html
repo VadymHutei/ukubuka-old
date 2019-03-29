@@ -31,24 +31,12 @@
         <tbody>
             {% for product_id, product in products.items() %}
             <tr>
-                <td class="center">
-                    {{ product['id'] }}
-                </td>
-                <td>
-                    {% if product['model'] %}{{ product['model'] }}{% else %}-{% endif %}
-                </td>
-                <td>
-                    {% if product['name'] %}{{ product['name'] }}{% else %}-{% endif %}
-                </td>
-                <td>
-                    {% if product['description'] %}{{ product['description'] }}{% else %}-{% endif %}
-                </td>
-                <td>
-                    {% if product['category'] %}{{ product['category'] }}{% else %}-{% endif %}
-                </td>
-                <td>
-                    {{ product['added'] }}
-                </td>
+                <td class="center">{{ product['id'] }}</td>
+                <td>{% if product['model'] %}{{ product['model'] }}{% else %}-{% endif %}</td>
+                <td>{% if product['name'] %}{{ product['name'] }}{% else %}-{% endif %}</td>
+                <td>{% if product['description'] %}{{ product['description'] }}{% else %}-{% endif %}</td>
+                <td>{% if product['category'] %}{{ product['category'] }}{% else %}-{% endif %}</td>
+                <td>{{ product['added'] }}</td>
                 <td class="center"><input type="checkbox" disabled{% if product['is_active'] == 'Y' %} checked{% endif %}></td>
                 <td>
                     <div class="actions">
