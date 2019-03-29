@@ -339,7 +339,7 @@ def addCategory(data):
     """.format(table=db.table('categories'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, (data['parent'], data['added'], data['is_active']))
+    cursor.execute(query, (data.get('parent', None), data['added'], data['is_active']))
     category_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop = 'name_' + language

@@ -21,7 +21,7 @@ def prepareMenuItemFormData(form):
     item_id = form.get('id')
     if item_id: result['item_id'] = item_id
     parent = form.get('parent')
-    if parent: result['parent'] = parent
+    result['parent'] = parent if parent else None
     for language in config.LANGUAGES:
         field = 'name_' + language
         name = form.get(field)
@@ -100,7 +100,7 @@ def prepareCategoryFormData(form):
     return result
 
 def validAddCategoryData(data):
-    if 'parent' not in data or not (validation.categoryID(data['parent']) or data['parent'] is None): return False
+    if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
     if 'is_active' in data and data['is_active'] not in ('Y', 'N'): return False
     for language in config.LANGUAGES:
         prop = 'name_' + language
