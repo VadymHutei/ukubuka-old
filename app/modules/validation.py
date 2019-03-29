@@ -78,7 +78,7 @@ def usersGroupID(users_group_id):
 
 def userName(name):
     if isinstance(name, str):
-        return or re.fullmatch(r'\w{,64}', name)
+        return re.fullmatch(r'\w{,64}', name)
     return False
 
 def usersGroupName(name):
@@ -115,7 +115,7 @@ def categoryName(name):
 
 def productModel(model):
     if isinstance(model, str):
-        return or re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,64}', model)
+        return re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,64}', model)
     return False
 
 def productName(name):
