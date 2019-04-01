@@ -126,7 +126,8 @@ def addMenuItem(data):
         INSERT INTO `{table}` (`parent`, `link`, `added`, `is_active`)
         VALUES (%s, %s, %s, %s)
     """.format(table=db.table('menus'))
-    cursor.execute(query, (data.get['parent'], data.get['link'], data['added'], data['is_active']))
+    cursor.execute(query, (data['parent'], data['link'], data['added'], data['is_active']))
+    item_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data:
@@ -134,7 +135,7 @@ def addMenuItem(data):
                 INSERT INTO `{table}` (`item_id`, `language`, `name`)
                 VALUES (%s, %s, %s)
             """.format(table=db.table('menus_text'))
-            cursor.execute(query, (cursor.lastrowid, language, data.get(prop, None)))
+            cursor.execute(query, (item_id, language, data.get(prop, None)))
     connection.commit()
     connection.close()
 
@@ -326,7 +327,7 @@ def addCategory(data):
     """.format(table=db.table('categories'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, (data.get['parent'], data['added'], data['is_active']))
+    cursor.execute(query, (data['parent'], data['added'], data['is_active']))
     category_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop = 'name_' + language
