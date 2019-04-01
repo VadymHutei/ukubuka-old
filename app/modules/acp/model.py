@@ -449,27 +449,27 @@ def getProducts(language):
         SELECT
             pp.`product_id`,
             pp.`value`,
-            pt.`name` property
+            pt.`name` characteristic
         FROM `{table_pp}` pp
         LEFT JOIN `{table_p}` p
-            ON pp.`property_id` = p.`id`
+            ON pp.`characteristic_id` = p.`id`
         LEFT JOIN `{table_pt}` pt
-            ON p.`id` = pt.`property_id`
+            ON p.`id` = pt.`characteristic_id`
         WHERE pp.`product_id` IN %s
         AND pp.`language` = %s
         AND pt.`language` = %s
     """.format(
-        table_pp=db.table('products_properties'),
-        table_p=db.table('properties'),
-        table_pt=db.table('properties_text'),
+        table_pp=db.table('products_characteristics'),
+        table_p=db.table('characteristics'),
+        table_pt=db.table('characteristics_text'),
     )
     cursor.execute(query, (product_ids, language, language))
     connection.close()
-    product_properties_data = cursor.fetchall()
-    for row in product_properties_data:
+    product_characteristics_data = cursor.fetchall()
+    for row in product_characteristics_data:
         if row['product_id'] in products:
-            if 'properties' not in products[row['product_id']]: products[row['product_id']]['properties'] = {}
-            products[row['product_id']]['properties'][row['property']] = row['value']
+            if 'characteristics' not in products[row['product_id']]: products[row['product_id']]['characteristics'] = {}
+            products[row['product_id']]['characteristics'][row['characteristic']] = row['value']
     return products
 
 def addProduct(data):
@@ -493,6 +493,41 @@ def addProduct(data):
             cursor.execute(query, (product_id, language, data.get(prop_name, None), data.get(prop_description, None)))
     connection.commit()
     connection.close()
+
+
+
+#      ######  ##     ##    ###    ########     ###     ######  ######## ######## ########  ####  ######  ######## ####  ######   ######
+#     ##    ## ##     ##   ## ##   ##     ##   ## ##   ##    ##    ##    ##       ##     ##  ##  ##    ##    ##     ##  ##    ## ##    ##
+#     ##       ##     ##  ##   ##  ##     ##  ##   ##  ##          ##    ##       ##     ##  ##  ##          ##     ##  ##       ##
+#     ##       ######### ##     ## ########  ##     ## ##          ##    ######   ########   ##   ######     ##     ##  ##        ######
+#     ##       ##     ## ######### ##   ##   ######### ##          ##    ##       ##   ##    ##        ##    ##     ##  ##             ##
+#     ##    ## ##     ## ##     ## ##    ##  ##     ## ##    ##    ##    ##       ##    ##   ##  ##    ##    ##     ##  ##    ## ##    ##
+#      ######  ##     ## ##     ## ##     ## ##     ##  ######     ##    ######## ##     ## ####  ######     ##    ####  ######   ######
+
+
+
+def getCharacteristics(language):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            c.`id`,
+            c.`added`,
+            c.`is_active`,
+            ct.`name`
+        FROM `{table}` c
+        LEFT JOIN `{table_t}` ct
+            ON c.`id` = ct.`characteristic_id`
+        WHERE ct.`language` = %s
+    """.format(
+        table=db.table('characteristics'),
+        table_t=db.table('characteristics_text')
+    )
+    cursor.execute(query, (language,))
+    connection.close()
+    characteristics_data = cursor.fetchall()
+    return {row['id']: row for row in characteristics_data} if characteristics_data else {}
 
 
 
