@@ -27,14 +27,13 @@
                         <input id="id_field" type="text" name="id" value="{{ current_item['id'] }}" readonly>
                     </td>
                 </tr>
-                {% set ns = namespace(autofocus=true) %}
                 {% for language in languages %}
                 <tr>
                     <td class="label">
                         <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
                     </td>
                     <td>
-                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}"{% if language in current_item['name'] %} value="{{ current_item['name'][language] }}"{% endif %} maxlength="64" autocomplete="off"{% if ns.autofocus %} autofocus{% set ns.autofocus = false %}{% endif %}>
+                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}"{% if language in current_item['name'] %} value="{{ current_item['name'][language] }}"{% endif %} maxlength="64" autocomplete="off"{% if loop.first %} autofocus{% endif %}>
                     </td>
                 </tr>
                 {% endfor %}
