@@ -191,6 +191,60 @@ def prepareAddProductData(data):
 
 
 
+#      ######  ##     ##    ###    ########     ###     ######  ######## ######## ########  ####  ######  ######## ####  ######
+#     ##    ## ##     ##   ## ##   ##     ##   ## ##   ##    ##    ##    ##       ##     ##  ##  ##    ##    ##     ##  ##    ##
+#     ##       ##     ##  ##   ##  ##     ##  ##   ##  ##          ##    ##       ##     ##  ##  ##          ##     ##  ##
+#     ##       ######### ##     ## ########  ##     ## ##          ##    ######   ########   ##   ######     ##     ##  ##
+#     ##       ##     ## ######### ##   ##   ######### ##          ##    ##       ##   ##    ##        ##    ##     ##  ##
+#     ##    ## ##     ## ##     ## ##    ##  ##     ## ##    ##    ##    ##       ##    ##   ##  ##    ##    ##     ##  ##    ##
+#      ######  ##     ## ##     ## ##     ## ##     ##  ######     ##    ######## ##     ## ####  ######     ##    ####  ######
+
+
+
+def prepareCharacteristicFormData(form):
+    result = {}
+    characteristic_id = form.get('id')
+    if characteristic_id: result['id'] = characteristic_id
+    for language in config.LANGUAGES:
+        field = 'name_' + language
+        name = form.get(field)
+        if name: result[field] = name
+    result['is_active'] = 'Y' if form.get('is_active', 'off') == 'on' else 'N'
+    return result
+
+def validAddCharacteristicData(data):
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and not validation.productName(data[prop]): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    return True
+
+def prepareAddCharacteristicData(data):
+    result = {'added': datetime.now()}
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
+    return result
+
+def validEditCharacteristicData(data):
+    if 'id' not in data or not validation.characteristicID(data['id']): return False
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        if prop in data and not validation.productName(data[prop]): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    return True
+
+def prepareEditCharacteristicData(data):
+    result = {'id': data['id']}
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
+    return result
+
+
+
 #     ##     ##  ######  ######## ########   ######
 #     ##     ## ##    ## ##       ##     ## ##    ##
 #     ##     ## ##       ##       ##     ## ##

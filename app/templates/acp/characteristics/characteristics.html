@@ -1,0 +1,47 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Характеристики - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Характеристики</h1>
+    <div class="control_panel">
+        <a href="/acp/characteristics/add" class="button_link">
+            <div class="button add">
+                <span class="title">додати</span>
+            </div>
+        </a>
+    </div>
+    <table class="acp_table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Додано</th>
+                <th>Активний</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for characteristic_id, characteristic in characteristics.items() %}
+            <tr>
+                <td class="center">{{ characteristic['id'] }}</td>
+                <td>{% if characteristic['name'] %}{{ characteristic['name'] }}{% else %}-{% endif %}</td>
+                <td>{{ characteristic['added'] }}</td>
+                <td class="center"><input type="checkbox" disabled{% if characteristic['is_active'] == 'Y' %} checked{% endif %}></td>
+                <td>
+                    <div class="actions">
+                        <a href="/acp/characteristics/edit?id={{ characteristic['id'] }}">&#9998; редагувати</a>
+                        <a href="/acp/characteristics/delete?id={{ characteristic['id'] }}">&#10007; видалити</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{%- endblock content %}

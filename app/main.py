@@ -276,6 +276,30 @@ def acp_characteristics(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.characteristicsPage()
 
+@app.route('/acp/characteristics/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/characteristics/add', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_add_characteristics(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.addCharacteristicPage()
+    else:
+        mod.addCharacteristic(request.form)
+        return redirect(url_for('acp_characteristics'), 303)
+
+@app.route('/acp/characteristics/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/characteristics/edit', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_edit_characteristics(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.editCharacteristicPage(request.args['id'])
+    else:
+        mod.editCharacteristic(request.form)
+        return redirect(url_for('acp_characteristics'), 303)
+
 
 
 #     ##     ##  ######  ######## ########   ######

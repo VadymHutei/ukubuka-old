@@ -139,6 +139,28 @@ class Acp():
         self.data['characteristics'] = model.getCharacteristics(self.current_language)
         return render_template('acp/characteristics/characteristics.html', **self.data)
 
+    def addCharacteristicPage(self):
+        self.data['languages'] = config.LANGUAGES
+        return render_template('acp/characteristics/add.html', **self.data)
+
+    def addCharacteristic(self, form):
+        data = helper.prepareCharacteristicFormData(form)
+        if helper.validAddCharacteristicData(data):
+            data = helper.prepareAddCharacteristicData(data)
+            model.addCharacteristic(data)
+
+    def editCharacteristicPage(self, characteristic_id):
+        self.data['characteristic'] = model.getCharacteristic(characteristic_id)
+        if not self.data['characteristic']: return abort(404)
+        self.data['languages'] = config.LANGUAGES
+        return render_template('acp/characteristics/edit.html', **self.data)
+
+    def editCharacteristic(self, form):
+        data = helper.prepareCharacteristicFormData(form)
+        if helper.validEditCharacteristicData(data):
+            data = helper.prepareEditCharacteristicData(data)
+            model.editCharacteristic(data)
+
 
 
 #     ##     ##  ######  ######## ########   ######

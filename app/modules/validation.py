@@ -112,7 +112,6 @@ def categoryName(name):
 #     ##        ##    ##  ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
 #     ##        ##     ##  #######  ########   #######   ######     ##     ######
 
-
 def productModel(model):
     if isinstance(model, str):
         return re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,64}', model)
@@ -126,4 +125,17 @@ def productName(name):
 def productDescrioption(description):
     if isinstance(description, str):
         return re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{,256}', description)
+    return False
+
+#      ######  ##     ##    ###    ########     ###     ######  ######## ######## ########  ####  ######  ######## ####  ######
+#     ##    ## ##     ##   ## ##   ##     ##   ## ##   ##    ##    ##    ##       ##     ##  ##  ##    ##    ##     ##  ##    ##
+#     ##       ##     ##  ##   ##  ##     ##  ##   ##  ##          ##    ##       ##     ##  ##  ##          ##     ##  ##
+#     ##       ######### ##     ## ########  ##     ## ##          ##    ######   ########   ##   ######     ##     ##  ##
+#     ##       ##     ## ######### ##   ##   ######### ##          ##    ##       ##   ##    ##        ##    ##     ##  ##
+#     ##    ## ##     ## ##     ## ##    ##  ##     ## ##    ##    ##    ##       ##    ##   ##  ##    ##    ##     ##  ##    ##
+#      ######  ##     ## ##     ## ##     ## ##     ##  ######     ##    ######## ##     ## ####  ######     ##    ####  ######
+
+def characteristicID(characteristic_id):
+    if isinstance(characteristic_id, str):
+        return bool(re.fullmatch(r'\d{1,8}', characteristic_id))
     return False

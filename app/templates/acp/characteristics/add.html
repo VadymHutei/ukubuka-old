@@ -1,0 +1,45 @@
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Додати характеристику - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Додати характеристику</h1>
+    <div class="control_panel">
+        <a href="/acp/characteristics/" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        <input type="submit" form="add_characteristic_form" value="додати" class="button add">
+    </div>
+    <form id="add_characteristic_form" class="acp_form" action="/acp/characteristics/add" method="post" accept-charset="utf-8">
+        <table>
+            <tbody>
+                {% for language in languages %}
+                <tr>
+                    <td class="label">
+                        <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
+                    </td>
+                    <td>
+                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off"{% if loop.first %} autofocus{% endif %}>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="label">
+                        <label for="is_active_field">Показувати</label>
+                    </td>
+                    <td>
+                        <input id="is_active_field" type="checkbox" name="is_active" checked>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</section>
+
+{%- endblock content %}

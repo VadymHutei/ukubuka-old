@@ -506,6 +506,40 @@ def addProduct(data):
 
 
 
+def getCharacteristic(characteristic_id):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            `id`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('characteristics'))
+    cursor.execute(query, (characteristic_id))
+    characteristic_data = cursor.fetchone()
+    if not characteristic_data:
+        connection.close()
+        return {}
+    query = """
+        SELECT
+            `language`,
+            `name`
+        FROM `{table}`
+        WHERE `characteristic_id` = %s
+    """.format(table=db.table('characteristics_text'))
+    cursor.execute(query, (characteristic_id))
+    connection.close()
+    characteristic_text_data = cursor.fetchall()
+    for row in characteristic_text_data:
+        for prop in row:
+            if prop == 'language': continue
+            if prop not in characteristic_data: characteristic_data[prop] = {}
+            characteristic_data[prop][row['language']] = row[prop]
+    return characteristic_data
+
 def getCharacteristics(language):
     db = DB()
     connection = db.getConnection()
@@ -528,6 +562,51 @@ def getCharacteristics(language):
     connection.close()
     characteristics_data = cursor.fetchall()
     return {row['id']: row for row in characteristics_data} if characteristics_data else {}
+
+def addCharacteristic(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO `{table}` (`added`, `is_active`)
+        VALUES (%s, %s)
+    """.format(table=db.table('characteristics'))
+    cursor.execute(query, (data['added'], data['is_active']))
+    product_id = cursor.lastrowid
+    for language in config.LANGUAGES:
+        prop_name = 'name_' + language
+        prop_description = 'description_' + language
+        if prop_name in data or prop_description in data:
+            query = """
+                INSERT INTO `{table}` (`characteristic_id`, `language`, `name`)
+                VALUES (%s, %s, %s)
+            """.format(table=db.table('characteristics_text'))
+            cursor.execute(query, (product_id, language, data.get(prop_name, None)))
+    connection.commit()
+    connection.close()
+
+def editCharacteristic(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        UPDATE `{table}`
+        SET `is_active` = %s
+        WHERE `id` = %s
+    """.format(table=db.table('characteristics'))
+    cursor.execute(query, (data['is_active'], data['id']))
+    for language in config.LANGUAGES:
+        prop_name = 'name_' + language
+        if prop_name in data:
+            query = """
+                UPDATE `{table}`
+                SET `name` = %s
+                WHERE `characteristic_id` = %s
+                AND `language` = %s
+            """.format(table=db.table('characteristics_text'))
+            cursor.execute(query, (data.get(prop_name, None), data['id'], language))
+    connection.commit()
+    connection.close()
 
 
 
