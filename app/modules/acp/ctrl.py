@@ -161,6 +161,9 @@ class Acp():
             data = helper.prepareEditCharacteristicData(data)
             model.editCharacteristic(data)
 
+    def deleteCharacteristic(self, characteristic_id):
+        if validation.characteristicID(characteristic_id): return model.deleteCharacteristic(characteristic_id)
+
 
 
 #     ##     ##  ######  ######## ########   ######

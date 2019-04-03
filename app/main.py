@@ -300,6 +300,15 @@ def acp_edit_characteristics(lang=config.DEFAULT_LANGUAGE):
         mod.editCharacteristic(request.form)
         return redirect(url_for('acp_characteristics'), 303)
 
+@app.route('/acp/characteristics/delete', methods=['GET'])
+@app.route('/<lang>/acp/characteristics/delete', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_delete_characteristic(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    mod.deleteCharacteristic(request.args['id'])
+    return redirect(url_for('acp_characteristics'), 303)
+
 
 
 #     ##     ##  ######  ######## ########   ######

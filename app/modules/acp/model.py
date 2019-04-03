@@ -608,6 +608,18 @@ def editCharacteristic(data):
     connection.commit()
     connection.close()
 
+def deleteCharacteristic(characteristic_id):
+    db = DB()
+    query = """
+        DELETE FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('characteristics'))
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    cursor.execute(query, (characteristic_id,))
+    connection.commit()
+    connection.close()
+
 
 
 #     ##     ##  ######  ######## ########   ######
