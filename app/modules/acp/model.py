@@ -417,7 +417,9 @@ def getProducts(language):
     query = """
         SELECT
             p.`id`,
+            p.`category_id`,
             p.`model`,
+            p.`price`,
             p.`added`,
             p.`is_active`,
             pt.`name`,
@@ -439,38 +441,9 @@ def getProducts(language):
         table_ct=db.table('categories_text')
     )
     cursor.execute(query, (language, language))
-    products_data = cursor.fetchall()
-    if not products_data:
-        connection.close()
-        return {}
-    products = {row['id']: row for row in products_data}
-    product_ids = [row['id'] for row in products_data]
-    query = """
-        SELECT
-            pp.`product_id`,
-            pp.`value`,
-            pt.`name` characteristic
-        FROM `{table_pp}` pp
-        LEFT JOIN `{table_p}` p
-            ON pp.`characteristic_id` = p.`id`
-        LEFT JOIN `{table_pt}` pt
-            ON p.`id` = pt.`characteristic_id`
-        WHERE pp.`product_id` IN %s
-        AND pp.`language` = %s
-        AND pt.`language` = %s
-    """.format(
-        table_pp=db.table('products_characteristics'),
-        table_p=db.table('characteristics'),
-        table_pt=db.table('characteristics_text'),
-    )
-    cursor.execute(query, (product_ids, language, language))
     connection.close()
-    product_characteristics_data = cursor.fetchall()
-    for row in product_characteristics_data:
-        if row['product_id'] in products:
-            if 'characteristics' not in products[row['product_id']]: products[row['product_id']]['characteristics'] = {}
-            products[row['product_id']]['characteristics'][row['characteristic']] = row['value']
-    return products
+    products_data = cursor.fetchall()
+    return {row['id']: row for row in products_data} if products_data else {}
 
 def addProduct(data):
     db = DB()

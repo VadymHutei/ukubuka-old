@@ -9,3 +9,9 @@ def parsePrice(data):
     price = int(bar[0]) * 100 if bar[0] else 0
     if len(bar) > 1: price += int(bar[1][:2])
     return price
+
+def formatPrice(data):
+    if not data: return '0,00 ₴'
+    if not isinstance(data, str): data = str(data)
+    if not re.fullmatch(r'[0-9]+', data): return '0,00 ₴'
+    return '{0},{1} ₴'.format(data[:-2], data[-2:])

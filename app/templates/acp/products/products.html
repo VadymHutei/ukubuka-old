@@ -23,6 +23,7 @@
                 <th>Назва</th>
                 <th>Опис</th>
                 <th>Категорія</th>
+                <th>Ціна</th>
                 <th>Додано</th>
                 <th>Активний</th>
                 <th>Дія</th>
@@ -36,6 +37,7 @@
                 <td>{% if product['name'] %}{{ product['name'] }}{% else %}-{% endif %}</td>
                 <td>{% if product['description'] %}{{ product['description'] }}{% else %}-{% endif %}</td>
                 <td>{% if product['category'] %}{{ product['category'] }}{% else %}-{% endif %}</td>
+                <td>{% if product['price'] %}{{ product['price'] }}{% else %}-{% endif %}</td>
                 <td>{{ product['added'] }}</td>
                 <td class="center"><input type="checkbox" disabled{% if product['is_active'] == 'Y' %} checked{% endif %}></td>
                 <td>
