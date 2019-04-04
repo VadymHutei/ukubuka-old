@@ -64,7 +64,7 @@ class Acp():
         self.data['categories'] = categories
         self.data['parent'] = parent
         self.data['category_names'] = model.getCategoryNames(self.current_language)
-        return render_template('acp/categories/categories.html', **self.data)
+        return render_template('acp/categories/list.html', **self.data)
 
     def addCategoryPage(self):
         self.data['categories'] = model.getCategories(self.current_language)
@@ -110,7 +110,7 @@ class Acp():
 
     def productsPage(self):
         self.data['products'] = model.getProducts(self.current_language)
-        return render_template('acp/products/products.html', **self.data)
+        return render_template('acp/products/list.html', **self.data)
 
     def addProductPage(self):
         self.data['categories'] = model.getCategories(self.current_language)
@@ -137,7 +137,7 @@ class Acp():
 
     def characteristicsPage(self):
         self.data['characteristics'] = model.getCharacteristics(self.current_language)
-        return render_template('acp/characteristics/characteristics.html', **self.data)
+        return render_template('acp/characteristics/list.html', **self.data)
 
     def addCharacteristicPage(self):
         self.data['languages'] = config.LANGUAGES
@@ -178,7 +178,7 @@ class Acp():
 
     def users_page(self):
         self.data['users'] = model.getUsers()
-        return render_template('acp/users/users.html', **self.data)
+        return render_template('acp/users/list.html', **self.data)
 
     def user_add_page(self):
         self.data['groups'] = config.USERS_GROUPS
@@ -244,7 +244,7 @@ class Acp():
 
     def menus_page(self):
         self.data['menu_item_names'] = model.getMenuItemNames(self.current_language)
-        return render_template('acp/menus/menus.html', **self.data)
+        return render_template('acp/menus/list.html', **self.data)
 
     def menus_add_page(self):
         self.data['languages'] = config.LANGUAGES
