@@ -15,27 +15,28 @@
             </div>
         </a>
     </div>
-    {% for menu_id, menu in menus.items() %}
     <table class="acp_table">
-        <caption>{{ menu['name'] }}  (ID {{ menu['id'] }})</caption>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Назва</th>
                 <th>Посилання</th>
                 <th>Батьківський пункт</th>
+                <th>Порядок</th>
                 <th>Додано</th>
                 <th>Активний</th>
                 <th>Дія</th>
             </tr>
         </thead>
         <tbody>
-            {% for item_id, item in menu['items'].items() recursive %}
+            {% for item_id in menus_order %}
+            {% set item = menus[item_id] %}
             <tr>
                 <td class="center">{{ item['id'] }}</td>
                 <td>{% if item['name'] %}{{ item['name'] }}{% else %}-{% endif %}</td>
                 <td>{% if item['link'] %}{{ item['link'] }}{% else %}-{% endif %}</td>
                 <td>{% if item['parent'] and item['parent'] in menu_item_names: %}{{ menu_item_names[item['parent']] }}{% else: %}-{% endif %}</td>
+                <td class="center">{{ item['order'] }}</td>
                 <td>{{ item['added'] }}</td>
                 <td class="center"><input type="checkbox" disabled{% if item['is_active'] == 'Y' %} checked{% endif %}></td>
                 <td>
@@ -45,11 +46,9 @@
                     </div>
                 </td>
             </tr>
-            {{ loop(item['items'].items()) }}
             {% endfor %}
         </tbody>
     </table>
-    {% endfor %}
 </section>
 
 {%- endblock content %}

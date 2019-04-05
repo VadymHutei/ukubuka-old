@@ -1,40 +1,48 @@
-{% set acp_main_menu_id = 3%}
-{% if acp_main_menu_id in menus and menus[acp_main_menu_id]['items'] %}
+{% set acp_main_menu_id = 3 %}
+{% if acp_main_menu_id in layout_menus and layout_menus[acp_main_menu_id]['items'] %}
+{% set menus_l1 = layout_menus[acp_main_menu_id]['items'] %}
 <div class="main_menu">
     <nav>
         <div class="menu_l1">
-            {% for item_id, item in menus[acp_main_menu_id]['items'].items() %}
-            {% if item['is_active'] == 'Y' and item['name'] %}
+            {% for item_id in layout_menus_order %}
+            {% if item_id in menus_l1 %}
+            {% set item_l1 = menus_l1[item_id] %}
+            {% if item_l1['is_active'] == 'Y' and item_l1['name'] %}
             <div class="item_l1_wrap">
-                {% if item['link'] %}
-                <a href="{{ item['link'] }}" class="item_l1_link">
+                {% if item_l1['link'] %}
+                <a href="{{ item_l1['link'] }}" class="item_l1_link">
                 {% endif %}
                     <div class="item_l1">
-                        <span class="item_l1_title">{{ item['name'] }}</span>
+                        <span class="item_l1_title">{{ item_l1['name'] }}</span>
                     </div>
-                {% if item['link'] %}
+                {% if item_l1['link'] %}
                 </a>
                 {% endif %}
-                {% if item['items'] %}
+                {% if item_l1['items'] %}
+                {% set menus_l2 = item_l1['items'] %}
                 <div class="menu_l2">
-                    {% for item_id, item in item['items'].items() %}
-                    {% if item['is_active'] == 'Y' and item['name'] %}
+                    {% for item_id in layout_menus_order %}
+                    {% if item_id in menus_l2 %}
+                    {% set item_l2 = menus_l2[item_id] %}
+                    {% if item_l2['is_active'] == 'Y' and item_l2['name'] %}
                     <div class="item_l2_wrap">
-                        {% if item['link'] %}
-                        <a href="{{ item['link'] }}" class="item_l2_link">
+                        {% if item_l2['link'] %}
+                        <a href="{{ item_l2['link'] }}" class="item_l2_link">
                         {% endif %}
                             <div class="item_l2">
-                                <span class="item_l1_title">{{ item['name'] }}</span>
+                                <span class="item_l1_title">{{ item_l2['name'] }}</span>
                             </div>
-                        {% if item['link'] %}
+                        {% if item_l2['link'] %}
                         </a>
                         {% endif %}
                     </div>
+                    {% endif %}
                     {% endif %}
                     {% endfor %}
                 </div>
                 {% endif %}
             </div>
+            {% endif %}
             {% endif %}
             {% endfor %}
         </div>

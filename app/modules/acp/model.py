@@ -50,28 +50,77 @@ def getMenuItem(item_id):
         if row['language'] not in item_data['name']: item_data['name'][row['language']] = row['name']
     return item_data
 
-def getMenus(lang, parent=None):
-    result = {}
+def getMenus(language, order_by=None, order_type=None):
     db = DB()
     connection = db.getConnection()
     cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('id', 'parent', 'link', 'order', 'added', 'is_active', 'name'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
         SELECT
-            m.`id`,
-            m.`parent`,
-            m.`link`,
-            m.`added`,
-            m.`is_active`,
-            t.`name`
+            m.`id` `id`,
+            m.`parent` `parent`,
+            m.`link` `link`,
+            m.`order` `order`,
+            m.`added` `added`,
+            m.`is_active` `is_active`,
+            mt.`name` `name`
         FROM `{table}` m
-        LEFT JOIN `{table}_text` t
-            ON m.`id` = t.`item_id`
-        AND `language` = '{lang}'
-    """.format(table=db.table('menus'), lang=lang)
+        LEFT JOIN `{table_t}` mt
+            ON m.`id` = mt.`item_id`
+        AND `language` = '{language}'
+        {order}
+    """.format(
+        table=db.table('menus'),
+        table_t=db.table('menus_text'),
+        language=language,
+        order=order_row
+    )
     cursor.execute(query)
     connection.close()
     menu_items = cursor.fetchall()
+    if not menu_items: return {} if order_by is None else {}, []
+    order = [item['id'] for item in menu_items]
     menus = {item['id']: item for item in menu_items}
+    return menus if order_by is None else menus, order
+
+def getMenusTree(language, order_by=None, order_type=None):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('id', 'parent', 'link', 'order', 'added', 'is_active', 'name'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
+    query = """
+        SELECT
+            m.`id` `id`,
+            m.`parent` `parent`,
+            m.`link` `link`,
+            m.`order` `order`,
+            m.`added` `added`,
+            m.`is_active` `is_active`,
+            mt.`name` `name`
+        FROM `{table}` m
+        LEFT JOIN `{table_t}` mt
+            ON m.`id` = mt.`item_id`
+        AND `language` = '{language}'
+        {order}
+    """.format(
+        table=db.table('menus'),
+        table_t=db.table('menus_text'),
+        language=language,
+        order=order_row
+    )
+    cursor.execute(query)
+    connection.close()
+    menu_items = cursor.fetchall()
+    if not menu_items: return {} if order_by is None else {}, []
+    order = [item['id'] for item in menu_items]
+    menus = {item['id']: item for item in menu_items}
+    result = {}
     parents = {}
     for item in menu_items:
         if item['parent'] is None:
@@ -90,12 +139,7 @@ def getMenus(lang, parent=None):
             if result[r_menu_id]['items']:
                 setItems(result[r_menu_id]['items'])
     setItems(result)
-    if parent is None:
-        return result
-    elif parent in result:
-        return result[parent]
-    else:
-        return {}
+    return result if order_by is None else result, order
 
 def getMenuItemNames(language):
     db = DB()
