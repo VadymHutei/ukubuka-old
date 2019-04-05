@@ -22,6 +22,7 @@ def getMenuItem(item_id):
             `id`,
             `parent`,
             `link`,
+            `order`,
             `added`,
             `is_active`
         FROM `{table}`
@@ -187,42 +188,26 @@ def editMenuItem(data):
     db = DB()
     connection = db.getConnection()
     cursor = connection.cursor()
-    columns = []
-    values = []
-    for prop in ('parent', 'link', 'is_active'):
-        if prop in data:
-            columns.append(prop)
-            values.append(data[prop])
-    if columns:
-        columns = ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
-        values.append(data['item_id'])
-        query = """
-            UPDATE `{table}`
-            SET {columns}
-            WHERE `id` = %s
-        """.format(
-            table=db.table('menus'),
-            columns=columns
-        )
-        cursor.execute(query, values)
-    values_list = []
+    query = """
+        UPDATE `{table}`
+        SET
+            `parent` = %s,
+            `link` = %s,
+            `order` = %s,
+            `is_active` = %s
+        WHERE `id` = %s
+    """.format(table=db.table('menus'))
+    cursor.execute(query, (data['parent'], data['link'], data['order'], data['is_active'], data['id']))
     for language in config.LANGUAGES:
-        prop = 'name_' + language
-        if prop in data:
-            values_list.append((
-                data['item_id'],
-                language,
-                data[prop],
-                data[prop]
-            ))
-    if values:
-        query = """
-            INSERT INTO `{table}` (`item_id`, `language`, `name`)
-            VALUES (%s, %s, %s)
-            ON DUPLICATE KEY UPDATE `name` = %s
-        """.format(table=db.table('menus_text'))
-        for values in values_list:
-            cursor.execute(query, values)
+        prop_name = 'name_' + language
+        if prop_name in data:
+            query = """
+                UPDATE `{table}`
+                SET `name` = %s
+                WHERE `item_id` = %s
+                AND `language` = %s
+            """.format(table=db.table('menus_text'))
+            cursor.execute(query, (data.get(prop_name, None), data['id'], language))
     connection.commit()
     connection.close()
 

@@ -44,16 +44,11 @@
                     <td>
                         <select id="parent_field" name="parent">
                             <option label="нове меню"></option>
-                            {% for menu_id, menu in menus.items() %}
-                            <optgroup label="{{ menu['name'] }}">
-                                <option label="корінь" value="{{ menu['id'] }}"{% if current_item['parent'] == menu['id'] %} selected{% endif %}></option>
-                                {% for item_id, item in menu['items'].items() recursive %}
-                                {% if item['id'] != current_item['id'] %}
-                                <option label="{% if item['name'] %}{{ item['name'] }}{% endif %}" value="{{ item['id'] }}"{% if current_item['parent'] == item['id'] %} selected{% endif %}></option>
-                                {% endif %}
-                                {{ loop(item['items'].items()) }}
-                                {% endfor %}
-                            </optgroup>
+                            {% for item_id in menus_order %}
+                            {% if item_id in menus %}
+                            {% set item = menus[item_id] %}
+                            <option label="{% if item['name'] %}{{ item['name'] }}{% endif %}" value="{{ item['id'] }}"{% if current_item['parent'] == item['id'] %} selected{% endif %}></option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </td>
@@ -64,6 +59,14 @@
                     </td>
                     <td>
                         <input id="link_field" type="text" name="link" value="{% if current_item['link'] %}{{ current_item['link'] }}{% endif %}" placeholder="посилання" maxlength="128" autocomplete="off">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="order_field">порядок</label>
+                    </td>
+                    <td>
+                        <input id="order_field" type="number" name="order" placeholder="порядок" value="{{ current_item['order'] }}" min="0" max="9999" autocomplete="off">
                     </td>
                 </tr>
                 <tr>

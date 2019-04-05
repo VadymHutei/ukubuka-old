@@ -20,7 +20,7 @@ import modules.auth as auth
 def prepareMenuItemFormData(form):
     result = {}
     item_id = form.get('id')
-    if item_id: result['item_id'] = item_id
+    if item_id: result['id'] = item_id
     parent = form.get('parent')
     if parent: result['parent'] = parent
     for language in config.LANGUAGES:
@@ -56,22 +56,24 @@ def prepareAddMenuItemData(data):
     return result
 
 def validEditMenuItemData(data):
-    if 'item_id' not in data or not validation.menuItemID(data['item_id']): return False
+    if 'id' not in data or not validation.menuItemID(data['id']): return False
     if 'parent' in data and not validation.menuItemID(data['parent']): return False
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and not validation.menuItemName(data[prop]): return False
     if 'link' in data and not validation.menuItemLink(data['link']): return False
+    if 'order' in data and not validation.order(data['order']): return False
     if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareEditMenuItemData(data):
-    result = {'item_id': data['item_id']}
+    result = {'id': int(data['id'])}
     for language in config.LANGUAGES:
         prop = 'name_' + language
         result[prop] = data[prop] if prop in data and data[prop] else None
-    result['parent'] = data['parent'] if 'parent' in data else None
+    result['parent'] = int(data['parent']) if 'parent' in data else None
     result['link'] = data['link'] if 'link' in data else None
+    result['order'] = int(data['order']) if 'order' in data else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
