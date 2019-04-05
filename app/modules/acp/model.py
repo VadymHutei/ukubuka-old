@@ -167,10 +167,10 @@ def addMenuItem(data):
     connection = db.getConnection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO `{table}` (`parent`, `link`, `added`, `is_active`)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO `{table}` (`parent`, `link`, `order`, `added`, `is_active`)
+        VALUES (%s, %s, %s, %s, %s)
     """.format(table=db.table('menus'))
-    cursor.execute(query, (data['parent'], data['link'], data['added'], data['is_active']))
+    cursor.execute(query, (data['parent'], data['link'], data['order'], data['added'], data['is_active']))
     item_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop = 'name_' + language

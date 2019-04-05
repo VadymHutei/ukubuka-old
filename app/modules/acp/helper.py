@@ -29,17 +29,31 @@ def prepareMenuItemFormData(form):
         if name: result[field] = name
     link = form.get('link')
     if link: result['link'] = link
+    order = form.get('order')
+    if order: result['order'] = order
     result['is_active'] = 'Y' if form.get('is_active', 'off') == 'on' else 'N'
     return result
 
 def validAddMenuItemData(data):
-    if 'parent' in data and not (validation.menuItemID(data['parent']) or data['parent'] is None): return False
+    if 'parent' in data and not validation.menuItemID(data['parent']): return False
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and not validation.menuItemName(data[prop]): return False
     if 'link' in data and not validation.menuItemLink(data['link']): return False
+    if 'order' in data and not validation.order(data['order']): return False
     if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
+
+def prepareAddMenuItemData(data):
+    result = {'added': datetime.now()}
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['parent'] = int(data['parent']) if 'parent' in data else None
+    result['link'] = data['link'] if 'link' in data else None
+    result['order'] = int(data['order']) if 'order' in data else 100
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
+    return result
 
 def validEditMenuItemData(data):
     if 'item_id' not in data or not validation.menuItemID(data['item_id']): return False
@@ -50,16 +64,6 @@ def validEditMenuItemData(data):
     if 'link' in data and not validation.menuItemLink(data['link']): return False
     if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
-
-def prepareAddMenuItemData(data):
-    result = {'added': datetime.now()}
-    for language in config.LANGUAGES:
-        prop = 'name_' + language
-        result[prop] = data[prop] if prop in data and data[prop] else None
-    result['parent'] = data['parent'] if 'parent' in data else None
-    result['link'] = data['link'] if 'link' in data else None
-    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
-    return result
 
 def prepareEditMenuItemData(data):
     result = {'item_id': data['item_id']}

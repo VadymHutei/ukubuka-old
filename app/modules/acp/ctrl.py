@@ -252,20 +252,23 @@ class Acp():
         return render_template('acp/menus/list.html', **self.data)
 
     def menus_add_page(self):
+        menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
+        self.data['menus'] = menus
+        self.data['menus_order'] = menus_order
         self.data['languages'] = config.LANGUAGES
         return render_template('acp/menus/add.html', **self.data)
-
-    def menus_edit_page(self, item_id):
-        if not validation.menuItemID(item_id): return abort(404)
-        self.data['current_item'] = model.getMenuItem(item_id)
-        self.data['languages'] = config.LANGUAGES
-        return render_template('acp/menus/edit.html', **self.data)
 
     def addMenuItem(self, form):
         data = helper.prepareMenuItemFormData(form)
         if helper.validAddMenuItemData(data):
             data = helper.prepareAddMenuItemData(data)
             model.addMenuItem(data)
+
+    def menus_edit_page(self, item_id):
+        if not validation.menuItemID(item_id): return abort(404)
+        self.data['current_item'] = model.getMenuItem(item_id)
+        self.data['languages'] = config.LANGUAGES
+        return render_template('acp/menus/edit.html', **self.data)
 
     def editMenuItem(self, form):
         data = helper.prepareMenuItemFormData(form)
