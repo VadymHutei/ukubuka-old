@@ -263,6 +263,18 @@ def getCurrencies(order_by=None, order_type=None):
     if not currencies: return []
     return currencies
 
+def addCurrency(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO `{table}` (`code`, `name`, `symbol`, `order`, `added`, `is_active`)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """.format(table=db.table('currencies'))
+    cursor.execute(query, (data['code'], data['name'], data['symbol'], data['order'], data['added'], data['is_active']))
+    connection.commit()
+    connection.close()
+
 
 
 #      ######     ###    ######## ########  ######    #######  ########  #### ########  ######

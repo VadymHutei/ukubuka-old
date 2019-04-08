@@ -299,14 +299,9 @@ class Acp():
 
     def currenciesPage(self):
         self.data['currencies'] = model.getCurrencies(order_by='order', order_type='desc')
-        print(self.data['currencies'])
         return render_template('acp/currencies/list.html', **self.data)
 
     def currenciesAddPage(self):
-        currencies, currencies_order = model.getCurrencies(self.current_language, order_by='id', order_type='asc')
-        self.data['currencies'] = currencies
-        self.data['currencies_order'] = currencies_order
-        self.data['languages'] = config.LANGUAGES
         return render_template('acp/currencies/add.html', **self.data)
 
     def addCurrency(self, form):
