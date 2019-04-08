@@ -489,7 +489,7 @@ def acp_currencies_edit(lang=config.DEFAULT_LANGUAGE):
 @lang_redirect
 def acp_currencies_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
-    mod.deleteCurrency(request.args['id'])
+    mod.deleteCurrency(request.args['code'])
     return redirect(url_for('acp_currencies'), 303)
 
 

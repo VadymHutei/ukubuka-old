@@ -322,6 +322,6 @@ class Acp():
             data = helper.prepareEditCurrencyData(data)
             model.editCurrency(data)
 
-    def deleteCurrency(self, item_id):
-        if validation.menuItemID(item_id): return model.deleteCurrency(item_id)
+    def deleteCurrency(self, code):
+        if validation.currencyCode(code): return model.deleteCurrency(code)
         return False

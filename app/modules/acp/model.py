@@ -314,6 +314,18 @@ def editCurrency(data):
     connection.commit()
     connection.close()
 
+def deleteCurrency(code):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        DELETE FROM `{table}`
+        WHERE `code` = %s
+    """.format(table=db.table('currencies'))
+    cursor.execute(query, (code,))
+    connection.commit()
+    connection.close()
+
 
 
 #      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
