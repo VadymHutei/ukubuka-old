@@ -225,6 +225,46 @@ def deleteMenuItem(item_id):
 
 
 
+#      ######  ##     ## ########  ########  ######## ##    ##  ######  #### ########  ######
+#     ##    ## ##     ## ##     ## ##     ## ##       ###   ## ##    ##  ##  ##       ##    ##
+#     ##       ##     ## ##     ## ##     ## ##       ####  ## ##        ##  ##       ##
+#     ##       ##     ## ########  ########  ######   ## ## ## ##        ##  ######    ######
+#     ##       ##     ## ##   ##   ##   ##   ##       ##  #### ##        ##  ##             ##
+#     ##    ## ##     ## ##    ##  ##    ##  ##       ##   ### ##    ##  ##  ##       ##    ##
+#      ######   #######  ##     ## ##     ## ######## ##    ##  ######  #### ########  ######
+
+
+
+def getCurrencies(order_by=None, order_type=None):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('code', 'name', 'order', 'added', 'is_active'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
+    query = """
+        SELECT
+            `code`,
+            `name`,
+            `symbol`,
+            `order`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        {order}
+    """.format(
+        table=db.table('currencies'),
+        order=order_row
+    )
+    cursor.execute(query)
+    connection.close()
+    currencies = cursor.fetchall()
+    if not currencies: return []
+    return currencies
+
+
+
 #      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
 #     ##    ##   ## ##      ##    ##       ##    ##  ##     ## ##     ##  ##  ##       ##    ##
 #     ##        ##   ##     ##    ##       ##        ##     ## ##     ##  ##  ##       ##

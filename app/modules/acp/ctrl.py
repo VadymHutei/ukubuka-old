@@ -27,7 +27,7 @@ class Acp():
 
 
 
-    def authentication_page(self):
+    def authenticationPage(self):
         return render_template('acp/authentication.html', **self.data)
 
 
@@ -42,7 +42,7 @@ class Acp():
 
 
 
-    def dashboard_page(self):
+    def dashboardPage(self):
         return render_template('acp/dashboard.html', **self.data)
 
 
@@ -178,15 +178,15 @@ class Acp():
 
 
 
-    def users_page(self):
+    def usersPage(self):
         self.data['users'] = model.getUsers()
         return render_template('acp/users/list.html', **self.data)
 
-    def user_add_page(self):
+    def userAddPage(self):
         self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/add.html', **self.data)
 
-    def user_edit_page(self, user_id):
+    def userEditPage(self, user_id):
         if not validation.userID(user_id): return abort(404)
         user = model.getUser(user_id)
         if not user: return abort(404)
@@ -194,12 +194,12 @@ class Acp():
         self.data['groups'] = config.USERS_GROUPS
         return render_template('acp/users/edit.html', **self.data)
 
-    def user_add_phone_number_page(self, user_id):
+    def user_add_phone_numberPage(self, user_id):
         if not validation.userID(user_id): return False
         self.data['user_id'] = user_id
         return render_template('acp/users/add_phone_number.html', **self.data)
 
-    def user_add_email_page(self, user_id):
+    def user_add_emailPage(self, user_id):
         if not validation.userID(user_id): return False
         self.data['user_id'] = user_id
         return render_template('acp/users/add_email.html', **self.data)
@@ -244,14 +244,14 @@ class Acp():
 
 
 
-    def menus_page(self):
+    def menusPage(self):
         menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
         self.data['menus'] = menus
         self.data['menus_order'] = menus_order
         self.data['menu_item_names'] = model.getMenuItemNames(self.current_language)
         return render_template('acp/menus/list.html', **self.data)
 
-    def menus_add_page(self):
+    def menusAddPage(self):
         menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
         self.data['menus'] = menus
         self.data['menus_order'] = menus_order
@@ -264,7 +264,7 @@ class Acp():
             data = helper.prepareAddMenuItemData(data)
             model.addMenuItem(data)
 
-    def menus_edit_page(self, item_id):
+    def menusEditPage(self, item_id):
         if not validation.menuItemID(item_id): return abort(404)
         current_item = model.getMenuItem(item_id)
         if not current_item: return abort(404)
@@ -283,4 +283,55 @@ class Acp():
 
     def deleteMenuItem(self, item_id):
         if validation.menuItemID(item_id): return model.deleteMenuItem(item_id)
+        return False
+
+
+
+#      ######  ##     ## ########  ########  ######## ##    ##  ######  #### ########  ######
+#     ##    ## ##     ## ##     ## ##     ## ##       ###   ## ##    ##  ##  ##       ##    ##
+#     ##       ##     ## ##     ## ##     ## ##       ####  ## ##        ##  ##       ##
+#     ##       ##     ## ########  ########  ######   ## ## ## ##        ##  ######    ######
+#     ##       ##     ## ##   ##   ##   ##   ##       ##  #### ##        ##  ##             ##
+#     ##    ## ##     ## ##    ##  ##    ##  ##       ##   ### ##    ##  ##  ##       ##    ##
+#      ######   #######  ##     ## ##     ## ######## ##    ##  ######  #### ########  ######
+
+
+
+    def currenciesPage(self):
+        self.data['currencies'] = model.getCurrencies(order_by='order', order_type='desc')
+        print(self.data['currencies'])
+        return render_template('acp/currencies/list.html', **self.data)
+
+    def currenciesAddPage(self):
+        currencies, currencies_order = model.getCurrencies(self.current_language, order_by='id', order_type='asc')
+        self.data['currencies'] = currencies
+        self.data['currencies_order'] = currencies_order
+        self.data['languages'] = config.LANGUAGES
+        return render_template('acp/currencies/add.html', **self.data)
+
+    def addCurrency(self, form):
+        data = helper.prepareCurrencyFormData(form)
+        if helper.validAddCurrencyData(data):
+            data = helper.prepareAddCurrencyData(data)
+            model.addCurrency(data)
+
+    def currenciesEditPage(self, item_id):
+        if not validation.menuItemID(item_id): return abort(404)
+        current_item = model.getCurrency(item_id)
+        if not current_item: return abort(404)
+        self.data['current_item'] = current_item
+        currencies, currencies_order = model.getCurrencies(self.current_language, order_by='id', order_type='asc')
+        self.data['currencies'] = currencies
+        self.data['currencies_order'] = currencies_order
+        self.data['languages'] = config.LANGUAGES
+        return render_template('acp/currencies/edit.html', **self.data)
+
+    def editCurrency(self, form):
+        data = helper.prepareCurrencyFormData(form)
+        if helper.validEditCurrencyData(data):
+            data = helper.prepareEditCurrencyData(data)
+            model.editCurrency(data)
+
+    def deleteCurrency(self, item_id):
+        if validation.menuItemID(item_id): return model.deleteCurrency(item_id)
         return False

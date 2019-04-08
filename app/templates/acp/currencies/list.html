@@ -1,1 +1,51 @@
-currencies list
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Валюти - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Валюти</h1>
+    <div class="control_panel">
+        <a href="/acp/currencies/add" class="button_link">
+            <div class="button add">
+                <span class="title">додати</span>
+            </div>
+        </a>
+    </div>
+    <table class="acp_table">
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>Назва</th>
+                <th>Символ</th>
+                <th>Порядок</th>
+                <th>Додано</th>
+                <th>Активний</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for currency in currencies %}
+            <tr>
+                <td class="center">{{ currency['code'] }}</td>
+                <td>{% if currency['name'] %}{{ currency['name'] }}{% else %}-{% endif %}</td>
+                <td class="center">{% if currency['symbol'] %}{{ currency['symbol'] }}{% else %}-{% endif %}</td>
+                <td class="center">{{ currency['order'] }}</td>
+                <td>{{ currency['added'] }}</td>
+                <td class="center"><input type="checkbox" disabled{% if currency['is_active'] == 'Y' %} checked{% endif %}></td>
+                <td>
+                    <div class="actions">
+                        <a href="/acp/currencies/edit?code={{ currency['code'] }}">&#9998; редагувати</a>
+                        <a href="/acp/currencies/delete?code={{ currency['code'] }}">&#10007; видалити</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{%- endblock content %}

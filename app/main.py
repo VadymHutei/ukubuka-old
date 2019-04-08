@@ -65,7 +65,7 @@ def start_session():
 @app.route('/', methods=['GET'])
 def main():
     mod = Main()
-    return mod.main_page()
+    return mod.mainPage()
 
 
 
@@ -117,7 +117,7 @@ def acp(lang=config.DEFAULT_LANGUAGE):
 def acp_authentication(lang=config.DEFAULT_LANGUAGE):
     if request.method == 'GET':
         mod = Acp(lang)
-        return mod.authentication_page()
+        return mod.authenticationPage()
     else:
         session = Session(request.cookies.get(config.SESSION_COOKIE_NAME), remote_address=request.remote_addr)
         uic, expires = session.authentication(request.form)
@@ -148,7 +148,7 @@ def acp_authentication(lang=config.DEFAULT_LANGUAGE):
 @lang_redirect
 def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
-    return mod.dashboard_page()
+    return mod.dashboardPage()
 
 
 
@@ -404,7 +404,7 @@ def acp_users_add_email(lang=config.DEFAULT_LANGUAGE):
 @lang_redirect
 def acp_menus(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
-    return mod.menus_page()
+    return mod.menusPage()
 
 @app.route('/acp/menus/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/menus/add', methods=['GET', 'POST'])
@@ -413,7 +413,7 @@ def acp_menus(lang=config.DEFAULT_LANGUAGE):
 def acp_menus_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
-        return mod.menus_add_page()
+        return mod.menusAddPage()
     else:
         mod.addMenuItem(request.form)
         return redirect(url_for('acp_menus'), 303)
@@ -425,7 +425,7 @@ def acp_menus_add(lang=config.DEFAULT_LANGUAGE):
 def acp_menus_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
-        return mod.menus_edit_page(request.args['id'])
+        return mod.menusEditPage(request.args['id'])
     else:
         mod.editMenuItem(request.form)
         return redirect(url_for('acp_menus'), 303)
@@ -438,6 +438,59 @@ def acp_menus_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteMenuItem(request.args['id'])
     return redirect(url_for('acp_menus'), 303)
+
+
+
+#      ######  ##     ## ########  ########  ######## ##    ##  ######  #### ########  ######
+#     ##    ## ##     ## ##     ## ##     ## ##       ###   ## ##    ##  ##  ##       ##    ##
+#     ##       ##     ## ##     ## ##     ## ##       ####  ## ##        ##  ##       ##
+#     ##       ##     ## ########  ########  ######   ## ## ## ##        ##  ######    ######
+#     ##       ##     ## ##   ##   ##   ##   ##       ##  #### ##        ##  ##             ##
+#     ##    ## ##     ## ##    ##  ##    ##  ##       ##   ### ##    ##  ##  ##       ##    ##
+#      ######   #######  ##     ## ##     ## ######## ##    ##  ######  #### ########  ######
+
+
+
+@app.route('/acp/currencies/', methods=['GET'])
+@app.route('/<lang>/acp/currencies/', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_currencies(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    return mod.currenciesPage()
+
+@app.route('/acp/currencies/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/currencies/add', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_currencies_add(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.currenciesAddPage()
+    else:
+        mod.addCurrency(request.form)
+        return redirect(url_for('acp_currencies'), 303)
+
+@app.route('/acp/currencies/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/currencies/edit', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_currencies_edit(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.currenciesEditPage(request.args['id'])
+    else:
+        mod.editCurrency(request.form)
+        return redirect(url_for('acp_currencies'), 303)
+
+@app.route('/acp/currencies/delete', methods=['GET'])
+@app.route('/<lang>/acp/currencies/delete', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_currencies_delete(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    mod.deleteCurrency(request.args['id'])
+    return redirect(url_for('acp_currencies'), 303)
 
 
 
