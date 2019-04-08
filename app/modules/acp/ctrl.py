@@ -310,15 +310,10 @@ class Acp():
             data = helper.prepareAddCurrencyData(data)
             model.addCurrency(data)
 
-    def currenciesEditPage(self, item_id):
-        if not validation.menuItemID(item_id): return abort(404)
-        current_item = model.getCurrency(item_id)
-        if not current_item: return abort(404)
-        self.data['current_item'] = current_item
-        currencies, currencies_order = model.getCurrencies(self.current_language, order_by='id', order_type='asc')
-        self.data['currencies'] = currencies
-        self.data['currencies_order'] = currencies_order
-        self.data['languages'] = config.LANGUAGES
+    def currenciesEditPage(self, code):
+        if not validation.currencyCode(code): return abort(404)
+        self.data['currency'] = model.getCurrency(code.upper())
+        if not self.data['currency']: return abort(404)
         return render_template('acp/currencies/edit.html', **self.data)
 
     def editCurrency(self, form):

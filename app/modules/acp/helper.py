@@ -93,6 +93,8 @@ def prepareCurrencyFormData(form):
     result = {}
     code = form.get('code')
     if code: result['code'] = code
+    new_code = form.get('new_code')
+    if new_code: result['new_code'] = new_code
     name = form.get('name')
     if name: result['name'] = name
     symbol = form.get('symbol')
@@ -115,6 +117,24 @@ def prepareAddCurrencyData(data):
         'code': data['code'].upper(),
         'added': datetime.now()
         }
+    result['name'] = data['name'] if 'name' in data else None
+    result['symbol'] = data['symbol'] if 'symbol' in data else None
+    result['order'] = int(data['order']) if 'order' in data else 100
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
+    return result
+
+def validEditCurrencyData(data):
+    if 'code' not in data or not validation.currencyCode(data['code']): return False
+    if 'new_code' in data and not validation.currencyCode(data['new_code']): return False
+    if 'name' in data and not validation.currencyName(data['name']): return False
+    if 'symbol' in data and not validation.currencySymbol(data['symbol']): return False
+    if 'order' in data and not validation.order(data['order']): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    return True
+
+def prepareEditCurrencyData(data):
+    result = {'code': data['code'].upper()}
+    result['new_code'] = data['new_code'].upper() if 'new_code' in data else data['code'].upper()
     result['name'] = data['name'] if 'name' in data else None
     result['symbol'] = data['symbol'] if 'symbol' in data else None
     result['order'] = int(data['order']) if 'order' in data else 100

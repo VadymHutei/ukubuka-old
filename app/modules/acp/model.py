@@ -235,6 +235,27 @@ def deleteMenuItem(item_id):
 
 
 
+def getCurrency(code):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            `code`,
+            `name`,
+            `symbol`,
+            `order`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        WHERE `code` = %s
+    """.format(table=db.table('currencies'))
+    cursor.execute(query, (code,))
+    connection.close()
+    currency = cursor.fetchone()
+    if not currency: return {}
+    return currency
+
 def getCurrencies(order_by=None, order_type=None):
     db = DB()
     connection = db.getConnection()
@@ -272,6 +293,24 @@ def addCurrency(data):
         VALUES (%s, %s, %s, %s, %s, %s)
     """.format(table=db.table('currencies'))
     cursor.execute(query, (data['code'], data['name'], data['symbol'], data['order'], data['added'], data['is_active']))
+    connection.commit()
+    connection.close()
+
+def editCurrency(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        UPDATE `{table}`
+        SET
+            `code` = %s,
+            `name` = %s,
+            `symbol` = %s,
+            `order` = %s,
+            `is_active` = %s
+        WHERE `code` = %s
+    """.format(table=db.table('currencies'))
+    cursor.execute(query, (data['new_code'], data['name'], data['symbol'], data['order'], data['is_active'], data['code']))
     connection.commit()
     connection.close()
 

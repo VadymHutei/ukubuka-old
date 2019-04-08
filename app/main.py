@@ -478,7 +478,7 @@ def acp_currencies_add(lang=config.DEFAULT_LANGUAGE):
 def acp_currencies_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
-        return mod.currenciesEditPage(request.args['id'])
+        return mod.currenciesEditPage(request.args['code'])
     else:
         mod.editCurrency(request.form)
         return redirect(url_for('acp_currencies'), 303)
