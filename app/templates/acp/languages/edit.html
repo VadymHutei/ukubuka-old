@@ -1,1 +1,68 @@
-edit language
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Редагувати мову - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Редагувати мову</h1>
+    <div class="control_panel">
+        <a href="/acp/languages/" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        <input type="submit" form="edit_language_form" value="зберегти" class="button edit">
+    </div>
+    <form id="edit_language_form" class="acp_form" action="/acp/languages/edit" method="post" accept-charset="utf-8">
+        <input id="code_field" type="hidden" name="code" value="{{ language['code'] }}">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">
+                        <label for="code_field">код</label>
+                    </td>
+                    <td>
+                        <input id="code_field" type="text" name="new_code" value="{{ language['code'] }}" placeholder="код" minlength="3" maxlength="3" autocomplete="off" required autofocus>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="name_field">назва</label>
+                    </td>
+                    <td>
+                        <input id="name_field" type="text" name="name" value="{{ language['name'] }}" placeholder="назва" maxlength="64" autocomplete="off">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="is_default_field">за замовчуванням</label>
+                    </td>
+                    <td>
+                        <input id="is_default_field" type="checkbox" name="is_default" {% if language['is_default'] == 'Y' %} checked{% endif %}>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="order_field">порядок</label>
+                    </td>
+                    <td>
+                        <input id="order_field" type="number" name="order" value="{{ language['order'] }}" placeholder="порядок" value="100" min="0" max="9999" autocomplete="off">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="is_active_field">показувати</label>
+                    </td>
+                    <td>
+                        <input id="is_active_field" type="checkbox" name="is_active" {% if language['is_active'] == 'Y' %} checked{% endif %}>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</section>
+
+{%- endblock content %}
