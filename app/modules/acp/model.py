@@ -392,10 +392,10 @@ def addLanguage(data):
     connection = db.getConnection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO `{table}` (`code`, `name`, `symbol`, `order`, `added`, `is_active`)
+        INSERT INTO `{table}` (`code`, `name`, `is_default`, `order`, `added`, `is_active`)
         VALUES (%s, %s, %s, %s, %s, %s)
     """.format(table=db.table('languages'))
-    cursor.execute(query, (data['code'], data['name'], data['symbol'], data['order'], data['added'], data['is_active']))
+    cursor.execute(query, (data['code'], data['name'], data['is_default'], data['order'], data['added'], data['is_active']))
     connection.commit()
     connection.close()
 
@@ -408,12 +408,12 @@ def editLanguage(data):
         SET
             `code` = %s,
             `name` = %s,
-            `symbol` = %s,
+            `is_default` = %s,
             `order` = %s,
             `is_active` = %s
         WHERE `code` = %s
     """.format(table=db.table('languages'))
-    cursor.execute(query, (data['new_code'], data['name'], data['symbol'], data['order'], data['is_active'], data['code']))
+    cursor.execute(query, (data['new_code'], data['name'], data['is_default'], data['order'], data['is_active'], data['code']))
     connection.commit()
     connection.close()
 

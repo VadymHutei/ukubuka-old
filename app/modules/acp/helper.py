@@ -143,6 +143,69 @@ def prepareEditCurrencyData(data):
 
 
 
+#     ##          ###    ##    ##  ######   ##     ##    ###     ######   ########  ######
+#     ##         ## ##   ###   ## ##    ##  ##     ##   ## ##   ##    ##  ##       ##    ##
+#     ##        ##   ##  ####  ## ##        ##     ##  ##   ##  ##        ##       ##
+#     ##       ##     ## ## ## ## ##   #### ##     ## ##     ## ##   #### ######    ######
+#     ##       ######### ##  #### ##    ##  ##     ## ######### ##    ##  ##             ##
+#     ##       ##     ## ##   ### ##    ##  ##     ## ##     ## ##    ##  ##       ##    ##
+#     ######## ##     ## ##    ##  ######    #######  ##     ##  ######   ########  ######
+
+
+
+def prepareLanguageFormData(form):
+    result = {}
+    code = form.get('code')
+    if code: result['code'] = code
+    new_code = form.get('new_code')
+    if new_code: result['new_code'] = new_code
+    name = form.get('name')
+    if name: result['name'] = name
+    result['is_default'] = 'Y' if form.get('is_default', 'off') == 'on' else 'N'
+    order = form.get('order')
+    if order: result['order'] = order
+    result['is_active'] = 'Y' if form.get('is_active', 'off') == 'on' else 'N'
+    return result
+
+def validAddLanguageData(data):
+    if 'code' not in data or not validation.currencyCode(data['code']): return False
+    if 'name' in data and not validation.currencyName(data['name']): return False
+    if 'is_default' not in data or data['is_default'] not in ('Y', 'N'): return False
+    if 'order' in data and not validation.order(data['order']): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    return True
+
+def prepareAddLanguageData(data):
+    result = {
+        'code': data['code'].lower(),
+        'added': datetime.now()
+        }
+    result['name'] = data['name'] if 'name' in data else None
+    result['is_default'] = data['is_default'] if 'is_default' in data and data['is_default'] else 'N'
+    result['order'] = int(data['order']) if 'order' in data else 100
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
+    return result
+
+def validEditLanguageData(data):
+    if 'code' not in data or not validation.currencyCode(data['code']): return False
+    if 'new_code' in data and not validation.currencyCode(data['new_code']): return False
+    if 'name' in data and not validation.currencyName(data['name']): return False
+    if 'is_default' not in data or data['is_default'] not in ('Y', 'N'): return False
+    if 'order' in data and not validation.order(data['order']): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
+    return True
+
+def prepareEditLanguageData(data):
+    result = {'code': data['code'].lower()}
+    result['new_code'] = data['new_code'].lower() if 'new_code' in data else data['code'].lower()
+    result['name'] = data['name'] if 'name' in data else None
+    result['is_default'] = data['is_default'] if 'is_default' in data and data['is_default'] else 'N'
+    result['order'] = int(data['order']) if 'order' in data else 100
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
+    return result
+
+
+
 #      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
 #     ##    ##   ## ##      ##    ##       ##    ##  ##     ## ##     ##  ##  ##       ##    ##
 #     ##        ##   ##     ##    ##       ##        ##     ## ##     ##  ##  ##       ##
