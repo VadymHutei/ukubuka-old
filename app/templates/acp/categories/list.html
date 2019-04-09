@@ -1,15 +1,20 @@
+{% set title = 'Категорії' %}
+{% if parent %}
+{% set parent_category_name = ' (' + parent['name']['ukr'] + ')' %}
+ {% endif %}
+
 {% extends "acp/layout/base.html" %}
 
 {% block title -%}
-    Категорії - {{ site_name }} ACP
+    {{ title }}{{ parent_category_name }} - {{ site_name }} ACP
 {%- endblock title %}
 
 {% block content -%}
 
 <section class="acp_section">
-    <h1 class="section_title">Категорії</h1>
+    <h1 class="section_title">{{ title }}{{ parent_category_name }}</h1>
     <div class="control_panel">
-        {% if parent is not none %}
+        {% if parent %}
         <a href="/acp/categories/" class="button_link">
             <div class="button back">
                 <span class="title">в корінь</span>
