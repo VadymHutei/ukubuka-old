@@ -123,8 +123,8 @@ def usersGroupName(name):
 #      ######  ##     ##    ##    ########  ######    #######  ##     ##    ##
 
 def categoryID(category_id):
-    if isinstance(category_id, str):
-        return bool(re.fullmatch(r'\d{1,8}', category_id))
+    if isinstance(category_id, int):
+        return 1 <= len(str(category_id)) <= 8
     return False
 
 def categoryName(name):

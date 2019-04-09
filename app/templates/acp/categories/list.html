@@ -35,13 +35,15 @@
                 <th>ID</th>
                 <th>Назва</th>
                 <th>Батьківська категорія</th>
+                <th>Порядок</th>
                 <th>Активний</th>
                 <th>Додано</th>
                 <th>Дія</th>
             </tr>
         </thead>
         <tbody>
-            {% for category in categories.values() recursive %}
+            {% for category_id in categories_order %}
+            {% set category = categories[category_id] %}
             <tr>
                 <td class="center">{{ category['id'] }}</td>
                 <td><a href="/acp/categories/?parent={{ category['id'] }}">{{ category['name'] }}</a></td>
@@ -52,6 +54,7 @@
                     -
                     {% endif %}
                 </td>
+                <td class="center">{{ category['order'] }}</td>
                 <td>{{ category['added'] }}</td>
                 <td class="center"><input type="checkbox" disabled{% if category['is_active'] == 'Y' %} checked{% endif %}></td>
                 <td>
@@ -61,7 +64,6 @@
                     </div>
                 </td>
             </tr>
-            {{ loop(category['subcategories'].values()) }}
             {% endfor %}
         </tbody>
     </table>

@@ -58,12 +58,17 @@ class Acp():
 
 
     def categoriesPage(self, parent=None):
-        if parent is None or not validation.categoryID(parent):
-            categories = model.getCategories(self.current_language)
-        else:
-            categories = model.getCategories(self.current_language, parent)
-            parent = model.getCategory(parent)
+        if parent is None:
+            categories, order = model.getCategories(self.current_language, order_by='order', order_type='desc')
+        elif parent.isdecimal():
+            parent = int(parent)
+            if validation.categoryID(parent):
+                categories, order = model.getCategories(self.current_language, parent=parent, order_by='order', order_type='desc')
+                parent = model.getCategory(parent)
+            else: return abort(404)
+        else: return abort(404)
         self.data['categories'] = categories
+        self.data['categories_order'] = order
         self.data['parent'] = parent
         self.data['category_names'] = model.getCategoryNames(self.current_language)
         return render_template('acp/categories/list.html', **self.data)

@@ -449,6 +449,8 @@ def getCategory(category_id):
         SELECT
             `id`,
             `parent`,
+            `order`,
+            `added`,
             `is_active`
         FROM `{table}`
         WHERE `id` = %s
@@ -475,15 +477,20 @@ def getCategory(category_id):
             category_data[prop][row['language']] = row[prop]
     return category_data
 
-def getCategories(language, parent=None):
+def getCategories(language, parent=None, order_by=None, order_type=None):
     result = {}
     db = DB()
     connection = db.getConnection()
     cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('id', 'parent', 'order', 'added', 'is_active', 'name'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
         SELECT
             c.`id`,
             c.`parent`,
+            c.`order`,
             c.`added`,
             c.`is_active`,
             t.`name`
@@ -491,47 +498,37 @@ def getCategories(language, parent=None):
         LEFT JOIN `{table_text}` t
             ON c.`id` = t.`category_id`
         WHERE t.`language` = %s
+        {order}
     """.format(
         table=db.table('categories'),
-        table_text=db.table('categories_text')
+        table_text=db.table('categories_text'),
+        order=order_row
     )
-    cursor.execute(query, [language])
+    cursor.execute(query, (language,))
     connection.close()
     categories_data = cursor.fetchall()
-    if not categories_data: return result
+    if not categories_data: return {} if order_by is None else {}, []
+    order = [row['id'] for row in categories_data]
     categories = {row['id']: row for row in categories_data}
-    parents = {}
-    for category_id in categories:
-        if categories[category_id]['parent'] is None:
-            result[category_id] = categories[category_id]
-            result[category_id]['subcategories'] = {}
-        else:
-            if categories[category_id]['parent'] not in parents:
-                parents[categories[category_id]['parent']] = []
-            parents[categories[category_id]['parent']].append(category_id)
-    def setSubcategories(result):
-        for r_category_id in result:
-            if r_category_id in parents:
-                for p_category_id in parents[r_category_id]:
-                    result[r_category_id]['subcategories'][p_category_id] = categories[p_category_id]
-                    result[r_category_id]['subcategories'][p_category_id]['subcategories'] = {}
-            if result[r_category_id]['subcategories']:
-                setSubcategories(result[r_category_id]['subcategories'])
-    setSubcategories(result)
     if parent is None:
-        return result
-    else:
-        if type(parent) is str: parent = int(parent)
-        def getSubcategories(parent, categories):
+        return categories if order_by is None else categories, order
+    elif parent in categories:
+        subcategories_order = []
+        subcategories = {parent: categories[parent]}
+        while True:
+            done_flag = True
             for category_id in categories:
-                if category_id == parent:
-                    return categories[category_id]['subcategories']
-                else:
-                    subcategories = getSubcategories(parent, categories[category_id]['subcategories'])
-                    if subcategories:
-                        return subcategories
-            return {}
-        return getSubcategories(parent, result)
+                if category_id not in subcategories and categories[category_id]['parent'] in subcategories:
+                    subcategories[category_id] = categories[category_id]
+                    done_flag = False
+            if done_flag:
+                break
+        for category_id in order:
+            if category_id in subcategories:
+                subcategories_order.append(category_id)
+        return subcategories if order_by is None else subcategories, subcategories_order
+    else:
+        return {} if order_by is None else {}, []
 
 def getCategoryNames(language):
     db = DB()
