@@ -328,6 +328,109 @@ def deleteCurrency(code):
 
 
 
+#     ##          ###    ##    ##  ######   ##     ##    ###     ######   ########  ######
+#     ##         ## ##   ###   ## ##    ##  ##     ##   ## ##   ##    ##  ##       ##    ##
+#     ##        ##   ##  ####  ## ##        ##     ##  ##   ##  ##        ##       ##
+#     ##       ##     ## ## ## ## ##   #### ##     ## ##     ## ##   #### ######    ######
+#     ##       ######### ##  #### ##    ##  ##     ## ######### ##    ##  ##             ##
+#     ##       ##     ## ##   ### ##    ##  ##     ## ##     ## ##    ##  ##       ##    ##
+#     ######## ##     ## ##    ##  ######    #######  ##     ##  ######   ########  ######
+
+
+
+def getLanguage(code):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            `code`,
+            `name`,
+            `is_default`,
+            `order`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        WHERE `code` = %s
+    """.format(table=db.table('languages'))
+    cursor.execute(query, (code,))
+    connection.close()
+    language = cursor.fetchone()
+    if not language: return {}
+    return language
+
+def getLanguages(order_by=None, order_type=None):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('code', 'name', 'is_default', 'added', 'is_active'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
+    query = """
+        SELECT
+            `code`,
+            `name`,
+            `is_default`,
+            `order`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        {order}
+    """.format(
+        table=db.table('languages'),
+        order=order_row
+    )
+    cursor.execute(query)
+    connection.close()
+    languages = cursor.fetchall()
+    if not languages: return []
+    return languages
+
+def addLanguage(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO `{table}` (`code`, `name`, `symbol`, `order`, `added`, `is_active`)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """.format(table=db.table('languages'))
+    cursor.execute(query, (data['code'], data['name'], data['symbol'], data['order'], data['added'], data['is_active']))
+    connection.commit()
+    connection.close()
+
+def editLanguage(data):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        UPDATE `{table}`
+        SET
+            `code` = %s,
+            `name` = %s,
+            `symbol` = %s,
+            `order` = %s,
+            `is_active` = %s
+        WHERE `code` = %s
+    """.format(table=db.table('languages'))
+    cursor.execute(query, (data['new_code'], data['name'], data['symbol'], data['order'], data['is_active'], data['code']))
+    connection.commit()
+    connection.close()
+
+def deleteLanguage(code):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        DELETE FROM `{table}`
+        WHERE `code` = %s
+    """.format(table=db.table('languages'))
+    cursor.execute(query, (code,))
+    connection.commit()
+    connection.close()
+
+
+
 #      ######     ###    ######## ########  ######    #######  ########  #### ########  ######
 #     ##    ##   ## ##      ##    ##       ##    ##  ##     ## ##     ##  ##  ##       ##    ##
 #     ##        ##   ##     ##    ##       ##        ##     ## ##     ##  ##  ##       ##

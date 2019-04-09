@@ -494,6 +494,59 @@ def acp_currencies_delete(lang=config.DEFAULT_LANGUAGE):
 
 
 
+#     ##          ###    ##    ##  ######   ##     ##    ###     ######   ########  ######
+#     ##         ## ##   ###   ## ##    ##  ##     ##   ## ##   ##    ##  ##       ##    ##
+#     ##        ##   ##  ####  ## ##        ##     ##  ##   ##  ##        ##       ##
+#     ##       ##     ## ## ## ## ##   #### ##     ## ##     ## ##   #### ######    ######
+#     ##       ######### ##  #### ##    ##  ##     ## ######### ##    ##  ##             ##
+#     ##       ##     ## ##   ### ##    ##  ##     ## ##     ## ##    ##  ##       ##    ##
+#     ######## ##     ## ##    ##  ######    #######  ##     ##  ######   ########  ######
+
+
+
+@app.route('/acp/languages/', methods=['GET'])
+@app.route('/<lang>/acp/languages/', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_languages(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    return mod.languagesPage()
+
+@app.route('/acp/languages/add', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/languages/add', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_languages_add(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.languagesAddPage()
+    else:
+        mod.addLanguage(request.form)
+        return redirect(url_for('acp_languages'), 303)
+
+@app.route('/acp/languages/edit', methods=['GET', 'POST'])
+@app.route('/<lang>/acp/languages/edit', methods=['GET', 'POST'])
+# @admin_access
+@lang_redirect
+def acp_languages_edit(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    if request.method == 'GET':
+        return mod.languagesEditPage(request.args['code'])
+    else:
+        mod.editLanguage(request.form)
+        return redirect(url_for('acp_languages'), 303)
+
+@app.route('/acp/languages/delete', methods=['GET'])
+@app.route('/<lang>/acp/languages/delete', methods=['GET'])
+# @admin_access
+@lang_redirect
+def acp_languages_delete(lang=config.DEFAULT_LANGUAGE):
+    mod = Acp(lang)
+    mod.deleteLanguage(request.args['code'])
+    return redirect(url_for('acp_languages'), 303)
+
+
+
 #
 #
 #     __________ ________    ________       ____    ________      ____

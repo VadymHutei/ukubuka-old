@@ -325,3 +325,44 @@ class Acp():
     def deleteCurrency(self, code):
         if validation.currencyCode(code): return model.deleteCurrency(code)
         return False
+
+
+
+#     ##          ###    ##    ##  ######   ##     ##    ###     ######   ########  ######
+#     ##         ## ##   ###   ## ##    ##  ##     ##   ## ##   ##    ##  ##       ##    ##
+#     ##        ##   ##  ####  ## ##        ##     ##  ##   ##  ##        ##       ##
+#     ##       ##     ## ## ## ## ##   #### ##     ## ##     ## ##   #### ######    ######
+#     ##       ######### ##  #### ##    ##  ##     ## ######### ##    ##  ##             ##
+#     ##       ##     ## ##   ### ##    ##  ##     ## ##     ## ##    ##  ##       ##    ##
+#     ######## ##     ## ##    ##  ######    #######  ##     ##  ######   ########  ######
+
+
+
+    def languagesPage(self):
+        self.data['languages'] = model.getLanguages(order_by='order', order_type='desc')
+        return render_template('acp/languages/list.html', **self.data)
+
+    def languagesAddPage(self):
+        return render_template('acp/languages/add.html', **self.data)
+
+    def addLanguage(self, form):
+        data = helper.prepareLanguageFormData(form)
+        if helper.validAddLanguageData(data):
+            data = helper.prepareAddLanguageData(data)
+            model.addLanguage(data)
+
+    def languagesEditPage(self, code):
+        if not validation.currencyCode(code): return abort(404)
+        self.data['language'] = model.getLanguage(code.upper())
+        if not self.data['language']: return abort(404)
+        return render_template('acp/languages/edit.html', **self.data)
+
+    def editLanguage(self, form):
+        data = helper.prepareLanguageFormData(form)
+        if helper.validEditLanguageData(data):
+            data = helper.prepareEditLanguageData(data)
+            model.editLanguage(data)
+
+    def deleteLanguage(self, code):
+        if validation.currencyCode(code): return model.deleteLanguage(code)
+        return False

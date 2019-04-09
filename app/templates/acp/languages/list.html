@@ -1,1 +1,51 @@
-languages list
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Мови - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Мови</h1>
+    <div class="control_panel">
+        <a href="/acp/languages/add" class="button_link">
+            <div class="button add">
+                <span class="title">додати</span>
+            </div>
+        </a>
+    </div>
+    <table class="acp_table">
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>Назва</th>
+                <th>За замовчуванням</th>
+                <th>Порядок</th>
+                <th>Додано</th>
+                <th>Активний</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for language in languages %}
+            <tr>
+                <td class="center">{{ language['code'] }}</td>
+                <td>{% if language['name'] %}{{ language['name'] }}{% else %}-{% endif %}</td>
+                <td class="center"><input type="checkbox" disabled{% if language['is_default'] == 'Y' %} checked{% endif %}></td>
+                <td class="center">{{ language['order'] }}</td>
+                <td>{{ language['added'] }}</td>
+                <td class="center"><input type="checkbox" disabled{% if language['is_active'] == 'Y' %} checked{% endif %}></td>
+                <td>
+                    <div class="actions">
+                        <a href="/acp/languages/edit?code={{ language['code'] }}">&#9998; редагувати</a>
+                        <a href="/acp/languages/delete?code={{ language['code'] }}">&#10007; видалити</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{%- endblock content %}
