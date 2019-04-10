@@ -764,20 +764,19 @@ def addCharacteristic(data):
     connection = db.getConnection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO `{table}` (`added`, `is_active`)
-        VALUES (%s, %s)
+        INSERT INTO `{table}` (`order`, `added`, `is_active`)
+        VALUES (%s, %s, %s)
     """.format(table=db.table('characteristics'))
-    cursor.execute(query, (data['added'], data['is_active']))
-    product_id = cursor.lastrowid
+    cursor.execute(query, (data['order'], data['added'], data['is_active']))
+    characteristic_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop_name = 'name_' + language
-        prop_description = 'description_' + language
-        if prop_name in data or prop_description in data:
+        if prop_name in data:
             query = """
                 INSERT INTO `{table}` (`characteristic_id`, `language`, `name`)
                 VALUES (%s, %s, %s)
             """.format(table=db.table('characteristics_text'))
-            cursor.execute(query, (product_id, language, data.get(prop_name, None)))
+            cursor.execute(query, (characteristic_id, language, data[prop_name]))
     connection.commit()
     connection.close()
 

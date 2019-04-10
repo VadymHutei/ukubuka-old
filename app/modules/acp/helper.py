@@ -348,6 +348,8 @@ def prepareCharacteristicFormData(form):
         field = 'name_' + language
         name = form.get(field)
         if name: result[field] = name
+    order = form.get('order')
+    if order: result['order'] = order
     result['is_active'] = 'Y' if form.get('is_active', 'off') == 'on' else 'N'
     return result
 
@@ -355,6 +357,7 @@ def validAddCharacteristicData(data):
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and not validation.productName(data[prop]): return False
+    if 'order' in data and not validation.order(data['order']): return False
     if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
@@ -363,6 +366,7 @@ def prepareAddCharacteristicData(data):
     for language in config.LANGUAGES:
         prop = 'name_' + language
         result[prop] = data[prop] if prop in data and data[prop] else None
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
