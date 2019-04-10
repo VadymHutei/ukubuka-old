@@ -356,7 +356,7 @@ def prepareCharacteristicFormData(form):
 def validAddCharacteristicData(data):
     for language in config.LANGUAGES:
         prop = 'name_' + language
-        if prop in data and not validation.productName(data[prop]): return False
+        if prop in data and not validation.characteristicName(data[prop]): return False
     if 'order' in data and not validation.order(data['order']): return False
     if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
@@ -374,15 +374,17 @@ def validEditCharacteristicData(data):
     if 'id' not in data or not validation.characteristicID(data['id']): return False
     for language in config.LANGUAGES:
         prop = 'name_' + language
-        if prop in data and not validation.productName(data[prop]): return False
+        if prop in data and not validation.characteristicName(data[prop]): return False
+    if 'order' in data and not validation.order(data['order']): return False
     if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareEditCharacteristicData(data):
-    result = {'id': data['id']}
+    result = {'id': int(data['id'])}
     for language in config.LANGUAGES:
         prop = 'name_' + language
         result[prop] = data[prop] if prop in data and data[prop] else None
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 

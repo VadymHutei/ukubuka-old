@@ -158,7 +158,7 @@ def getMenuItemNames(language):
     )
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, (language,))
+    cursor.execute(query, (language))
     connection.close()
     menus_names_data = cursor.fetchall()
     return {row['id']: row['name'] for row in menus_names_data} if menus_names_data else {}
@@ -504,7 +504,7 @@ def getCategories(language, parent=None, order_by=None, order_type=None):
         table_text=db.table('categories_text'),
         order=order_row
     )
-    cursor.execute(query, (language,))
+    cursor.execute(query, (language))
     connection.close()
     categories_data = cursor.fetchall()
     if not categories_data: return {} if order_by is None else {}, []
@@ -546,7 +546,7 @@ def getCategoryNames(language):
     )
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, (language,))
+    cursor.execute(query, (language))
     connection.close()
     category_names_data = cursor.fetchall()
     return {row['id']: row['name'] for row in category_names_data} if category_names_data else {}
@@ -751,7 +751,7 @@ def getCharacteristics(language, order_by=None, order_type=None):
         table_t=db.table('characteristics_text'),
         order=order_row
     )
-    cursor.execute(query, (language,))
+    cursor.execute(query, (language))
     connection.close()
     characteristics_data = cursor.fetchall()
     if not characteristics_data: return {} if order_by is None else {}, []
@@ -786,20 +786,22 @@ def editCharacteristic(data):
     cursor = connection.cursor()
     query = """
         UPDATE `{table}`
-        SET `is_active` = %s
+        SET
+            `order` = %s,
+            `is_active` = %s
         WHERE `id` = %s
     """.format(table=db.table('characteristics'))
-    cursor.execute(query, (data['is_active'], data['id']))
+    cursor.execute(query, (data['order'], data['is_active'], data['id']))
     for language in config.LANGUAGES:
         prop_name = 'name_' + language
         if prop_name in data:
             query = """
-                UPDATE `{table}`
-                SET `name` = %s
-                WHERE `characteristic_id` = %s
-                AND `language` = %s
+                INSERT INTO `{table}` (`characteristic_id`, `language`, `name`)
+                VALUES (%s, %s, %s)
+                ON DUPLICATE KEY
+                UPDATE `name` = %s
             """.format(table=db.table('characteristics_text'))
-            cursor.execute(query, (data.get(prop_name, None), data['id'], language))
+            cursor.execute(query, (data['id'], language, data[prop_name], data[prop_name]))
     connection.commit()
     connection.close()
 

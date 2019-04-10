@@ -30,7 +30,7 @@
                 {% for language in languages %}
                 <tr>
                     <td class="label">
-                        <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
+                        <label for="name_{{ language }}_field">назва ({{ languages[language]['name'] }})</label>
                     </td>
                     <td>
                         <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}"{% if language in characteristic['name'] and characteristic['name'][language] %} value="{{ characteristic['name'][language] }}"{% endif %} maxlength="64" autocomplete="off"{% if loop.first %} autofocus{% endif %}>
@@ -39,7 +39,15 @@
                 {% endfor %}
                 <tr>
                     <td class="label">
-                        <label for="is_active_field">Показувати</label>
+                        <label for="order_field">порядок</label>
+                    </td>
+                    <td>
+                        <input id="order_field" type="number" name="order" placeholder="порядок" value="{{ characteristic['order'] }}" min="0" max="9999" autocomplete="off">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="is_active_field">показувати</label>
                     </td>
                     <td>
                         <input id="is_active_field" type="checkbox" name="is_active"{% if characteristic['is_active'] == 'Y' %} checked{% endif %}>

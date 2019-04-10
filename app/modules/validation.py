@@ -171,3 +171,8 @@ def characteristicID(characteristic_id):
     if isinstance(characteristic_id, str):
         return bool(re.fullmatch(r'\d{1,8}', characteristic_id))
     return False
+
+def characteristicName(name):
+    if isinstance(name, str):
+        return re.fullmatch(r'[0-9A-Za-zА-Яа-яЯєЄіІїЇёЁҐґ _-]{1,32}', name)
+    return False
