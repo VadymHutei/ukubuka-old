@@ -554,12 +554,12 @@ def getCategoryNames(language):
 def addCategory(data):
     db = DB()
     query = """
-        INSERT INTO `{table}` (`parent`, `added`, `is_active`)
-        VALUES (%s, %s, %s)
+        INSERT INTO `{table}` (`parent`, `order`, `added`, `is_active`)
+        VALUES (%s, %s, %s, %s)
     """.format(table=db.table('categories'))
     connection = db.getConnection()
     cursor = connection.cursor()
-    cursor.execute(query, (data['parent'], data['added'], data['is_active']))
+    cursor.execute(query, (data['parent'], data['order'], data['added'], data['is_active']))
     category_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop = 'name_' + language

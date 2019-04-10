@@ -33,6 +33,8 @@ def price(price):
 def order(order):
     if isinstance(order, str):
         return re.fullmatch(r'[0-9]{1,4}', order)
+    if isinstance(order, int):
+        return 1 <= len(str(order)) <= 4
     return False
 
 #     ##     ## ######## ##    ## ##     ##
@@ -123,6 +125,8 @@ def usersGroupName(name):
 #      ######  ##     ##    ##    ########  ######    #######  ##     ##    ##
 
 def categoryID(category_id):
+    if isinstance(category_id, str):
+        return bool(re.fullmatch(r'\d{1,8}', category_id))
     if isinstance(category_id, int):
         return 1 <= len(str(category_id)) <= 8
     return False

@@ -74,9 +74,17 @@ class Acp():
         return render_template('acp/categories/list.html', **self.data)
 
     def addCategoryPage(self):
-        self.data['categories'] = model.getCategories(self.current_language)
+        categories, order = model.getCategories(self.current_language, order_by='id', order_type='asc')
+        self.data['categories'] = categories
+        self.data['categories_order'] = order
         self.data['languages'] = config.LANGUAGES
         return render_template('acp/categories/add.html', **self.data)
+
+    def addCategory(self, form):
+        data = helper.prepareCategoryFormData(form)
+        if helper.validAddCategoryData(data):
+            data = helper.prepareAddCategoryData(data)
+            model.addCategory(data)
 
     def editCategoryPage(self, category_id):
         if not validation.categoryID(category_id): return abort(404)
@@ -86,12 +94,6 @@ class Acp():
         self.data['category'] = category
         self.data['languages'] = config.LANGUAGES
         return render_template('acp/categories/edit.html', **self.data)
-
-    def addCategory(self, form):
-        data = helper.prepareCategoryFormData(form)
-        if helper.validAddCategoryData(data):
-            data = helper.prepareAddCategoryData(data)
-            model.addCategory(data)
 
     def editCategory(self, form):
         data = helper.prepareCategoryFormData(form)
