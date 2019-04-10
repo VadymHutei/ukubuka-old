@@ -20,16 +20,19 @@
             <tr>
                 <th>ID</th>
                 <th>Назва</th>
+                <th>Порядок</th>
                 <th>Додано</th>
                 <th>Активний</th>
                 <th>Дія</th>
             </tr>
         </thead>
         <tbody>
-            {% for characteristic_id, characteristic in characteristics.items() %}
+            {% for characteristic_id in characteristics_order %}
+            {% set characteristic = characteristics[characteristic_id] %}
             <tr>
                 <td class="center">{{ characteristic['id'] }}</td>
                 <td>{% if characteristic['name'] %}{{ characteristic['name'] }}{% else %}-{% endif %}</td>
+                <td class="center">{{ characteristic['order'] }}</td>
                 <td>{{ characteristic['added'] }}</td>
                 <td class="center"><input type="checkbox" disabled{% if characteristic['is_active'] == 'Y' %} checked{% endif %}></td>
                 <td>

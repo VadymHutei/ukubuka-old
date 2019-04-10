@@ -698,6 +698,7 @@ def getCharacteristic(characteristic_id):
     query = """
         SELECT
             `id`,
+            `order`,
             `added`,
             `is_active`
         FROM `{table}`
@@ -725,13 +726,18 @@ def getCharacteristic(characteristic_id):
             characteristic_data[prop][row['language']] = row[prop]
     return characteristic_data
 
-def getCharacteristics(language):
+def getCharacteristics(language, order_by=None, order_type=None):
     db = DB()
     connection = db.getConnection()
     cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('id', 'parent', 'order', 'added', 'is_active', 'name'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
         SELECT
             c.`id`,
+            c.`order`,
             c.`added`,
             c.`is_active`,
             ct.`name`
@@ -739,14 +745,19 @@ def getCharacteristics(language):
         LEFT JOIN `{table_t}` ct
             ON c.`id` = ct.`characteristic_id`
         WHERE ct.`language` = %s
+        {order}
     """.format(
         table=db.table('characteristics'),
-        table_t=db.table('characteristics_text')
+        table_t=db.table('characteristics_text'),
+        order=order_row
     )
     cursor.execute(query, (language,))
     connection.close()
     characteristics_data = cursor.fetchall()
-    return {row['id']: row for row in characteristics_data} if characteristics_data else {}
+    if not characteristics_data: return {} if order_by is None else {}, []
+    order = [row['id'] for row in characteristics_data]
+    characteristics = {row['id']: row for row in characteristics_data}
+    return characteristics if order_by is None else characteristics, order
 
 def addCharacteristic(data):
     db = DB()

@@ -147,7 +147,9 @@ class Acp():
 
 
     def characteristicsPage(self):
-        self.data['characteristics'] = model.getCharacteristics(self.current_language)
+        characteristics, order = model.getCharacteristics(self.current_language, order_by='order', order_type='desc')
+        self.data['characteristics'] = characteristics
+        self.data['characteristics_order'] = order
         return render_template('acp/characteristics/list.html', **self.data)
 
     def addCharacteristicPage(self):
