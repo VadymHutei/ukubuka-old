@@ -51,11 +51,17 @@
             {% set category = categories[category_id] %}
             <tr>
                 <td class="center">{{ category['id'] }}</td>
-                <td><a href="/acp/categories/?parent={{ category['id'] }}">{{ category['name'] }}</a></td>
                 <td>
-                    {% if category['parent'] and category['parent'] in category_names: %}
-                    <a href="/acp/categories/?parent={{ category['parent'] }}">
-                    {{ category_names[category['parent']] }}</a>{% else: %}
+                    {% if category['name'] %}
+                    <a href="/acp/categories/?parent={{ category['id'] }}">{{ category['name'] }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if category['parent'] and category['parent'] in category_names %}
+                    <a href="/acp/categories/?parent={{ category['parent'] }}">{{ category_names[category['parent']] }}</a>
+                    {% else %}
                     -
                     {% endif %}
                 </td>

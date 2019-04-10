@@ -51,7 +51,7 @@ def prepareAddMenuItemData(data):
         result[prop] = data[prop] if prop in data and data[prop] else None
     result['parent'] = int(data['parent']) if 'parent' in data else None
     result['link'] = data['link'] if 'link' in data else None
-    result['order'] = int(data['order']) if 'order' in data else 100
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
@@ -73,7 +73,7 @@ def prepareEditMenuItemData(data):
         result[prop] = data[prop] if prop in data and data[prop] else None
     result['parent'] = int(data['parent']) if 'parent' in data else None
     result['link'] = data['link'] if 'link' in data else None
-    result['order'] = int(data['order']) if 'order' in data else 100
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
@@ -119,7 +119,7 @@ def prepareAddCurrencyData(data):
         }
     result['name'] = data['name'] if 'name' in data else None
     result['symbol'] = data['symbol'] if 'symbol' in data else None
-    result['order'] = int(data['order']) if 'order' in data else 100
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
@@ -137,7 +137,7 @@ def prepareEditCurrencyData(data):
     result['new_code'] = data['new_code'].upper() if 'new_code' in data else data['code'].upper()
     result['name'] = data['name'] if 'name' in data else None
     result['symbol'] = data['symbol'] if 'symbol' in data else None
-    result['order'] = int(data['order']) if 'order' in data else 100
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
@@ -182,7 +182,7 @@ def prepareAddLanguageData(data):
         }
     result['name'] = data['name'] if 'name' in data else None
     result['is_default'] = data['is_default'] if 'is_default' in data and data['is_default'] else 'N'
-    result['order'] = int(data['order']) if 'order' in data else 100
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
@@ -200,7 +200,7 @@ def prepareEditLanguageData(data):
     result['new_code'] = data['new_code'].lower() if 'new_code' in data else data['code'].lower()
     result['name'] = data['name'] if 'name' in data else None
     result['is_default'] = data['is_default'] if 'is_default' in data and data['is_default'] else 'N'
-    result['order'] = int(data['order']) if 'order' in data else 100
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
@@ -246,26 +246,28 @@ def prepareAddCategoryData(data):
         prop = 'name_' + language
         result[prop] = data[prop] if prop in data and data[prop] else None
     result['parent'] = int(data['parent']) if 'parent' in data and data['parent'] else None
-    result['order'] = int(data['order']) if 'order' in data else 100
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
     result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
 def validEditCategoryData(data):
     if 'id' not in data or not validation.categoryID(data['id']): return False
-    if 'parent' in data and not (validation.categoryID(data['parent']) or data['parent'] is None): return False
-    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     for language in config.LANGUAGES:
         prop = 'name_' + language
         if prop in data and not validation.categoryName(data[prop]): return False
+    if 'parent' in data and not validation.categoryID(data['parent']): return False
+    if 'order' in data and not validation.order(data['order']): return False
+    if 'is_active' not in data or data['is_active'] not in ('Y', 'N'): return False
     return True
 
 def prepareEditCategoryData(data):
-    result = {'id': data['id']}
-    if 'parent' in data and (data['parent'] or data['parent'] is None): result['parent'] = data['parent']
+    result = {'id': int(data['id'])}
     for language in config.LANGUAGES:
         prop = 'name_' + language
-        if prop in data and data[prop]: result[prop] = data[prop]
-    if 'is_active' in data and data['is_active']: result['is_active'] = data['is_active']
+        result[prop] = data[prop] if prop in data and data[prop] else None
+    result['parent'] = int(data['parent']) if 'parent' in data and data['parent'] else None
+    result['order'] = int(data['order']) if 'order' in data and data['order'] else 100
+    result['is_active'] = data['is_active'] if 'is_active' in data and data['is_active'] else 'Y'
     return result
 
 

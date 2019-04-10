@@ -568,7 +568,7 @@ def addCategory(data):
                 INSERT INTO `{table}` (`category_id`, `language`, `name`)
                 VALUES (%s, %s, %s)
             """.format(table=db.table('categories_text'))
-            cursor.execute(query, (category_id, language, data.get(prop, None)))
+            cursor.execute(query, (category_id, language, data[prop]))
     connection.commit()
     connection.close()
 
@@ -576,46 +576,26 @@ def editCategory(data):
     db = DB()
     connection = db.getConnection()
     cursor = connection.cursor()
-    categories_field = ('parent', 'is_active')
-    columns = []
-    values = []
-    commit = False
-    for prop in categories_field:
+    query = """
+        UPDATE `{table}`
+        SET
+            `parent` = %s,
+            `order` = %s,
+            `is_active` = %s
+        WHERE `id` = %s
+    """.format(table=db.table('categories'))
+    cursor.execute(query, (data['parent'], data['order'], data['is_active'], data['id']))
+    for language in config.LANGUAGES:
+        prop = 'name_' + language
         if prop in data:
-            columns.append(prop)
-            values.append(data[prop])
-    if columns:
-        columns = ','.join(['`{column}` = %s'.format(column=column) for column in columns]) if columns else ''
-        values.append(data['id'])
-        query = """
-            UPDATE `{table}`
-            SET {additional_columns}
-            WHERE `id` = %s
-        """.format(
-            table=db.table('categories'),
-            additional_columns=columns
-        )
-        cursor.execute(query, values)
-        commit = True
-    if 'name_ukr' in data:
-        query = """
-            UPDATE `{table}`
-            SET `name` = %s
-            WHERE `category_id` = %s
-            AND `language` = 'ukr'
-        """.format(table=db.table('categories_text'))
-        cursor.execute(query, (data['name_ukr'], data['id']))
-        commit = True
-    if 'name_eng' in data:
-        query = """
-            UPDATE `{table}`
-            SET `name` = %s
-            WHERE `category_id` = %s
-            AND `language` = 'eng'
-        """.format(table=db.table('categories_text'))
-        cursor.execute(query, (data['name_eng'], data['id']))
-        commit = True
-    if commit: connection.commit()
+            query = """
+                INSERT INTO `{table}` (`category_id`, `language`, `name`)
+                VALUES (%s, %s, %s)
+                ON DUPLICATE KEY
+                UPDATE `name` = %s
+            """.format(table=db.table('categories_text'))
+            cursor.execute(query, (data['id'], language, data[prop], data[prop]))
+    connection.commit()
     connection.close()
 
 def deleteCategory(category_id):
