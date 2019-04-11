@@ -63,7 +63,7 @@ class Acp():
         elif parent.isdecimal():
             parent = int(parent)
             if validation.categoryID(parent):
-                categories, order = model.getCategories(self.current_language, parent=parent, order_by='order', order_type='desc')
+                categories, order = model.getCategoriesSubcategories(self.current_language, parent=parent, order_by='order', order_type='desc')
                 parent = model.getCategory(parent)
             else: return abort(404)
         else: return abort(404)
@@ -88,6 +88,7 @@ class Acp():
 
     def editCategoryPage(self, category_id):
         if not validation.categoryID(category_id): return abort(404)
+        category_id = int(category_id)
         category = model.getCategory(category_id)
         if not category: return abort(404)
         categories, order = model.getCategories(self.current_language, order_by='id', order_type='asc')
@@ -120,13 +121,13 @@ class Acp():
 
 
     def productsPage(self, category_id=None):
-        if category_id is not None:
+        if category_id is None:
+            self.data['products'] = model.getProducts(self.current_language)
+        else:
             if not validation.categoryID(category_id): return abort(404)
             category_id = int(category_id)
             self.data['products'] = model.getCategoryProducts(self.current_language, category_id)
             self.data['category'] = model.getCategory(category_id)
-        else:
-            self.data['products'] = model.getProducts(self.current_language)
         return render_template('acp/products/list.html', **self.data)
 
     def addProductPage(self):
