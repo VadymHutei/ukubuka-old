@@ -113,7 +113,7 @@ def usersGroupID(users_group_id):
     if isinstance(users_group_id, str):
         return bool(re.fullmatch(r'[0-9]{1}', users_group_id))
     if isinstance(users_group_id, int):
-        return len(str(users_group_id)) = 1
+        return len(str(users_group_id)) == 1
     return False
 
 def userName(name):

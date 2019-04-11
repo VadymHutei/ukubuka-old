@@ -1,4 +1,4 @@
-import modules.validation as validation
+import ulib.validation as validation
 
 def prepareAuthenticationFormData(form):
     result = {}

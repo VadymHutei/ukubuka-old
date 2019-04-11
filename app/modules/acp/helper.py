@@ -1,9 +1,9 @@
 from datetime import datetime
 import re
 import config
-import common
-import modules.validation as validation
-import modules.auth as auth
+import ulib.common as common
+import ulib.validation as validation
+import ulib.auth as auth
 
 
 
