@@ -221,7 +221,7 @@ def acpDeleteCategory(lang=config.DEFAULT_LANGUAGE):
 @langRedirect
 def acpProducts(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
-    return mod.productsPage()
+    return mod.productsPage(request.args.get('category'))
 
 @app.route('/acp/products/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/products/add', methods=['GET', 'POST'])

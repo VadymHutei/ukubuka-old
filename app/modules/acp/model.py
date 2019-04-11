@@ -631,7 +631,6 @@ def getProducts(language):
             p.`id`,
             p.`category_id`,
             p.`model`,
-            p.`price`,
             p.`added`,
             p.`is_active`,
             pt.`name`,
@@ -655,7 +654,46 @@ def getProducts(language):
     cursor.execute(query, (language, language))
     connection.close()
     products_data = cursor.fetchall()
-    return {row['id']: row for row in products_data} if products_data else {}
+    if not products_data: return {}
+    products = {row['id']: row for row in products_data}
+    return products
+
+def getCategoryProducts(language, category_id):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            p.`id`,
+            p.`category_id`,
+            p.`model`,
+            p.`added`,
+            p.`is_active`,
+            pt.`name`,
+            pt.`description`,
+            ct.`name` category
+        FROM `{table}` p
+        LEFT JOIN `{table_t}` pt
+            ON p.`id` = pt.`product_id`
+        LEFT JOIN `{table_c}` c
+            ON p.`category_id` = c.`id`
+        LEFT JOIN `{table_ct}` ct
+            ON c.`id` = ct.`category_id`
+        WHERE p.`category_id` = %s
+        AND pt.`language` = %s
+        AND ct.`language` = %s
+    """.format(
+        table=db.table('products'),
+        table_t=db.table('products_text'),
+        table_c=db.table('categories'),
+        table_ct=db.table('categories_text'),
+    )
+    cursor.execute(query, (category_id, language, language))
+    connection.close()
+    products_data = cursor.fetchall()
+    if not products_data: return {}
+    products = {row['id']: row for row in products_data}
+    return products
 
 def addProduct(data):
     db = DB()
