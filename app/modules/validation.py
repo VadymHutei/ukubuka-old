@@ -3,6 +3,8 @@ import re
 def phoneNumber(phone_number):
     if isinstance(phone_number, str):
         return re.fullmatch(r'[0-9+() -]{9,64}', phone_number)
+    if isinstance(phone_number, int):
+        return 9 <= len(str(phone_number)) <= 32
     return False
 
 def email(email):
@@ -28,6 +30,8 @@ def sessionId(session_id):
 def price(price):
     if isinstance(price, str):
         return re.fullmatch(r'[0-9 .,]{1,16}', price)
+    if isinstance(price, int):
+        return 1 <= len(str(price)) <= 16
     return False
 
 def order(order):
@@ -47,7 +51,9 @@ def order(order):
 
 def menuItemID(item_id):
     if isinstance(item_id, str):
-        return bool(re.fullmatch(r'\d{1,4}', item_id))
+        return bool(re.fullmatch(r'[0-9]{1,4}', item_id))
+    if isinstance(item_id, int):
+        return 1 <= len(str(item_id)) <= 4
     return False
 
 def menuName(name):
@@ -98,12 +104,16 @@ def currencySymbol(symbol):
 
 def userID(user_id):
     if isinstance(user_id, str):
-        return bool(re.fullmatch(r'\d{1,8}', user_id))
+        return bool(re.fullmatch(r'[0-9]{1,8}', user_id))
+    if isinstance(user_id, int):
+        return 1 <= len(str(user_id)) <= 8
     return False
 
 def usersGroupID(users_group_id):
     if isinstance(users_group_id, str):
-        return bool(re.fullmatch(r'\d{1}', users_group_id))
+        return bool(re.fullmatch(r'[0-9]{1}', users_group_id))
+    if isinstance(users_group_id, int):
+        return len(str(users_group_id)) = 1
     return False
 
 def userName(name):
@@ -126,7 +136,7 @@ def usersGroupName(name):
 
 def categoryID(category_id):
     if isinstance(category_id, str):
-        return bool(re.fullmatch(r'\d{1,8}', category_id))
+        return bool(re.fullmatch(r'[0-9]{1,8}', category_id))
     if isinstance(category_id, int):
         return 1 <= len(str(category_id)) <= 8
     return False
@@ -143,6 +153,13 @@ def categoryName(name):
 #     ##        ##   ##   ##     ## ##     ## ##     ## ##          ##          ##
 #     ##        ##    ##  ##     ## ##     ## ##     ## ##    ##    ##    ##    ##
 #     ##        ##     ##  #######  ########   #######   ######     ##     ######
+
+def productID(product_id):
+    if isinstance(product_id, str):
+        return bool(re.fullmatch(r'[0-9]{1,8}', product_id))
+    if isinstance(product_id, int):
+        return 1 <= len(str(product_id)) <= 8
+    return False
 
 def productModel(model):
     if isinstance(model, str):
@@ -169,7 +186,9 @@ def productDescrioption(description):
 
 def characteristicID(characteristic_id):
     if isinstance(characteristic_id, str):
-        return bool(re.fullmatch(r'\d{1,8}', characteristic_id))
+        return bool(re.fullmatch(r'[0-9]{1,8}', characteristic_id))
+    if isinstance(characteristic_id, int):
+        return 1 <= len(str(characteristic_id)) <= 8
     return False
 
 def characteristicName(name):
