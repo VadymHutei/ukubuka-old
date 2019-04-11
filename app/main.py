@@ -7,34 +7,34 @@ from modules.main.ctrl import Main
 from modules.acp.ctrl import Acp
 from modules.test.ctrl import Test
 
-def lang_redirect(f):
+def langRedirect(f):
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    def decoratedFunction(*args, **kwargs):
         if 'lang' in kwargs:
             if kwargs['lang'] == config.DEFAULT_LANGUAGE:
                 return redirect(url_for(f.__name__))
             if kwargs['lang'] not in config.LANGUAGES:
                 return redirect(url_for(f.__name__))
         return f(*args, **kwargs)
-    return decorated_function
+    return decoratedFunction
 
-def admin_access(f):
+def adminAccess(f):
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    def decoratedFunction(*args, **kwargs):
         session = Session(
             request.cookies.get(config.SESSION_COOKIE_NAME),
             remote_address=request.remote_addr,
             uic=request.cookies.get(config.UIC_NAME)
         )
         if not session.authorization('admin'):
-            return redirect(url_for('acp_authentication'), 303)
+            return redirect(url_for('acpAuthentication'), 303)
         return f(*args, **kwargs)
-    return decorated_function
+    return decoratedFunction
 
 app = Flask(__name__)
 
 @app.before_request
-def start_session():
+def startSession():
     session = Session(
         request.cookies.get(config.SESSION_COOKIE_NAME),
         remote_address=request.remote_addr,
@@ -44,7 +44,7 @@ def start_session():
         session_id = session.start()
         if not session_id: return
         @after_this_request
-        def set_session_cookie(response):
+        def setSessionCookie(response):
             expire_date = datetime.datetime.now() + datetime.timedelta(days=config.SESSION_COOKIE_EXPIRES)
             response.set_cookie(config.SESSION_COOKIE_NAME, session_id, expires=expire_date, path='/')
             return response
@@ -107,14 +107,14 @@ def test():
 
 @app.route('/acp', methods=['GET'])
 @app.route('/<lang>/acp', methods=['GET'])
-@lang_redirect
+@langRedirect
 def acp(lang=config.DEFAULT_LANGUAGE):
-    return redirect(url_for('acp_dashboard', lang=lang), 302)
+    return redirect(url_for('acpDashboard', lang=lang), 302)
 
 @app.route('/acp/authentication', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/authentication', methods=['GET', 'POST'])
-@lang_redirect
-def acp_authentication(lang=config.DEFAULT_LANGUAGE):
+@langRedirect
+def acpAuthentication(lang=config.DEFAULT_LANGUAGE):
     if request.method == 'GET':
         mod = Acp(lang)
         return mod.authenticationPage()
@@ -126,9 +126,9 @@ def acp_authentication(lang=config.DEFAULT_LANGUAGE):
             def set_token(response):
                 response.set_cookie(config.UIC_NAME, uic, expires=expires, path='/')
                 return response
-            return redirect(url_for('acp_dashboard', lang=lang), 303)
+            return redirect(url_for('acpDashboard', lang=lang), 303)
         else:
-            return redirect(url_for('acp_authentication'), 303)
+            return redirect(url_for('acpAuthentication'), 303)
 
 
 
@@ -144,9 +144,9 @@ def acp_authentication(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/dashboard', methods=['GET'])
 @app.route('/<lang>/acp/dashboard', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpDashboard(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.dashboardPage()
 
@@ -164,44 +164,44 @@ def acp_dashboard(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/categories/', methods=['GET'])
 @app.route('/<lang>/acp/categories/', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_categories(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpCategories(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.categoriesPage(request.args.get('parent'))
 
 @app.route('/acp/categories/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/categories/add', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_add_category(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpAddCategory(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.addCategoryPage()
     else:
         mod.addCategory(request.form)
-        return redirect(url_for('acp_categories'), 303)
+        return redirect(url_for('acpCategories'), 303)
 
 @app.route('/acp/categories/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/categories/edit', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_edit_category(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpEditCategory(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.editCategoryPage(request.args['id'])
     else:
         mod.editCategory(request.form)
-        return redirect(url_for('acp_categories'), 303)
+        return redirect(url_for('acpCategories'), 303)
 
 @app.route('/acp/categories/delete', methods=['GET'])
 @app.route('/<lang>/acp/categories/delete', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_delete_category(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpDeleteCategory(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteCategory(request.args['id'])
-    return redirect(url_for('acp_categories'), 303)
+    return redirect(url_for('acpCategories'), 303)
 
 
 
@@ -217,44 +217,44 @@ def acp_delete_category(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/products/', methods=['GET'])
 @app.route('/<lang>/acp/products/', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_products(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpProducts(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.productsPage()
 
 @app.route('/acp/products/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/products/add', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_add_product(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpAddProduct(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.addProductPage()
     else:
         mod.addProduct(request.form)
-        return redirect(url_for('acp_products'), 303)
+        return redirect(url_for('acpProducts'), 303)
 
 @app.route('/acp/products/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/products/edit', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_edit_product(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpEditProduct(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.editProductPage(request.args['id'])
     else:
         mod.editProduct(request.form)
-        return redirect(url_for('acp_products'), 303)
+        return redirect(url_for('acpProducts'), 303)
 
 @app.route('/acp/products/delete', methods=['GET'])
 @app.route('/<lang>/acp/products/delete', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_delete_product(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpDeleteProduct(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteProduct(request.args['id'])
-    return redirect(url_for('acp_products'), 303)
+    return redirect(url_for('acpProducts'), 303)
 
 
 
@@ -270,44 +270,44 @@ def acp_delete_product(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/characteristics/', methods=['GET'])
 @app.route('/<lang>/acp/characteristics/', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_characteristics(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpCharacteristics(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.characteristicsPage()
 
 @app.route('/acp/characteristics/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/characteristics/add', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_add_characteristics(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpAddCharacteristics(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.addCharacteristicPage()
     else:
         mod.addCharacteristic(request.form)
-        return redirect(url_for('acp_characteristics'), 303)
+        return redirect(url_for('acpCharacteristics'), 303)
 
 @app.route('/acp/characteristics/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/characteristics/edit', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_edit_characteristics(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpEditCharacteristics(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.editCharacteristicPage(request.args['id'])
     else:
         mod.editCharacteristic(request.form)
-        return redirect(url_for('acp_characteristics'), 303)
+        return redirect(url_for('acpCharacteristics'), 303)
 
 @app.route('/acp/characteristics/delete', methods=['GET'])
 @app.route('/<lang>/acp/characteristics/delete', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_delete_characteristic(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpDeleteCharacteristic(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteCharacteristic(request.args['id'])
-    return redirect(url_for('acp_characteristics'), 303)
+    return redirect(url_for('acpCharacteristics'), 303)
 
 
 
@@ -323,68 +323,68 @@ def acp_delete_characteristic(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/users/', methods=['GET'])
 @app.route('/<lang>/acp/users/', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_users(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpUsers(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.users_page()
 
 @app.route('/acp/users/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/add', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_users_add(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpUsers_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.user_add_page()
     else:
         mod.addUser(request.form)
-        return redirect(url_for('acp_users'), 303)
+        return redirect(url_for('acpUsers'), 303)
 
 @app.route('/acp/users/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/edit', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_users_edit(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpUsers_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.user_edit_page(request.args['id'])
     else:
         mod.editUser(request.form)
-        return redirect(url_for('acp_users'), 303)
+        return redirect(url_for('acpUsers'), 303)
 
 @app.route('/acp/users/delete', methods=['GET'])
 @app.route('/<lang>/acp/users/delete', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_users_delete(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpUsers_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteUser(request.args['id'])
-    return redirect(url_for('acp_users'), 303)
+    return redirect(url_for('acpUsers'), 303)
 
 @app.route('/acp/users/add_phone_number', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/add_phone_number', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_users_add_phone_number(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpUsers_add_phone_number(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.user_add_phone_number_page(request.args['id'])
     else:
         mod.addUserPhoneNumber(request.form)
-        return redirect(url_for('acp_users'), 303)
+        return redirect(url_for('acpUsers'), 303)
 
 @app.route('/acp/users/add_email', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/users/add_email', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_users_add_email(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpUsers_add_email(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.user_add_email_page(request.args['id'])
     else:
         mod.addUserEmail(request.form)
-        return redirect(url_for('acp_users'), 303)
+        return redirect(url_for('acpUsers'), 303)
 
 
 
@@ -400,44 +400,44 @@ def acp_users_add_email(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/menus/', methods=['GET'])
 @app.route('/<lang>/acp/menus/', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_menus(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpMenus(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.menusPage()
 
 @app.route('/acp/menus/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/menus/add', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_menus_add(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpMenus_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.menusAddPage()
     else:
         mod.addMenuItem(request.form)
-        return redirect(url_for('acp_menus'), 303)
+        return redirect(url_for('acpMenus'), 303)
 
 @app.route('/acp/menus/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/menus/edit', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_menus_edit(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpMenus_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.menusEditPage(request.args['id'])
     else:
         mod.editMenuItem(request.form)
-        return redirect(url_for('acp_menus'), 303)
+        return redirect(url_for('acpMenus'), 303)
 
 @app.route('/acp/menus/delete', methods=['GET'])
 @app.route('/<lang>/acp/menus/delete', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_menus_delete(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpMenus_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteMenuItem(request.args['id'])
-    return redirect(url_for('acp_menus'), 303)
+    return redirect(url_for('acpMenus'), 303)
 
 
 
@@ -453,44 +453,44 @@ def acp_menus_delete(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/currencies/', methods=['GET'])
 @app.route('/<lang>/acp/currencies/', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_currencies(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpCurrencies(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.currenciesPage()
 
 @app.route('/acp/currencies/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/currencies/add', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_currencies_add(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpCurrencies_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.currenciesAddPage()
     else:
         mod.addCurrency(request.form)
-        return redirect(url_for('acp_currencies'), 303)
+        return redirect(url_for('acpCurrencies'), 303)
 
 @app.route('/acp/currencies/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/currencies/edit', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_currencies_edit(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpCurrencies_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.currenciesEditPage(request.args['code'])
     else:
         mod.editCurrency(request.form)
-        return redirect(url_for('acp_currencies'), 303)
+        return redirect(url_for('acpCurrencies'), 303)
 
 @app.route('/acp/currencies/delete', methods=['GET'])
 @app.route('/<lang>/acp/currencies/delete', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_currencies_delete(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpCurrencies_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteCurrency(request.args['code'])
-    return redirect(url_for('acp_currencies'), 303)
+    return redirect(url_for('acpCurrencies'), 303)
 
 
 
@@ -506,44 +506,44 @@ def acp_currencies_delete(lang=config.DEFAULT_LANGUAGE):
 
 @app.route('/acp/languages/', methods=['GET'])
 @app.route('/<lang>/acp/languages/', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_languages(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpLanguages(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     return mod.languagesPage()
 
 @app.route('/acp/languages/add', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/languages/add', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_languages_add(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpLanguages_add(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.languagesAddPage()
     else:
         mod.addLanguage(request.form)
-        return redirect(url_for('acp_languages'), 303)
+        return redirect(url_for('acpLanguages'), 303)
 
 @app.route('/acp/languages/edit', methods=['GET', 'POST'])
 @app.route('/<lang>/acp/languages/edit', methods=['GET', 'POST'])
-# @admin_access
-@lang_redirect
-def acp_languages_edit(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpLanguages_edit(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     if request.method == 'GET':
         return mod.languagesEditPage(request.args['code'])
     else:
         mod.editLanguage(request.form)
-        return redirect(url_for('acp_languages'), 303)
+        return redirect(url_for('acpLanguages'), 303)
 
 @app.route('/acp/languages/delete', methods=['GET'])
 @app.route('/<lang>/acp/languages/delete', methods=['GET'])
-# @admin_access
-@lang_redirect
-def acp_languages_delete(lang=config.DEFAULT_LANGUAGE):
+# @adminAccess
+@langRedirect
+def acpLanguages_delete(lang=config.DEFAULT_LANGUAGE):
     mod = Acp(lang)
     mod.deleteLanguage(request.args['code'])
-    return redirect(url_for('acp_languages'), 303)
+    return redirect(url_for('acpLanguages'), 303)
 
 
 
