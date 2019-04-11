@@ -174,13 +174,13 @@ def addMenuItem(data):
     cursor.execute(query, (data['parent'], data['link'], data['order'], data['added'], data['is_active']))
     item_id = cursor.lastrowid
     for language in config.LANGUAGES:
-        prop = 'name_' + language
-        if prop in data:
+        prop_name = 'name_' + language
+        if prop_name in data:
             query = """
                 INSERT INTO `{table}` (`item_id`, `language`, `name`)
                 VALUES (%s, %s, %s)
             """.format(table=db.table('menus_text'))
-            cursor.execute(query, (item_id, language, data.get(prop, None)))
+            cursor.execute(query, (item_id, language, data[prop_name]))
     connection.commit()
     connection.close()
 
@@ -202,12 +202,12 @@ def editMenuItem(data):
         prop_name = 'name_' + language
         if prop_name in data:
             query = """
-                UPDATE `{table}`
-                SET `name` = %s
-                WHERE `item_id` = %s
-                AND `language` = %s
+                INSERT INTO `{table}` (`item_id`, `language`, `name`)
+                VALUES (%s, %s, %s)
+                ON DUPLICATE KEY
+                UPDATE `name` = %s
             """.format(table=db.table('menus_text'))
-            cursor.execute(query, (data.get(prop_name, None), data['id'], language))
+            cursor.execute(query, (data['id'], language, data[prop_name], data[prop_name]))
     connection.commit()
     connection.close()
 
