@@ -31,7 +31,9 @@ def price(price):
     if isinstance(price, str):
         return re.fullmatch(r'[0-9 .,]{1,16}', price)
     if isinstance(price, int):
-        return 1 <= len(str(price)) <= 16
+        return 1 <= len(str(price)) <= 6
+    if isinstance(price, float):
+        return 1 <= len(str(price)) <= 9
     return False
 
 def order(order):
