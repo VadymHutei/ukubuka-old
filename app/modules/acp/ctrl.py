@@ -77,7 +77,7 @@ class Acp():
         categories, order = model.getCategories(self.current_language, order_by='id', order_type='asc')
         self.data['categories'] = categories
         self.data['categories_order'] = order
-        self.data['languages'] = config.LANGUAGES
+        self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/categories/add.html', **self.data)
 
     def addCategory(self, form):
@@ -95,7 +95,7 @@ class Acp():
         self.data['categories'] = categories
         self.data['categories_order'] = order
         self.data['category'] = category
-        self.data['languages'] = config.LANGUAGES
+        self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/categories/edit.html', **self.data)
 
     def editCategory(self, form):
@@ -163,7 +163,7 @@ class Acp():
         return render_template('acp/characteristics/list.html', **self.data)
 
     def addCharacteristicPage(self):
-        self.data['languages'] = config.LANGUAGES
+        self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/characteristics/add.html', **self.data)
 
     def addCharacteristic(self, form):
@@ -175,7 +175,7 @@ class Acp():
     def editCharacteristicPage(self, characteristic_id):
         self.data['characteristic'] = model.getCharacteristic(characteristic_id)
         if not self.data['characteristic']: return abort(404)
-        self.data['languages'] = config.LANGUAGES
+        self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/characteristics/edit.html', **self.data)
 
     def editCharacteristic(self, form):
@@ -276,7 +276,7 @@ class Acp():
         menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
         self.data['menus'] = menus
         self.data['menus_order'] = menus_order
-        self.data['languages'] = config.LANGUAGES
+        self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/menus/add.html', **self.data)
 
     def addMenuItem(self, form):
@@ -293,7 +293,7 @@ class Acp():
         menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
         self.data['menus'] = menus
         self.data['menus_order'] = menus_order
-        self.data['languages'] = config.LANGUAGES
+        self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/menus/edit.html', **self.data)
 
     def editMenuItem(self, form):

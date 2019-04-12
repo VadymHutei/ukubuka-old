@@ -22,10 +22,10 @@
                 {% for language in languages %}
                 <tr>
                     <td class="label">
-                        <label for="name_{{ language }}_field">назва ({{ languages[language]['name'] }})</label>
+                        <label for="name_{{ language['code'] }}_field">назва ({{ language['name'] }})</label>
                     </td>
                     <td>
-                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off"{% if loop.first %} autofocus{% endif %}>
+                        <input id="name_{{ language['code'] }}_field" type="text" name="name_{{ language['code'] }}" placeholder="{{ language['name'] }}" maxlength="64" autocomplete="off"{% if loop.first %} autofocus{% endif %}>
                     </td>
                 </tr>
                 {% endfor %}
