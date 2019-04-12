@@ -653,10 +653,14 @@ def deleteCategory(category_id):
 
 
 
-def getProducts(language):
+def getProducts(language, order_by=None, order_type=None):
     db = DB()
     connection = db.getConnection()
     cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('id', 'category_id', 'model', 'added', 'is_active', 'name', 'description', 'category_name'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
         SELECT
             p.`id`,
@@ -666,7 +670,7 @@ def getProducts(language):
             p.`is_active`,
             pt.`name`,
             pt.`description`,
-            ct.`name` category
+            ct.`name` category_name
         FROM `{table}` p
         LEFT JOIN `{table_t}` pt
             ON p.`id` = pt.`product_id`
@@ -676,23 +680,27 @@ def getProducts(language):
             ON c.`id` = ct.`category_id`
         WHERE pt.`language` = %s
         AND ct.`language` = %s
+        {order}
     """.format(
         table=db.table('products'),
         table_t=db.table('products_text'),
         table_c=db.table('categories'),
-        table_ct=db.table('categories_text')
+        table_ct=db.table('categories_text'),
+        order=order_row
     )
     cursor.execute(query, (language, language))
     connection.close()
     products_data = cursor.fetchall()
-    if not products_data: return {}
-    products = {row['id']: row for row in products_data}
-    return products
+    return products_data if products_data else {}
 
-def getCategoryProducts(language, category_id):
+def getCategoryProducts(language, category_id, order_by=None, order_type=None):
     db = DB()
     connection = db.getConnection()
     cursor = connection.cursor()
+    order_row = ''
+    if order_by and order_by in ('id', 'category_id', 'model', 'added', 'is_active', 'name', 'description', 'category_name'):
+        order_row = 'ORDER BY `{column}`'.format(column=order_by)
+        if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
         SELECT
             p.`id`,
@@ -713,18 +721,18 @@ def getCategoryProducts(language, category_id):
         WHERE p.`category_id` = %s
         AND pt.`language` = %s
         AND ct.`language` = %s
+        {order}
     """.format(
         table=db.table('products'),
         table_t=db.table('products_text'),
         table_c=db.table('categories'),
         table_ct=db.table('categories_text'),
+        order=order_row
     )
     cursor.execute(query, (category_id, language, language))
     connection.close()
     products_data = cursor.fetchall()
-    if not products_data: return {}
-    products = {row['id']: row for row in products_data}
-    return products
+    return products_data if products_data else {}
 
 def addProduct(data):
     db = DB()

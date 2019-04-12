@@ -29,8 +29,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for product_id in products %}
-            {% set product = products[product_id] %}
+            {% for product in products %}
             <tr>
                 <td class="center">{{ product['id'] }}</td>
                 <td>
@@ -55,8 +54,8 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if product['category'] %}
-                    {{ product['category'] }}
+                    {% if product['category_name'] %}
+                    {{ product['category_name'] }}
                     {% else %}
                     -
                     {% endif %}

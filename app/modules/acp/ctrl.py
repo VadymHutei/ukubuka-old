@@ -122,11 +122,11 @@ class Acp():
 
     def productsPage(self, category_id=None):
         if category_id is None:
-            self.data['products'] = model.getProducts(self.current_language)
+            self.data['products'] = model.getProducts(self.current_language, order_by='id', order_type='asc')
         else:
             if not validation.categoryID(category_id): return abort(404)
             category_id = int(category_id)
-            self.data['products'] = model.getCategoryProducts(self.current_language, category_id)
+            self.data['products'] = model.getCategoryProducts(self.current_language, category_id, order_by='id', order_type='asc')
             self.data['category'] = model.getCategory(category_id)
         return render_template('acp/products/list.html', **self.data)
 
