@@ -266,16 +266,14 @@ class Acp():
 
 
     def menusPage(self):
-        menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
+        menus = model.getMenus(self.current_language, order_by='parent', order_type='asc')
         self.data['menus'] = menus
-        self.data['menus_order'] = menus_order
         self.data['menu_item_names'] = model.getMenuItemNames(self.current_language)
         return render_template('acp/menus/list.html', **self.data)
 
     def menusAddPage(self):
-        menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
+        menus = model.getMenus(self.current_language, order_by='parent', order_type='asc')
         self.data['menus'] = menus
-        self.data['menus_order'] = menus_order
         self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/menus/add.html', **self.data)
 
@@ -290,9 +288,8 @@ class Acp():
         current_item = model.getMenuItem(item_id)
         if not current_item: return abort(404)
         self.data['current_item'] = current_item
-        menus, menus_order = model.getMenus(self.current_language, order_by='id', order_type='asc')
+        menus = model.getMenus(self.current_language, order_by='parent', order_type='asc')
         self.data['menus'] = menus
-        self.data['menus_order'] = menus_order
         self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/menus/edit.html', **self.data)
 

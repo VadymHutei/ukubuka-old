@@ -44,11 +44,8 @@
                     <td>
                         <select id="parent_field" name="parent">
                             <option label="нове меню"></option>
-                            {% for item_id in menus_order %}
-                            {% if item_id in menus %}
-                            {% set item = menus[item_id] %}
+                            {% for item in menus %}
                             <option label="{% if item['name'] %}{{ item['name'] }}{% endif %}" value="{{ item['id'] }}"{% if current_item['parent'] == item['id'] %} selected{% endif %}></option>
-                            {% endif %}
                             {% endfor %}
                         </select>
                     </td>

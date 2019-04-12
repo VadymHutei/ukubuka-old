@@ -82,10 +82,7 @@ def getMenus(language, order_by=None, order_type=None):
     cursor.execute(query)
     connection.close()
     menu_items = cursor.fetchall()
-    if not menu_items: return {} if order_by is None else {}, []
-    order = [item['id'] for item in menu_items]
-    menus = {item['id']: item for item in menu_items}
-    return menus if order_by is None else menus, order
+    return menu_items if menu_items else []
 
 def getMenusTree(language, order_by=None, order_type=None):
     db = DB()

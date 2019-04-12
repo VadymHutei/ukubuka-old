@@ -29,8 +29,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for item_id in menus_order %}
-            {% set item = menus[item_id] %}
+            {% for item in menus %}
             <tr>
                 <td class="center">{{ item['id'] }}</td>
                 <td>
