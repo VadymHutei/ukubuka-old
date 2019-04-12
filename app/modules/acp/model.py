@@ -261,7 +261,7 @@ def getCurrencies(order_by=None, order_type=None):
     connection = db.getConnection()
     cursor = connection.cursor()
     order_row = ''
-    if order_by and order_by in ('code', 'name', 'order', 'added', 'is_active'):
+    if order_by and order_by in ('code', 'name', 'symbol', 'order', 'added', 'is_active'):
         order_row = 'ORDER BY `{column}`'.format(column=order_by)
         if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
@@ -364,7 +364,7 @@ def getLanguages(order_by=None, order_type=None):
     connection = db.getConnection()
     cursor = connection.cursor()
     order_row = ''
-    if order_by and order_by in ('code', 'name', 'is_default', 'added', 'is_active'):
+    if order_by and order_by in ('code', 'name', 'is_default', 'order', 'added', 'is_active'):
         order_row = 'ORDER BY `{column}`'.format(column=order_by)
         if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
@@ -710,7 +710,7 @@ def getCategoryProducts(language, category_id, order_by=None, order_type=None):
             p.`is_active`,
             pt.`name`,
             pt.`description`,
-            ct.`name` category
+            ct.`name` category_name
         FROM `{table}` p
         LEFT JOIN `{table_t}` pt
             ON p.`id` = pt.`product_id`
@@ -816,7 +816,7 @@ def getCharacteristics(language, order_by=None, order_type=None):
     connection = db.getConnection()
     cursor = connection.cursor()
     order_row = ''
-    if order_by and order_by in ('id', 'parent', 'order', 'added', 'is_active', 'name'):
+    if order_by and order_by in ('id', 'order', 'added', 'is_active', 'name'):
         order_row = 'ORDER BY `{column}`'.format(column=order_by)
         if order_type and order_type in ('asc', 'desc'): order_row += ' ' + order_type.upper()
     query = """
