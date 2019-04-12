@@ -731,10 +731,10 @@ def addProduct(data):
     connection = db.getConnection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO `{table}` (`category_id`, `model`, `price`, `added`, `is_active`)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO `{table}` (`category_id`, `model`, `added`, `is_active`)
+        VALUES (%s, %s, %s, %s)
     """.format(table=db.table('products'))
-    cursor.execute(query, (data['category_id'], data['model'], data['price'], data['added'], data['is_active']))
+    cursor.execute(query, (data['category_id'], data['model'], data['added'], data['is_active']))
     product_id = cursor.lastrowid
     for language in config.LANGUAGES:
         prop_name = 'name_' + language
@@ -744,7 +744,15 @@ def addProduct(data):
                 INSERT INTO `{table}` (`product_id`, `language`, `name`, `description`)
                 VALUES (%s, %s, %s, %s)
             """.format(table=db.table('products_text'))
-            cursor.execute(query, (product_id, language, data.get(prop_name, None), data.get(prop_description, None)))
+            cursor.execute(query, (product_id, language, data[prop_name], data[prop_description]))
+    for currency in config.CURRENCIES:
+        prop_price = 'price_' + currency
+        if prop_price in data:
+            query = """
+                INSERT INTO `{table}` (`product_id`, `currency`, `price`)
+                VALUES (%s, %s, %s)
+            """.format(table=db.table('products_prices'))
+            cursor.execute(query, (product_id, currency, data[prop_price]))
     connection.commit()
     connection.close()
 

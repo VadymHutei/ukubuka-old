@@ -21,7 +21,7 @@
             <tbody>
                 <tr>
                     <td class="label">
-                        <label for="model_field">Модель</label>
+                        <label for="model_field">модель</label>
                     </td>
                     <td>
                         <input id="model_field" type="text" name="model" placeholder="модель" maxlength="64" autocomplete="off" autofocus>
@@ -30,48 +30,50 @@
                 {% for language in languages %}
                 <tr>
                     <td class="label">
-                        <label for="name_{{ language }}_field">Назва ({{ languages[language]['name'] }})</label>
+                        <label for="name_{{ language['code'] }}_field">назва ({{ language['name'] }})</label>
                     </td>
                     <td>
-                        <input id="name_{{ language }}_field" type="text" name="name_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off">
+                        <input id="name_{{ language['code'] }}_field" type="text" name="name_{{ language['code'] }}" placeholder="{{ language['name'] }}" maxlength="128" autocomplete="off">
                     </td>
                 </tr>
                 {% endfor %}
                 {% for language in languages %}
                 <tr>
                     <td class="label">
-                        <label for="description_{{ language }}_field">Опис ({{ languages[language]['name'] }})</label>
+                        <label for="description_{{ language['code'] }}_field">опис ({{ language['name'] }})</label>
                     </td>
                     <td>
-                        <input id="description_{{ language }}_field" type="text" name="description_{{ language }}" placeholder="{{ languages[language]['name'] }}" maxlength="64" autocomplete="off">
+                        <input id="description_{{ language['code'] }}_field" type="text" name="description_{{ language['code'] }}" placeholder="{{ language['name'] }}" maxlength="256" autocomplete="off">
                     </td>
                 </tr>
                 {% endfor %}
                 <tr>
                     <td class="label">
-                        <label for="parent_field">Категорія</label>
+                        <label for="parent_field">категорія</label>
                     </td>
                     <td>
                         <select id="parent_field" name="category_id">
-                            <option label="Коренева категорія" value="" selected></option>
-                            {% for category in categories.values() recursive %}
+                            <option label="Коренева категорія" selected></option>
+                            {% for category_id in categories_order %}
+                            {% set category = categories[category_id] %}
                             <option label="{{ category['name'] }}" value="{{ category['id'] }}"></option>
-                            {{ loop(category['subcategories'].values()) }}
                             {% endfor %}
                         </select>
                     </td>
                 </tr>
+                {% for currency in currencies %}
                 <tr>
                     <td class="label">
-                        <label for="is_active_field">Ціна ₴</label>
+                        <label for="price_{{ currency['code'] }}_field">ціна {{ currency['symbol'] }}</label>
                     </td>
                     <td>
-                        <input id="is_active_field" type="text" name="price" placeholder="ціна" maxlength="16" autocomplete="off">
+                        <input id="price_{{ currency['code'] }}_field" type="text" name="price_{{ currency['code'] }}" placeholder="{{ currency['code'] }}" maxlength="16" autocomplete="off">
                     </td>
                 </tr>
+                {% endfor %}
                 <tr>
                     <td class="label">
-                        <label for="is_active_field">Показувати</label>
+                        <label for="is_active_field">показувати</label>
                     </td>
                     <td>
                         <input id="is_active_field" type="checkbox" name="is_active" checked>
