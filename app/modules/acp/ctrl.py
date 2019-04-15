@@ -8,10 +8,9 @@ class Acp():
 
     def __init__(self, lang=config.DEFAULT_LANGUAGE):
         self.current_language = lang if lang in config.LANGUAGES else config.DEFAULT_LANGUAGE
-        layout_menus, layout_menus_order = model.getMenusTree(self.current_language, order_by='order', order_type='desc')
+        layout_menus = model.getMenusTree(self.current_language, order_by='order', order_type='desc')
         self.data = {
             'layout_menus': layout_menus,
-            'layout_menus_order': layout_menus_order,
             'site_name': config.SITE_NAME
         }
 

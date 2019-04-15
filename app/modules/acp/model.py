@@ -115,29 +115,24 @@ def getMenusTree(language, order_by=None, order_type=None):
     cursor.execute(query)
     connection.close()
     menu_items = cursor.fetchall()
-    if not menu_items: return {} if order_by is None else {}, []
-    order = [item['id'] for item in menu_items]
-    menus = {item['id']: item for item in menu_items}
-    result = {}
-    parents = {}
+    if not menu_items: return []
+    result = []
     for item in menu_items:
         if item['parent'] is None:
-            result[item['id']] = item
-            result[item['id']]['items'] = {}
-        else:
-            if item['parent'] not in parents:
-                parents[item['parent']] = []
-            parents[item['parent']].append(item['id'])
+            menu = item.copy()
+            menu['items'] = []
+            result.append(menu)
     def setItems(result):
-        for r_menu_id in result:
-            if r_menu_id in parents:
-                for p_menu_id in parents[r_menu_id]:
-                    result[r_menu_id]['items'][p_menu_id] = menus[p_menu_id]
-                    result[r_menu_id]['items'][p_menu_id]['items'] = {}
-            if result[r_menu_id]['items']:
-                setItems(result[r_menu_id]['items'])
+        for menu in result:
+            for item in menu_items:
+                if item['parent'] == menu['id']:
+                    item_copy = item.copy()
+                    item_copy['items'] = []
+                    menu['items'].append(item_copy)
+            if menu['items']:
+                setItems(menu['items'])
     setItems(result)
-    return result if order_by is None else result, order
+    return result
 
 def getMenuItemNames(language):
     db = DB()

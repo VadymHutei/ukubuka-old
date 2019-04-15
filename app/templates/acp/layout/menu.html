@@ -1,12 +1,10 @@
 {% set acp_main_menu_id = 3 %}
-{% if acp_main_menu_id in layout_menus and layout_menus[acp_main_menu_id]['items'] %}
-{% set menus_l1 = layout_menus[acp_main_menu_id]['items'] %}
+{% for menu in layout_menus %}
+{% if menu['id'] == acp_main_menu_id %}
 <div class="main_menu">
     <nav>
         <div class="menu_l1">
-            {% for item_id in layout_menus_order %}
-            {% if item_id in menus_l1 %}
-            {% set item_l1 = menus_l1[item_id] %}
+            {% for item_l1 in menu['items'] %}
             {% if item_l1['is_active'] == 'Y' and item_l1['name'] %}
             <div class="item_l1_wrap">
                 {% if item_l1['link'] %}
@@ -19,11 +17,8 @@
                 </a>
                 {% endif %}
                 {% if item_l1['items'] %}
-                {% set menus_l2 = item_l1['items'] %}
                 <div class="menu_l2">
-                    {% for item_id in layout_menus_order %}
-                    {% if item_id in menus_l2 %}
-                    {% set item_l2 = menus_l2[item_id] %}
+                    {% for item_l2 in item_l1['items'] %}
                     {% if item_l2['is_active'] == 'Y' and item_l2['name'] %}
                     <div class="item_l2_wrap">
                         {% if item_l2['link'] %}
@@ -37,15 +32,14 @@
                         {% endif %}
                     </div>
                     {% endif %}
-                    {% endif %}
                     {% endfor %}
                 </div>
                 {% endif %}
             </div>
-            {% endif %}
             {% endif %}
             {% endfor %}
         </div>
     </nav>
 </div>
 {% endif %}
+{% endfor %}
