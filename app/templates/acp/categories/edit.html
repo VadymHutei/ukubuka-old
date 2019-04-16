@@ -44,11 +44,8 @@
                     <td>
                         <select id="parent_field" name="parent">
                             <option label="коренева категорія" {% if category['parent'] is none %} selected{% endif %}></option>
-                            {% for category_id in categories_order %}
-                            {% if category_id in categories %}
-                            {% set parent = categories[category_id] %}
-                            <option label="{{ parent['name'] }}" value="{{ parent['id'] }}"{% if category['parent'] == parent['id'] %} selected{% endif %}></option>
-                            {% endif %}
+                            {% for category_p in categories %}
+                            <option label="{{ category_p['name'] }}" value="{{ category_p['id'] }}"{% if category['parent'] == category_p['id'] %} selected{% endif %}></option>
                             {% endfor %}
                         </select>
                     </td>

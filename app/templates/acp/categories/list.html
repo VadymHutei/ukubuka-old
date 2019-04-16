@@ -42,8 +42,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for category_id in categories_order %}
-            {% set category = categories[category_id] %}
+            {% for category in categories %}
             <tr>
                 <td class="center">{{ category['id'] }}</td>
                 <td>

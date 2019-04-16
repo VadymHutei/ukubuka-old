@@ -498,11 +498,9 @@ def getCategories(language, order_by=None, order_type=None):
     )
     cursor.execute(query, (language))
     connection.close()
-    categories_data = cursor.fetchall()
-    if not categories_data: return {} if order_by is None else {}, []
-    order = [row['id'] for row in categories_data]
-    categories = {row['id']: row for row in categories_data}
-    return categories if order_by is None else categories, order
+    categories = cursor.fetchall()
+    if not categories: return []
+    return categories
 
 def getCategoriesSubcategories(language, parent, order_by=None, order_type=None):
     result = {}
@@ -534,24 +532,21 @@ def getCategoriesSubcategories(language, parent, order_by=None, order_type=None)
     cursor.execute(query, (language))
     connection.close()
     categories_data = cursor.fetchall()
-    if not categories_data: return {} if order_by is None else {}, []
-    order = [row['id'] for row in categories_data]
-    categories = {row['id']: row for row in categories_data}
-    if parent not in categories: return {} if order_by is None else {}, []
-    subcategories_order = []
-    subcategories = {parent: categories[parent]}
+    if not categories_data: return []
+    category_ids = [row['id'] for row in categories_data]
+    if parent not in category_ids: return []
+    subcategories = []
+    subcategory_ids = [parent]
     while True:
         done_flag = True
-        for category_id in categories:
-            if category_id not in subcategories and categories[category_id]['parent'] in subcategories:
-                subcategories[category_id] = categories[category_id]
+        for row in categories_data:
+            if row['id'] not in subcategory_ids and row['parent'] in subcategory_ids:
+                subcategories.append(row)
+                subcategory_ids.append(row['id'])
                 done_flag = False
         if done_flag:
             break
-    for category_id in order:
-        if category_id in subcategories:
-            subcategories_order.append(category_id)
-    return subcategories if order_by is None else subcategories, subcategories_order
+    return subcategories
 
 def getCategoryNames(language):
     db = DB()

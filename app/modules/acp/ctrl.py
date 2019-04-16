@@ -58,24 +58,22 @@ class Acp():
 
     def categoriesPage(self, parent=None):
         if parent is None:
-            categories, order = model.getCategories(self.current_language, order_by='order', order_type='desc')
+            categories = model.getCategories(self.current_language, order_by='order', order_type='desc')
         elif parent.isdecimal():
             parent = int(parent)
             if validation.categoryID(parent):
-                categories, order = model.getCategoriesSubcategories(self.current_language, parent=parent, order_by='order', order_type='desc')
+                categories = model.getCategoriesSubcategories(self.current_language, parent=parent, order_by='order', order_type='desc')
                 parent = model.getCategory(parent)
             else: return abort(404)
         else: return abort(404)
         self.data['categories'] = categories
-        self.data['categories_order'] = order
         self.data['parent'] = parent
         self.data['category_names'] = model.getCategoryNames(self.current_language)
         return render_template('acp/categories/list.html', **self.data)
 
     def addCategoryPage(self):
-        categories, order = model.getCategories(self.current_language, order_by='id', order_type='asc')
+        categories = model.getCategories(self.current_language, order_by='id', order_type='asc')
         self.data['categories'] = categories
-        self.data['categories_order'] = order
         self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/categories/add.html', **self.data)
 
@@ -90,9 +88,8 @@ class Acp():
         category_id = int(category_id)
         category = model.getCategory(category_id)
         if not category: return abort(404)
-        categories, order = model.getCategories(self.current_language, order_by='id', order_type='asc')
+        categories = model.getCategories(self.current_language, order_by='id', order_type='asc')
         self.data['categories'] = categories
-        self.data['categories_order'] = order
         self.data['category'] = category
         self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/categories/edit.html', **self.data)
