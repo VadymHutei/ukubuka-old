@@ -27,8 +27,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for characteristic_id in characteristics_order %}
-            {% set characteristic = characteristics[characteristic_id] %}
+            {% for characteristic in characteristics %}
             <tr>
                 <td class="center">{{ characteristic['id'] }}</td>
                 <td>{% if characteristic['name'] %}{{ characteristic['name'] }}{% else %}-{% endif %}</td>

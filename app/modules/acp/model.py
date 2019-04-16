@@ -825,11 +825,9 @@ def getCharacteristics(language, order_by=None, order_type=None):
     )
     cursor.execute(query, (language))
     connection.close()
-    characteristics_data = cursor.fetchall()
-    if not characteristics_data: return {} if order_by is None else {}, []
-    order = [row['id'] for row in characteristics_data]
-    characteristics = {row['id']: row for row in characteristics_data}
-    return characteristics if order_by is None else characteristics, order
+    characteristics = cursor.fetchall()
+    if not characteristics: return []
+    return characteristics
 
 def addCharacteristic(data):
     db = DB()
