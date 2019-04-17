@@ -1,1 +1,94 @@
-edit product
+{% extends "acp/layout/base.html" %}
+
+{% block title -%}
+    Редагувати товар - {{ site_name }} ACP
+{%- endblock title %}
+
+{% block content -%}
+
+<section class="acp_section">
+    <h1 class="section_title">Редагувати товар</h1>
+    <div class="control_panel">
+        <a href="/acp/products/" class="button_link">
+            <div class="button back">
+                <span class="title">назад</span>
+            </div>
+        </a>
+        <input type="submit" form="edit_product_form" value="додати" class="button edit">
+    </div>
+    <form id="edit_product_form" class="acp_form" action="/acp/products/edit" method="post" accept-charset="utf-8">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">
+                        <label for="id_field">ID</label>
+                    </td>
+                    <td>
+                        <input id="id_field" type="text" name="id" value="{{ product['id'] }}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="model_field">модель</label>
+                    </td>
+                    <td>
+                        <input id="model_field" type="text" name="model" placeholder="модель"{% if product['model'] %} value="{{ product['model'] }}"{% endif %} maxlength="64" autocomplete="off" autofocus>
+                    </td>
+                </tr>
+                {% for language in languages %}
+                <tr>
+                    <td class="label">
+                        <label for="name_{{ language['code'] }}_field">назва ({{ language['name'] }})</label>
+                    </td>
+                    <td>
+                        <input id="name_{{ language['code'] }}_field" type="text" name="name_{{ language['code'] }}" placeholder="{{ language['name'] }}"{% if language['code'] in product['name'] and product['name'][language['code']] %} value="{{ product['name'][language['code']] }}"{% endif %} maxlength="128" autocomplete="off">
+                    </td>
+                </tr>
+                {% endfor %}
+                {% for language in languages %}
+                <tr>
+                    <td class="label">
+                        <label for="description_{{ language['code'] }}_field">опис ({{ language['name'] }})</label>
+                    </td>
+                    <td>
+                        <input id="description_{{ language['code'] }}_field" type="text" name="description_{{ language['code'] }}" placeholder="{{ language['name'] }}"{% if language['code'] in product['description'] and product['description'][language['code']] %} value="{{ product['description'][language['code']] }}"{% endif %} maxlength="256" autocomplete="off">
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="label">
+                        <label for="parent_field">категорія</label>
+                    </td>
+                    <td>
+                        <select id="parent_field" name="category_id">
+                            <option label="Коренева категорія" selected></option>
+                            {% for category in categories %}
+                            <option label="{{ category['name'] }}" value="{{ category['id'] }}"{% if product['category_id'] == category['id'] %} selected{% endif %}></option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                {% for currency in currencies %}
+                <tr>
+                    <td class="label">
+                        <label for="price_{{ currency['code'] }}_field">ціна {{ currency['symbol'] }}</label>
+                    </td>
+                    <td>
+                        <input id="price_{{ currency['code'] }}_field" type="text" name="price_{{ currency['code'] }}" placeholder="{{ currency['code'] }}"{% if currency['code'] in product['price'] and product['price'][currency['code']] %} value="{{ product['price'][currency['code']] }}"{% endif %} maxlength="16" autocomplete="off">
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="label">
+                        <label for="is_active_field">показувати</label>
+                    </td>
+                    <td>
+                        <input id="is_active_field" type="checkbox" name="is_active"{% if product['is_active'] == 'Y' %} checked{% endif %}>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</section>
+
+{%- endblock content %}

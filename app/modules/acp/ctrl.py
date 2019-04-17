@@ -72,8 +72,7 @@ class Acp():
         return render_template('acp/categories/list.html', **self.data)
 
     def addCategoryPage(self):
-        categories = model.getCategories(self.current_language, order_by='id', order_type='asc')
-        self.data['categories'] = categories
+        self.data['categories'] = model.getCategories(self.current_language, order_by='id', order_type='asc')
         self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/categories/add.html', **self.data)
 
@@ -88,8 +87,7 @@ class Acp():
         category_id = int(category_id)
         category = model.getCategory(category_id)
         if not category: return abort(404)
-        categories = model.getCategories(self.current_language, order_by='id', order_type='asc')
-        self.data['categories'] = categories
+        self.data['categories'] = model.getCategories(self.current_language, order_by='id', order_type='asc')
         self.data['category'] = category
         self.data['languages'] = config.LANGUAGES_DATA
         return render_template('acp/categories/edit.html', **self.data)
@@ -127,8 +125,7 @@ class Acp():
         return render_template('acp/products/list.html', **self.data)
 
     def addProductPage(self):
-        categories = model.getCategories(self.current_language, order_by='id', order_type='asc')
-        self.data['categories'] = categories
+        self.data['categories'] = model.getCategories(self.current_language, order_by='id', order_type='asc')
         self.data['languages'] = config.LANGUAGES_DATA
         self.data['currencies'] = config.CURRENCIES_DATA
         return render_template('acp/products/add.html', **self.data)
@@ -138,6 +135,17 @@ class Acp():
         if helper.validAddProductData(data):
             data = helper.prepareAddProductData(data)
             model.addProduct(data)
+
+    def editProductPage(self, product_id):
+        if not validation.productID(product_id): return abort(404)
+        product_id = int(product_id)
+        product = model.getProduct(product_id)
+        if not product: return abort(404)
+        self.data['product'] = product
+        self.data['categories'] = model.getCategories(self.current_language, order_by='id', order_type='asc')
+        self.data['languages'] = config.LANGUAGES_DATA
+        self.data['currencies'] = config.CURRENCIES_DATA
+        return render_template('acp/products/edit.html', **self.data)
 
 
 

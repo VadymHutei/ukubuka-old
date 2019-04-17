@@ -640,6 +640,55 @@ def deleteCategory(category_id):
 
 
 
+def getProduct(product_id):
+    db = DB()
+    connection = db.getConnection()
+    cursor = connection.cursor()
+    query = """
+        SELECT
+            `id`,
+            `category_id`,
+            `model`,
+            `added`,
+            `is_active`
+        FROM `{table}`
+        WHERE `id` = %s
+    """.format(table=db.table('products'))
+    cursor.execute(query, (product_id))
+    product_data = cursor.fetchone()
+    if not product_data:
+        connection.close()
+        return {}
+    query = """
+        SELECT
+            `language`,
+            `name`,
+            `description`
+        FROM `{table}`
+        WHERE `product_id` = %s
+    """.format(table=db.table('products_text'))
+    cursor.execute(query, (product_id))
+    product_text_data = cursor.fetchall()
+    for row in product_text_data:
+        for prop in row:
+            if prop == 'language': continue
+            if prop not in product_data: product_data[prop] = {}
+            product_data[prop][row['language']] = row[prop]
+    query = """
+        SELECT
+            `currency`,
+            `price`
+        FROM `{table}`
+        WHERE `product_id` = %s
+    """.format(table=db.table('products_prices'))
+    cursor.execute(query, (product_id))
+    connection.close()
+    product_price_data = cursor.fetchall()
+    product_data['price'] = {}
+    for row in product_price_data:
+        product_data['price'][row['currency']] = row['price']
+    return product_data
+
 def getProducts(language, order_by=None, order_type=None):
     db = DB()
     connection = db.getConnection()
