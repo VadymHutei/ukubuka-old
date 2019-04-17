@@ -678,7 +678,7 @@ def getProducts(language, order_by=None, order_type=None):
     cursor.execute(query, (language, language))
     connection.close()
     products_data = cursor.fetchall()
-    return products_data if products_data else {}
+    return products_data if products_data else []
 
 def getCategoryProducts(language, category_id, order_by=None, order_type=None):
     db = DB()
@@ -719,7 +719,7 @@ def getCategoryProducts(language, category_id, order_by=None, order_type=None):
     cursor.execute(query, (category_id, language, language))
     connection.close()
     products_data = cursor.fetchall()
-    return products_data if products_data else {}
+    return products_data if products_data else []
 
 def addProduct(data):
     db = DB()
@@ -734,7 +734,7 @@ def addProduct(data):
     for language in config.LANGUAGES:
         prop_name = 'name_' + language
         prop_description = 'description_' + language
-        if prop_name in data or prop_description in data:
+        if prop_name in data and prop_description in data:
             query = """
                 INSERT INTO `{table}` (`product_id`, `language`, `name`, `description`)
                 VALUES (%s, %s, %s, %s)

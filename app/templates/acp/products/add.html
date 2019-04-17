@@ -54,8 +54,7 @@
                     <td>
                         <select id="parent_field" name="category_id">
                             <option label="Коренева категорія" selected></option>
-                            {% for category_id in categories_order %}
-                            {% set category = categories[category_id] %}
+                            {% for category in categories %}
                             <option label="{{ category['name'] }}" value="{{ category['id'] }}"></option>
                             {% endfor %}
                         </select>

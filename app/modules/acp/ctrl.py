@@ -127,9 +127,8 @@ class Acp():
         return render_template('acp/products/list.html', **self.data)
 
     def addProductPage(self):
-        categories, order = model.getCategories(self.current_language, order_by='id', order_type='asc')
+        categories = model.getCategories(self.current_language, order_by='id', order_type='asc')
         self.data['categories'] = categories
-        self.data['categories_order'] = order
         self.data['languages'] = config.LANGUAGES_DATA
         self.data['currencies'] = config.CURRENCIES_DATA
         return render_template('acp/products/add.html', **self.data)
